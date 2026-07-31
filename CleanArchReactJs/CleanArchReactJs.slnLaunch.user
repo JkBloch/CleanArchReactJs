@@ -1,0 +1,16 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "EmployeeManagement.API\\EmployeeManagement.API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "reactWeb\\reactweb.esproj",
+        "Action": "Start",
+        "DebugTarget": "localhost (Chrome)"
+      }
+    ]
+  }
+]

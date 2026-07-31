@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/CleanArchReactJs/EmployeeManagement.API/bin/Debug/net8.0
+/CleanArchReactJs/EmployeeManagement.API/obj
+/CleanArchReactJs/EmployeeManagement.Application/bin/Debug/net8.0
+/CleanArchReactJs/EmployeeManagement.Application/obj
+/CleanArchReactJs/EmployeeManagement.Domain/bin/Debug/net8.0
+/CleanArchReactJs/EmployeeManagement.Domain/obj
+/CleanArchReactJs/EmployeeManagement.Infrastructure/bin/Debug/net8.0
+/CleanArchReactJs/EmployeeManagement.Infrastructure/obj
+/CleanArchReactJs/reactweb/obj/Debug
+/CleanArchReactJs/.vs/CleanArchReactJs
