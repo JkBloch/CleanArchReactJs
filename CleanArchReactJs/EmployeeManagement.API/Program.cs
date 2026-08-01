@@ -1,12 +1,26 @@
+using EmployeeManagement.API.Authorization;
+using EmployeeManagement.Application;
+using EmployeeManagement.Application.Validators;
+using EmployeeManagement.Infrastructure;
+using EmployeeManagement.Infrastructure.Data;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//Added all service interface of application
+builder.Services.AddApplication();
 
+//Added all repository interface of intfrastructure (database)
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// Add services to the container.
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -22,4 +36,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//Inserted intial data like user role etc
+await DbInitializer.InitializeAsync(app.Services);
 app.Run();
