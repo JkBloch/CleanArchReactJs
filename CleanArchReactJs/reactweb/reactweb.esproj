@@ -9,19 +9,9 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\hooks\" />
-    <Folder Include="src\components\" />
-    <Folder Include="src\api\" />
-    <Folder Include="src\context\" />
-    <Folder Include="src\layouts\" />
-    <Folder Include="src\utils\" />
-    <Folder Include="src\routes\" />
-    <Folder Include="src\pages\admin\" />
-    <Folder Include="src\pages\audit\" />
     <Folder Include="src\pages\notifications\" />
     <Folder Include="src\pages\settings\" />
     <Folder Include="src\pages\users\" />
     <Folder Include="src\pages\roles\" />
-    <Folder Include="src\services\" />
   </ItemGroup>
 </Project>

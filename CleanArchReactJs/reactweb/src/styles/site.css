@@ -1,0 +1,61 @@
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    transition: .3s;
+}
+
+    .btn-icon:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,.25);
+    }
+
+    .btn-icon .icon {
+        width: 55px;
+        padding: 15px;
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .btn-icon .text {
+        padding: 15px 22px;
+    }
+
+.btn-success-custom {
+    background: #4CAF50;
+}
+
+    .btn-success-custom .icon {
+        background: #3E8E41;
+    }
+
+.btn-danger-custom {
+    background: #E53945;
+}
+
+    .btn-danger-custom .icon {
+        background: #C62839;
+    }
+
+.btn-warning-custom {
+    background: #FFC107;
+    color: #222;
+}
+
+    .btn-warning-custom .icon {
+        background: #D4A700;
+    }
+
+.btn-primary-custom {
+    background: #4169E1;
+}
+
+    .btn-primary-custom .icon {
+        background: #3558C9;
+    }

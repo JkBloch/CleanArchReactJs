@@ -15,6 +15,7 @@ namespace EmployeeManagement.Application.Interfaces
         Task<ApiResponse<string>> CreateAsync(CreatePermissionDto dto);
         Task<ApiResponse<string>> UpdateAsync(UpdatePermissionDto dto);
         Task<ApiResponse<string>> DeleteAsync(Guid id);
+        Task<ApiResponse<string>> DeletePermanentAsync(Guid id);
         Task<ApiResponse<string>> RestoreAsync(Guid id);       
         Task<ApiResponse<PagedPermissionResponseDto>> SearchAsync(SearchPermissionDto dto);
     }

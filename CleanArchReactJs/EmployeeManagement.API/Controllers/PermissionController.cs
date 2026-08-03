@@ -75,8 +75,18 @@ namespace EmployeeManagement.API.Controllers
 
             return Ok(result);
         }
+        [HttpDelete("{id:guid}/deletepermanent")]
+        public async Task<IActionResult> DeletePermanent(Guid id)
+        {
+            var result = await _permissionService.DeletePermanentAsync(id);
 
-       // [Authorize(Roles = "Admin")]
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+        // [Authorize(Roles = "Admin")]
         [HttpPost("{id:guid}/restore")]
         public async Task<IActionResult> Restore(Guid id)
         {

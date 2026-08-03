@@ -13,7 +13,18 @@ builder.Services.AddApplication();
 
 //Added all repository interface of intfrastructure (database)
 builder.Services.AddInfrastructure(builder.Configuration);
-
+//Added for allow react 
+builder.Services.AddCors(
+    Options =>
+    {
+        Options.AddPolicy("ReactPolicy", builder => {
+            builder
+        .AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+        });
+    }
+    );
 // Add services to the container.
 builder.Services.AddControllers();
 
@@ -31,7 +42,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+//added for allow access react CORS Pollcy
+app.UseCors("ReactPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

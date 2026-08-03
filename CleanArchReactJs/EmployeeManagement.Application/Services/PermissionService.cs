@@ -235,6 +235,46 @@ namespace EmployeeManagement.Application.Services
                     .Fail("Unable to delete permission.");
             }
         }
+        public async Task<ApiResponse<string>> DeletePermanentAsync(Guid id)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    "Deleting permission {PermissionId}",
+                    id);
+
+                var permission = await _unitOfWork.Permissions.GetByIdAsync(id);
+
+                if (permission == null)
+                {
+                    return ApiResponse<string>
+                        .Fail("Permission not found.");
+                }
+
+                _unitOfWork.Permissions.Delete(permission);
+
+                await _unitOfWork.SaveChangesAsync();
+
+                _logger.LogInformation(
+                    "Permission {PermissionId} deleted successfully.",
+                    id);
+
+                return ApiResponse<string>.Ok(
+                    permission.Code,
+                    "Permission deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error deleting permission {PermissionId}",
+                    id);
+
+                return ApiResponse<string>
+                    .Fail("Unable to delete permission.");
+            }
+        }
+
         public async Task<ApiResponse<string>> RestoreAsync(Guid id)
         {
             try
@@ -300,6 +340,21 @@ namespace EmployeeManagement.Application.Services
                         EF.Functions.Like(x.Name, $"%{keyword}%") ||
                         EF.Functions.Like(x.Code, $"%{keyword}%"));
                 }
+                if (!string.IsNullOrWhiteSpace(dto.Code))
+                {
+                    var code = dto.Code.Trim();
+
+                    query = query.Where(x =>
+                    EF.Functions.Like(x.Code, $"{code}%"));
+                }
+                if (!string.IsNullOrWhiteSpace(dto.Name))
+                {
+                    var name = dto.Name.Trim();
+
+                    query = query.Where(x =>
+                    EF.Functions.Like(x.Name, $"{name}%"));
+                }
+
 
 
 
