@@ -21,5 +21,6 @@ createRoot(document.getElementById('root')).render(
             closeOnClick
 
         />
-  </StrictMode>,
+  </StrictMode >
+  ,
 )

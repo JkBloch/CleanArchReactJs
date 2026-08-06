@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaFileExcel, FaFilePdf } from "react-icons/fa";
+import { downloadExcel, downloadPdf } from "../../../api/exportApi";
 
-function PermissionSearch({ filters, onSearch, handleChange }) {
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            onSearch(filters);
-        }, 500);
+function PermissionSearch({ filters, loadPermissions, handleChange }) {
+    //useEffect(() => {
+    //    const timer = setTimeout(() => {
+    //        onSearch(filters);
+    //    }, 500);
 
-        return () => clearTimeout(timer);
-    }, []);
+    //    return () => clearTimeout(timer);
+    //}, []);
 
     function handleSearch(e) {     
-        onSearch();
-
+        loadPermissions(1);
     }
     return (
 
@@ -34,7 +34,7 @@ function PermissionSearch({ filters, onSearch, handleChange }) {
 
                     </div>
 
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <input
                             className="form-control"
                             name="code"
@@ -43,7 +43,7 @@ function PermissionSearch({ filters, onSearch, handleChange }) {
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <input
                             className="form-control"
                             name="name"
@@ -52,17 +52,46 @@ function PermissionSearch({ filters, onSearch, handleChange }) {
                             onChange={handleChange}
                         />
                     </div>
-
-                    <div className="col-md-3">
-                        <button className="icon-btn icon-btn-info" 
-                            onClick={handleSearch}>
-                            <span className="icon-section">
-                                <FaSearch> </FaSearch>
-                            </span>
-                            <span className="text-section">
-                                Search
-                            </span>
-                        </button>
+                    <div className="col-md-5">
+                        <div className="row">
+                            <div className="col">
+                                <button className="icon-btn icon-btn-info"
+                                    onClick={handleSearch}>
+                                    <span className="icon-section">
+                                        <FaSearch> </FaSearch>
+                                    </span>
+                                    <span className="text-section">
+                                        Search
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="col">
+                                <button className="icon-btn icon-btn-success"
+                                    onClick={() =>
+                                        downloadExcel(filters)
+                                    }>
+                                    <span className="icon-section">
+                                        <FaFileExcel> </FaFileExcel>
+                                    </span>
+                                    <span className="text-section">
+                                        Excel
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="col">
+                                <button className="icon-btn icon-btn-danger"
+                                    onClick={() =>
+                                        downloadPdf(filters)
+                                    }>
+                                    <span className="icon-section">
+                                        <FaFilePdf> </FaFilePdf>
+                                    </span>
+                                    <span className="text-section">
+                                        Pdf
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

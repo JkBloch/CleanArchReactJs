@@ -7,6 +7,8 @@ function ConfirmDialog({
     cancelText = "Cancel",
     confirmVariant,
     onConfirm,
+    loadData,
+    pageNumber,
     onCancel,
     loading = false
 
@@ -14,7 +16,11 @@ function ConfirmDialog({
     const buttonStyle = `btn btn-${confirmVariant ? confirmVariant : 'danger'}`;
     if (!show)
         return null;
-
+    function onConfirmation()
+    {
+        onConfirm();
+        loadData(pageNumber)
+    }
     return (
 
         <>
@@ -61,7 +67,7 @@ function ConfirmDialog({
 
                             <button
                                 className={buttonStyle}
-                                onClick={onConfirm}
+                                onClick={onConfirmation}
                                 disabled={loading}
                             >
                                 {loading

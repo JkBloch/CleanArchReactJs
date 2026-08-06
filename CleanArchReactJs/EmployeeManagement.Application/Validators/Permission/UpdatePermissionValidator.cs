@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeManagement.Application.Validators
+namespace EmployeeManagement.Application.Validators.Permission
 {
     public class UpdatePermissionValidator : AbstractValidator<UpdatePermissionDto>
     {

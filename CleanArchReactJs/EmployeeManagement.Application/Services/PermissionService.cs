@@ -91,25 +91,21 @@ namespace EmployeeManagement.Application.Services
                 // Email validation
                 var nameExists = await _unitOfWork.Permissions.GetByNameAsync(dto.Name);
 
-                if (nameExists != null)
+                if (nameExists != null && nameExists.Id != Guid.Empty)
                 {
                     return ApiResponse<string>.Fail(
                         "Name already exists.");
                 }
 
                 // Permission Code validation
-                if (nameExists != null && nameExists.Id != Guid.Empty)
+                var codeExists = await _unitOfWork.Permissions.GetByCodeAsync(dto.Code);
+
+                if (codeExists != null && codeExists.Id != Guid.Empty)
                 {
-                    var codeExists = await _unitOfWork.Permissions.GetByCodeAsync(
-                            dto.Code);
-
-                    if (codeExists != null && codeExists.Id != Guid.Empty)
-                    {
-                        return ApiResponse<string>.Fail(
-                            "Code already exists.");
-                    }
-
+                    return ApiResponse<string>.Fail(
+                        "Code already exists.");
                 }
+
 
                 var permission = _mapper.Map<Permission>(dto);
 

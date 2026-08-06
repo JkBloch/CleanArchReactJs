@@ -1,10 +1,17 @@
+
 function Pagination({
 
     pageNumber,
     totalPages,
-    onPageChange
+    setPageNumber,
+    loadData
 
 }) {
+
+    function onPageChange(page) {
+        setPageNumber(page);
+        loadData(page);
+    }
 
     if (totalPages <= 1)
         return null;

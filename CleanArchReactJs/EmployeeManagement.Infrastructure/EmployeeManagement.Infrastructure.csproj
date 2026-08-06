@@ -11,6 +11,7 @@
     <Folder Include="FileStorage\" />
     <Folder Include="Email\" />
     <Folder Include="Audit\" />
+    <Folder Include="Interfaces\" />
     <Folder Include="Migrations\" />
     <Folder Include="Services\" />
   </ItemGroup>

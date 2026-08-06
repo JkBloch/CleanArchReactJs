@@ -59,7 +59,7 @@ function PermissionList() {
         }));
 
     }
-    async function loadPermissions(selectedPageNumber=1) {
+    async function loadPermissions(selectedPageNumber = 1, sortBy = "code", descending=false) {
 
         try {
 
@@ -95,70 +95,59 @@ function PermissionList() {
 
     }, []);
 
-    async function handleDelete(id) {
+    const handleDelete=(id)=> {
         setSelectedId(id);
-        setShowConfirmDelete(true); 
-    }
-    async function handleDeletePermanent(id) {
+        setShowConfirmDelete(true);
+    };
+    const handleDeletePermanent = (id) =>{
         setSelectedId(id);
         setShowConfirmDeletePermanent(true);
-    }
+    };
+    const handleRestore=(id)=> {
+        setSelectedId(id);
+        setShowConfirmRestore(true);
+    };
+
     const handleConfirmDelete = async () => {
-
         await deletePermission(selectedId);
-
         notify.success("Permission deleted successfully.");
-
         setShowConfirmDelete(false);
-
-        loadPermissions(pageNumber);
     };
     const handleConfirmDeletePermanent = async () => {
-
         await deletePermanentPermissions(selectedId);
-
-        notify.success("Permission deleted successfully.");
-
+        notify.success("Permission Permanent deleted successfully.");
         setShowConfirmDeletePermanent(false);
-
-        loadPermissions(pageNumber);
     };
-    async function handleRestore(id) {
-        setSelectedId(id);
-        setShowConfirmRestore(true);         
-    }
+
     const handleConfirmRestore = async () => {
         await restorePermission(selectedId);
-
         notify.success("Permission resore successfully.");
-
         setShowConfirmRestore(false);
-
-        loadPermissions(pageNumber);
-    };   
-   
-    function handleSearch() {
-        setPageNumber(1);
-        loadPermissions(1);
-    }
-    function changePage(page) {
-        setPageNumber(page);     
-        loadPermissions(page);
-    }
+    };    
 
     function sort(column) {
+        if (column === sortBy) {
+            setDescending(!descending);
+        }
+        setSortBy(column);
 
-        setFilters(prev => ({
+        //setDescending(descending)
+        //const [pageSize, setPageSize] = useState(10);
+        //const [sortBy, setSortBy] = useState("code");
+        //const [descending, setDescending] = useState(false);
+        //se
+        //setFilters(prev => ({
 
-            ...prev,
+        //    ...prev,
 
-            sortBy: column,
+        //    sortBy: column,
 
-            descending:
-                prev.sortBy === column
-                    ? !prev.descending
-                    : false
-        }));
+        //    descending:
+        //        prev.sortBy === column
+        //            ? !prev.descending
+        //            : false
+        //}));
+       // loadPermissions();
     }
 
     if (loading)
@@ -189,19 +178,26 @@ function PermissionList() {
             <PermissionSearch
                 handleChange={handleChange }
                 filters={filters}
-                onSearch={handleSearch}
+                loadPermissions={loadPermissions}
             />
             <PermissionTable
                 permissions={permissions}
                 onDelete={handleDelete}
                 onDeletePermanent={handleDeletePermanent}
-                onSort={sort}
-                onRestore={handleRestore }
+                onRestore={handleRestore}
+                loadData={loadPermissions}
+                pageNumber={pageNumber}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                descending={descending}
+                setDescending={setDescending}
+
             />
             <Pagination
                 pageNumber={pageNumber}
                 totalPages={totalPages}
-                onPageChange={changePage}
+                setPageNumber={setPageNumber}
+                loadData={loadPermissions}
             />
             <ConfirmDialog
                 show={showConfirmDelete}
@@ -210,6 +206,8 @@ function PermissionList() {
                 confirmText="Delete"
                 confirmVariant="danger"
                 onConfirm={handleConfirmDelete}
+                loadData={loadPermissions}
+                pageNumber={pageNumber}
                 onCancel={() => setShowConfirmDelete(false)}
             />
             <ConfirmDialog
@@ -219,6 +217,8 @@ function PermissionList() {
                 confirmText="Delete Permanent"
                 confirmVariant="danger"
                 onConfirm={handleConfirmDeletePermanent}
+                loadData={loadPermissions}
+                pageNumber={pageNumber}
                 onCancel={() => setShowConfirmDeletePermanent(false)}
             />
             <ConfirmDialog
@@ -228,6 +228,8 @@ function PermissionList() {
                 confirmText="Resote"
                 confirmVariant="success"
                 onConfirm={handleConfirmRestore}
+                loadData={loadPermissions}
+                pageNumber={pageNumber}
                 onCancel={() => setShowConfirmRestore(false)}
             />
         </div>

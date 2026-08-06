@@ -1,5 +1,4 @@
-﻿
-using EmployeeManagement.Application.DTOs.Permissions;
+﻿using EmployeeManagement.Application.DTOs.Permissions;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmployeeManagement.Application.Validators
+namespace EmployeeManagement.Application.Validators.Permission
 {
     public class CreatePermissionValidator : AbstractValidator<CreatePermissionDto>
     {

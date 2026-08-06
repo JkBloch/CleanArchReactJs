@@ -24,6 +24,9 @@ namespace EmployeeManagement.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             services.AddScoped<IPermissionService, PermissionService>();
+            services.AddScoped<IExcelExportService, ExcelExportService>();
+            services.AddScoped<IPdfExportService, PdfExportService>();
+
             //services.AddScoped<IEmployeeService, EmployeeService>();
 
             //services.AddScoped<IAuthService, AuthService>();

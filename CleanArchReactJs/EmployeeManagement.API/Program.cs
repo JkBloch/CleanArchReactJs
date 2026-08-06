@@ -5,8 +5,12 @@ using EmployeeManagement.Infrastructure;
 using EmployeeManagement.Infrastructure.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 //Added all service interface of application
 builder.Services.AddApplication();

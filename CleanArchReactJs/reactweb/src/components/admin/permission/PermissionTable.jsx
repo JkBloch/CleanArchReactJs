@@ -12,9 +12,23 @@ function PermissionTable({
     onDelete,
     onDeletePermanent,
     onRestore,
-    onSort
+    loadData,
+    pageNumber,
+    sortBy,
+    setSortBy,
+    descending,
+    setDescending
+    
 }) {
-
+    const onSortData = (column) => {
+        var des = descending;
+        if (column === sortBy) {
+            setDescending(!descending);
+            des = !descending;
+        }
+        setSortBy(column);
+        loadData(pageNumber, column, des)
+    }
     return (
 
         <table className="table table-striped table-hover">
@@ -25,14 +39,14 @@ function PermissionTable({
 
                     <th
                         style={{ cursor: "pointer" }}
-                        onClick={() => onSort("code")}
+                        onClick={() => onSortData("code")}
                     >
                         Code
                     </th>
 
                     <th
                         style={{ cursor: "pointer" }}
-                        onClick={() => onSort("firstName")}
+                        onClick={() => onSortData("name")}
                     >
                         Name
                     </th>
