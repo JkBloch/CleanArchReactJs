@@ -1,32 +1,30 @@
-﻿using EmployeeManagement.Application.DTOs.Permissions;
+﻿using EmployeeManagement.Application.DTOs.Roles;
 using EmployeeManagement.Application.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagement.API.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
     //[Authorize]
-    public class PermissionController : ControllerBase
+    public class RoleController : ControllerBase
     {
-        private readonly IPermissionService _permissionService;
-        public PermissionController(IPermissionService permissionService)
+        private readonly IRoleService _roleService;
+        public RoleController(IRoleService roleService)
         {
-            _permissionService = permissionService;
+            _roleService = roleService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _permissionService.GetAllAsync();
+            var result = await _roleService.GetAllAsync();
             return Ok(result);
         }
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _permissionService.GetByIdAsync(id);
+            var result = await _roleService.GetByIdAsync(id);
 
             if (!result.Success)
                 return NotFound(result);
@@ -35,14 +33,14 @@ namespace EmployeeManagement.API.Controllers
         }
 
         //[Authorize(Roles = "Admin,HR")]
-        //[Authorize(Policy = Permissions.PermissionCreate)]
+        //[Authorize(Policy = Roles.RoleCreate)]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatePermissionDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateRoleDto dto)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
-            var result = await _permissionService.CreateAsync(dto);
+            var result = await _roleService.CreateAsync(dto);
 
             if (!result.Success)
                 return BadRequest(result);
@@ -52,12 +50,12 @@ namespace EmployeeManagement.API.Controllers
 
         //[Authorize(Roles = "Admin,HR")]
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id,[FromBody] UpdatePermissionDto dto)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRoleDto dto)
         {
             if (id != dto.Id)
                 return BadRequest("Route id does not match request body.");
 
-            var result = await _permissionService.UpdateAsync(dto);
+            var result = await _roleService.UpdateAsync(dto);
 
             if (!result.Success)
                 return BadRequest(result);
@@ -68,7 +66,7 @@ namespace EmployeeManagement.API.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _permissionService.DeleteAsync(id);
+            var result = await _roleService.DeleteAsync(id);
 
             if (!result.Success)
                 return NotFound(result);
@@ -78,7 +76,7 @@ namespace EmployeeManagement.API.Controllers
         [HttpDelete("{id:guid}/deletepermanent")]
         public async Task<IActionResult> DeletePermanent(Guid id)
         {
-            var result = await _permissionService.DeletePermanentAsync(id);
+            var result = await _roleService.DeletePermanentAsync(id);
 
             if (!result.Success)
                 return NotFound(result);
@@ -90,7 +88,7 @@ namespace EmployeeManagement.API.Controllers
         [HttpPost("{id:guid}/restore")]
         public async Task<IActionResult> Restore(Guid id)
         {
-            var result = await _permissionService.RestoreAsync(id);
+            var result = await _roleService.RestoreAsync(id);
 
             if (!result.Success)
                 return BadRequest(result);
@@ -99,9 +97,9 @@ namespace EmployeeManagement.API.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> Search(SearchPermissionDto dto)
+        public async Task<IActionResult> Search(SearchRoleDto dto)
         {
-            var result = await _permissionService.SearchAsync(dto);
+            var result = await _roleService.SearchAsync(dto);
             return Ok(result);
         }
     }

@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { getPermissions, deletePermission, restorePermission, searchPermissions, deletePermanentPermissions } from "../../../api/permissionApi";
+import { getRoles, deleteRole, restoreRole, searchRoles, deletePermanentRoles } from "../../../api/roleApi";
 import Loader from "../../../components/common/Loader";
-import PermissionTable from "../../../components/admin/permission/PermissionTable";
+import RoleTable from "../../../components/admin/role/RoleTable";
 import { FaPlus } from "react-icons/fa";
-import PermissionSearch from "../permission/PermissionSearch";
+import RoleSearch from "../role/RoleSearch";
 import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
 import IconButton from "../../../components/common/IconButton";
-function PermissionList() {
+function RoleList() {
     const [selectedId, setSelectedId] = useState(null);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showConfirmDeletePermanent, setShowConfirmDeletePermanent] = useState(false);
     const [showConfirmRestore, setShowConfirmRestore] = useState(false);
-    const [permissions, setPermissions] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
 
 
@@ -59,12 +59,12 @@ function PermissionList() {
         }));
 
     }
-    async function loadPermissions(selectedPageNumber = 1, sortBy = "code", descending=false) {
+    async function loadRoles(selectedPageNumber = 1, sortBy = "code", descending = false) {
 
         try {
 
-            //const response = await getPermissions();
-            //setPermissions(response.data.data ?? []);
+            //const response = await getRoles();
+            //setRoles(response.data.data ?? []);
             const revfilters = {
                 keyword: keyword,
                 code: searchcode,
@@ -73,12 +73,12 @@ function PermissionList() {
                 pageSize: pageSize,
                 sortBy: sortBy,
                 descending: descending
-            } 
-            const response = await searchPermissions(revfilters);
+            }
+            const response = await searchRoles(revfilters);
 
             const result = response.data.data;
 
-            setPermissions(result.items);
+            setRoles(result.items);
 
             setTotalPages(result.totalPages);
 
@@ -91,39 +91,39 @@ function PermissionList() {
 
     useEffect(() => {
 
-        loadPermissions();
+        loadRoles();
 
     }, []);
 
-    const handleDelete=(id)=> {
+    const handleDelete = (id) => {
         setSelectedId(id);
         setShowConfirmDelete(true);
     };
-    const handleDeletePermanent = (id) =>{
+    const handleDeletePermanent = (id) => {
         setSelectedId(id);
         setShowConfirmDeletePermanent(true);
     };
-    const handleRestore=(id)=> {
+    const handleRestore = (id) => {
         setSelectedId(id);
         setShowConfirmRestore(true);
     };
 
     const handleConfirmDelete = async () => {
-        await deletePermission(selectedId);
-        notify.success("Permission deleted successfully.");
+        await deleteRole(selectedId);
+        notify.success("Role deleted successfully.");
         setShowConfirmDelete(false);
     };
     const handleConfirmDeletePermanent = async () => {
-        await deletePermanentPermissions(selectedId);
-        notify.success("Permission Permanent deleted successfully.");
+        await deletePermanentRoles(selectedId);
+        notify.success("Role Permanent deleted successfully.");
         setShowConfirmDeletePermanent(false);
     };
 
     const handleConfirmRestore = async () => {
-        await restorePermission(selectedId);
-        notify.success("Permission resore successfully.");
+        await restoreRole(selectedId);
+        notify.success("Role resore successfully.");
         setShowConfirmRestore(false);
-    };    
+    };
 
     function sort(column) {
         if (column === sortBy) {
@@ -142,10 +142,10 @@ function PermissionList() {
             <div className="d-flex justify-content-between mb-3">
 
                 <h2>
-                    Permissions                    
+                    Roles
                 </h2>
                 <div>
-                    <NavLink to="/permissions/create"
+                    <NavLink to="/roles/create"
                         className="icon-btn icon-btn-success no-underline m-1">
                         <span className="icon-section">
                             <FaPlus ></FaPlus>
@@ -153,14 +153,14 @@ function PermissionList() {
                         <span className="text-section">
                             Add
                         </span>
-                    </NavLink>                
-                   
+                    </NavLink>
+
                 </div>
             </div>
-            <PermissionSearch
+            <RoleSearch
                 handleChange={handleChange}
                 filters={filters}
-                loadPermissions={loadPermissions}
+                loadRoles={loadRoles}
                 keyword={keyword}
                 searchcode={searchcode}
                 searchname={searchname}
@@ -169,12 +169,12 @@ function PermissionList() {
                 sortBy={sortBy}
                 descending={descending}
             />
-            <PermissionTable
-                permissions={permissions}
+            <RoleTable
+                roles={roles}
                 onDelete={handleDelete}
                 onDeletePermanent={handleDeletePermanent}
                 onRestore={handleRestore}
-                loadData={loadPermissions}
+                loadData={loadRoles}
                 pageNumber={pageNumber}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
@@ -186,38 +186,38 @@ function PermissionList() {
                 pageNumber={pageNumber}
                 totalPages={totalPages}
                 setPageNumber={setPageNumber}
-                loadData={loadPermissions}
+                loadData={loadRoles}
             />
             <ConfirmDialog
                 show={showConfirmDelete}
-                title="Delete Permission"
-                message="Are you sure you want to delete this permission?"
+                title="Delete Role"
+                message="Are you sure you want to delete this role?"
                 confirmText="Delete"
                 confirmVariant="danger"
                 onConfirm={handleConfirmDelete}
-                loadData={loadPermissions}
+                loadData={loadRoles}
                 pageNumber={pageNumber}
                 onCancel={() => setShowConfirmDelete(false)}
             />
             <ConfirmDialog
                 show={showConfirmDeletePermanent}
-                title="Delete Permission Permanent"
-                message="Are you sure you want to delete Permanent this permission?"
+                title="Delete Role Permanent"
+                message="Are you sure you want to delete Permanent this role?"
                 confirmText="Delete Permanent"
                 confirmVariant="danger"
                 onConfirm={handleConfirmDeletePermanent}
-                loadData={loadPermissions}
+                loadData={loadRoles}
                 pageNumber={pageNumber}
                 onCancel={() => setShowConfirmDeletePermanent(false)}
             />
             <ConfirmDialog
                 show={showConfirmRestore}
-                title="Restore Permission"
-                message="Are you sure you want to restore this permission?"
+                title="Restore Role"
+                message="Are you sure you want to restore this role?"
                 confirmText="Resote"
                 confirmVariant="success"
                 onConfirm={handleConfirmRestore}
-                loadData={loadPermissions}
+                loadData={loadRoles}
                 pageNumber={pageNumber}
                 onCancel={() => setShowConfirmRestore(false)}
             />
@@ -226,4 +226,4 @@ function PermissionList() {
     );
 }
 
-export default PermissionList;
+export default RoleList;

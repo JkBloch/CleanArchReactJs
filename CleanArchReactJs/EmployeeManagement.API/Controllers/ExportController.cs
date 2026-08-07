@@ -1,10 +1,13 @@
 ﻿using EmployeeManagement.Application.DTOs;
+using EmployeeManagement.Application.DTOs.Permissions;
+using EmployeeManagement.Application.DTOs.Roles;
 using EmployeeManagement.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagement.API.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     //[Authorize]
     [ApiController]
     [Route("api/export")]
@@ -18,10 +21,9 @@ namespace EmployeeManagement.API.Controllers
             _excelExportService = excelExportService;
             _pdfExportService = pdfExportService;
         }
-
+        #region Permission
         [HttpPost("permissions/excel")]
-        public async Task<IActionResult> ExportPermissions(
-            ExportRequestDto request)
+        public async Task<IActionResult> ExportPermissionsExcel(SearchPermissionDto request)
         {
             var bytes =
                 await _excelExportService
@@ -33,7 +35,7 @@ namespace EmployeeManagement.API.Controllers
                 $"Permissions_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
         }
         [HttpPost("permissions/pdf")]
-        public async Task<IActionResult> ExportPdf(ExportRequestDto request)
+        public async Task<IActionResult> ExportPermissionsPdf(SearchPermissionDto request)
         {
             var pdf = await _pdfExportService.ExportPermissionsAsync(request);
 
@@ -42,5 +44,30 @@ namespace EmployeeManagement.API.Controllers
                 "application/pdf",
                 $"PermissionReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
+        #endregion
+        #region Role
+        [HttpPost("roles/excel")]
+        public async Task<IActionResult> ExportRolesExcel(SearchRoleDto request)
+        {
+            var bytes =
+                await _excelExportService
+                    .ExportRolesAsync(request);
+
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Roles_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        [HttpPost("roles/pdf")]
+        public async Task<IActionResult> ExportRolesPdf(SearchRoleDto request)
+        {
+            var pdf = await _pdfExportService.ExportRolesAsync(request);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"RoleReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        #endregion
     }
 }

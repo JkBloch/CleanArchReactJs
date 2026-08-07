@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 namespace EmployeeManagement.Application.Services
 {
     using AutoMapper;
+    using EmployeeManagement.Application.Common;
     using EmployeeManagement.Application.DTOs;
+    using EmployeeManagement.Application.DTOs.Permissions;
+    using EmployeeManagement.Application.DTOs.Roles;
     using EmployeeManagement.Application.Interfaces;
     using EmployeeManagement.Domain.Interfaces;
     using Microsoft.EntityFrameworkCore;
@@ -26,28 +29,10 @@ namespace EmployeeManagement.Application.Services
             _mapper = mapper;
 
         }
-        public async Task<byte[]> ExportPermissionsAsync(ExportRequestDto request)
+        public async Task<byte[]> ExportPermissionsAsync(SearchPermissionDto request)
         {
             var query = _unitOfWork.Permissions.Query();
-
-
-            if (!string.IsNullOrWhiteSpace(request.Keyword))
-            {
-                query = query.Where(x =>
-                    x.Code.Contains(request.Keyword) ||
-                    x.Name.Contains(request.Keyword));
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.Name))
-            {
-                query = query.Where(x =>
-                    x.Name == request.Name);
-            }
-
-            var permissions =
-                await query
-                .OrderBy(x => x.Code)
-                .ToListAsync();
+            var (permissions, iTotalRecord) =  await SearchExportData.GetExportPermissionData(query, request, "pdf"); 
 
             return Document.Create(container =>
             {
@@ -98,6 +83,81 @@ namespace EmployeeManagement.Application.Services
                                         table.Cell().Text(permission.Name);
 
                                         table.Cell().Text(permission.CreatedDate.ToShortDateString());
+                                    }
+                                });
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+
+                            x.CurrentPageNumber();
+
+                            x.Span(" of ");
+
+                            x.TotalPages();
+                        });
+                });
+            }).GeneratePdf();
+        }
+
+        public async Task<byte[]> ExportRolesAsync(SearchRoleDto request)
+        {
+            var query = _unitOfWork.Roles.Query();
+            var (roles, iTotalRecord) = await SearchExportData.GetExportRoleData(query, request, "pdf");
+
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+
+                    page.Size(PageSizes.A4.Landscape());
+
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Text("Role List Report")
+                        .FontSize(22)
+                        .Bold();
+
+                    page.Content()
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item()
+                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.ConstantColumn(120);
+                                        columns.ConstantColumn(200);
+                                        columns.ConstantColumn(150);
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Text("Code").Bold();
+
+                                        header.Cell().Text("Name").Bold();
+
+                                        header.Cell().Text("CreatedDate").Bold();
+                                    });
+
+                                    foreach (var role in roles)
+                                    {
+                                        table.Cell().Text(role.Code);
+
+                                        table.Cell().Text(role.Name);
+
+                                        table.Cell().Text(role.CreatedDate.ToShortDateString());
                                     }
                                 });
                         });

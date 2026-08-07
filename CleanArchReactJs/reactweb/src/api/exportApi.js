@@ -6,17 +6,18 @@ const apiClient = axios.create({
     }
 });
 
-export const exportPermissionsExcel = request =>
-    apiClient.post(
-        "/export/permissions/excel",
-        request,
-        {
-            responseType: "blob"
-        })
+export async function downloadExcel(filters,reportName) {
+    var response = "";
+    switch (reportName) {
+        case "PermissionReport":
+            response = await exportPermissionsExcel(filters);
+            break
+        case "RoleReport":
+            response = await exportRolesExcel(filters);
+            break
+        default:
+    }
 
-export async function downloadExcel(filters) {
-    const response =
-        await exportPermissionsExcel(filters);
 
     const blob =
         new Blob(
@@ -34,26 +35,25 @@ export async function downloadExcel(filters) {
 
     link.href = url;
 
-    link.download =
-        "Permissions.xlsx";
+    link.download = reportName +".xlsx";
 
     link.click();
 
     window.URL.revokeObjectURL(url);
 }
+export async function downloadPdf(filters, reportName) {
 
+    var response = {};
+    switch (reportName) {
+        case "PermissionReport":
+            response = await exportPermissionsPdf(filters);
+            break
+        case "RoleReport":
+            response = await exportRolesPdf(filters);
+            break
+        default:
+    }
 
-export const exportPermissionsPdf = filters =>
-    apiClient.post(
-        "/export/permissions/pdf",
-        filters,
-        {
-            responseType: "blob"
-        });
-
-export async function downloadPdf(filters) {
-    const response =
-        await exportPermissionsPdf(filters);
 
     const blob =
         new Blob([response.data], {
@@ -68,10 +68,42 @@ export async function downloadPdf(filters) {
 
     link.href = url;
 
-    link.download = "PermissionReport.pdf";
+    link.download = reportName +".pdf";
 
     link.click();
 
     window.URL.revokeObjectURL(url);
 }
+
+export const exportPermissionsExcel = request =>
+    apiClient.post(
+        "/export/permissions/excel",
+        request,
+        {
+            responseType: "blob"
+        })
+
+export const exportPermissionsPdf = filters =>
+    apiClient.post(
+        "/export/permissions/pdf",
+        filters,
+        {
+            responseType: "blob"
+        });
+
+export const exportRolesExcel = request =>
+    apiClient.post(
+        "/export/roles/excel",
+        request,
+        {
+            responseType: "blob"
+        })
+
+export const exportRolesPdf = filters =>
+    apiClient.post(
+        "/export/roles/pdf",
+        filters,
+        {
+            responseType: "blob"
+        });
 

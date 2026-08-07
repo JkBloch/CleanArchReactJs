@@ -9,6 +9,7 @@ namespace EmployeeManagement.Domain.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IPermissionRepository Permissions { get; }
+        IRoleRepository Roles { get; }
 
         //IEmployeeRepository Employees { get; }
 

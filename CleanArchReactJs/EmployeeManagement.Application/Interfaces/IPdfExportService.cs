@@ -1,4 +1,6 @@
 ﻿using EmployeeManagement.Application.DTOs;
+using EmployeeManagement.Application.DTOs.Permissions;
+using EmployeeManagement.Application.DTOs.Roles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ namespace EmployeeManagement.Application.Interfaces
 {
     public interface IPdfExportService
     {
-        Task<byte[]> ExportPermissionsAsync(ExportRequestDto request);
+        Task<byte[]> ExportPermissionsAsync(SearchPermissionDto request);
+        Task<byte[]> ExportRolesAsync(SearchRoleDto request);
     }
 }

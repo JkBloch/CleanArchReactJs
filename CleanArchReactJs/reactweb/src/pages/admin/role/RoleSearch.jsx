@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaSearch, FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { downloadExcel, downloadPdf } from "../../../api/exportApi";
 
-function PermissionSearch({ handleChange, filters, loadPermissions,
+function RoleSearch({ handleChange, filters, loadRoles,
     keyword,
     searchcode,
     searchname,
@@ -10,10 +10,9 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
     pageSize,
     sortBy,
     descending
-})
-{
-    function handleSearch(e) {     
-        loadPermissions(1,sortBy, descending);
+}) {
+    function handleSearch(e) {
+        loadRoles(1, sortBy, descending);
     }
     function handleExcelExport(e) {
         const revfilters = {
@@ -24,9 +23,9 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
             pageSize: pageSize,
             sortBy: sortBy,
             descending: descending
-        } 
-        //var permissions = loadPermissions(pageNumber, sortBy, descending);
-        downloadExcel(revfilters,"PermissionReport");
+        }
+        //var roles = loadRoles(pageNumber, sortBy, descending);
+        downloadExcel(revfilters,"RoleReport");
     }
     function handlePdfExport(e) {
         const revfilters = {
@@ -38,7 +37,7 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
             sortBy: sortBy,
             descending: descending
         }
-        downloadPdf(revfilters,"PermissionReport");
+        downloadPdf(revfilters,"RoleReport");
     }
     return (
 
@@ -53,7 +52,7 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
                         <input
                             className="form-control"
                             name="keyword"
-                            placeholder="Search permission..."
+                            placeholder="Search role..."
                             value={filters.keyword}
                             onChange={handleChange}
                         />
@@ -124,4 +123,4 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
     );
 }
 
-export default PermissionSearch;
+export default RoleSearch;

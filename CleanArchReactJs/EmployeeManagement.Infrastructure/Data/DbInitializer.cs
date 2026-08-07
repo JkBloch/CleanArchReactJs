@@ -66,8 +66,18 @@ namespace EmployeeManagement.Infrastructure.Data
 
                 await context.SaveChangesAsync();
             }
+            if (!context.Roles.Any())
+            {
+                var role = new Role
+                {
+                    Code = "R001",
+                    Name = "Admin"
+                };
+                await context.Roles.AddAsync(role);
+                await context.SaveChangesAsync();
+            }
 
-            
+
         }
     }
 }

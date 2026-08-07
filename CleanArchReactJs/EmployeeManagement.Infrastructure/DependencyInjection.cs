@@ -23,6 +23,7 @@ namespace EmployeeManagement.Infrastructure
                     configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IPermissionRepository, PermissionRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
             //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 

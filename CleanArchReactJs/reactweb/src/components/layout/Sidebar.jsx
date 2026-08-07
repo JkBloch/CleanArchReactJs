@@ -20,7 +20,7 @@ const menus = [
         name: "Permission",
         icon: <FaListAlt />,
         path: "/permissions"
-    },
+    },   
     {
         name: "Dashboard",
         icon: <FaHome />,
