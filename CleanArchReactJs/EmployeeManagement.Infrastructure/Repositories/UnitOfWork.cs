@@ -15,6 +15,8 @@ namespace EmployeeManagement.Infrastructure.Repositories
         public IPermissionRepository Permissions { get; }
         public IRoleRepository Roles { get; }
 
+        public IRolePermissionRepository RolePermissions { get; }
+
         //public IEmployeeRepository Employees { get; }
 
         //public IUserRepository Users { get; }
@@ -29,6 +31,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
 
             Permissions = new PermissionRepository(context);
             Roles =new RoleRepository(context);
+            RolePermissions = new RolePermissionRepository(context);
             //Employees = new EmployeeRepository(context);
 
             //Users = new UserRepository(context);

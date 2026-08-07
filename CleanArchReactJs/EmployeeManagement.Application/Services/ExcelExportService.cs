@@ -3,6 +3,7 @@ using ClosedXML.Excel;
 using EmployeeManagement.Application.Common;
 using EmployeeManagement.Application.DTOs;
 using EmployeeManagement.Application.DTOs.Permissions;
+using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
 using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Entities;
@@ -221,6 +222,116 @@ namespace EmployeeManagement.Application.Services
                     role.Name;
                 ws.Cell(row, 3).Value =
                     role.CreatedDate;
+
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
+
+        #region RolePermission
+        public async Task<byte[]> ExportRolePermissionsAsync(SearchRolePermissionDto request)
+        {
+            var query = _unitOfWork.RolePermissions.Query();
+
+            var (rolePermissions, iTotalRecord) = await SearchExportData.GetExportRolePermissionData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                rolePermissions);
+
+            CreateRolePermissionSheet(
+                workbook,
+                rolePermissions);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<RolePermission> rolePermissions)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "RolePermission Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total RolePermissions";
+
+            ws.Cell("B5").Value =
+                rolePermissions.Count;
+
+            ws.Cell("A6").Value =
+                "Roles";
+
+            ws.Cell("B6").Value =
+                rolePermissions
+                .Select(x => x.Role)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateRolePermissionSheet(XLWorkbook workbook, List<RolePermission> rolePermissions)
+        {
+            var ws =
+                workbook.Worksheets.Add("RolePermissions");
+
+            ws.Cell(1, 1).Value = "Code";
+            ws.Cell(1, 2).Value = "Name";
+            ws.Cell(1, 3).Value = "Created";
+
+            var header =
+                ws.Range("A1:C1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var rolePermission in rolePermissions)
+            {
+                ws.Cell(row, 1).Value =
+                    rolePermission.Role.Name;
+
+                ws.Cell(row, 2).Value =
+                    rolePermission.Permission.Name;
+                ws.Cell(row, 3).Value =
+                    rolePermission.CreatedDate;
 
                 row++;
             }

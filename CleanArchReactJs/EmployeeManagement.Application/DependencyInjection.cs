@@ -27,6 +27,7 @@ namespace EmployeeManagement.Application
             services.AddScoped<IExcelExportService, ExcelExportService>();
             services.AddScoped<IPdfExportService, PdfExportService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRolePermissionService, RolePermissionService>();
 
             //services.AddScoped<IEmployeeService, EmployeeService>();
 

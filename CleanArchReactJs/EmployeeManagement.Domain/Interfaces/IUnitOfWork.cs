@@ -10,6 +10,7 @@ namespace EmployeeManagement.Domain.Interfaces
     {
         IPermissionRepository Permissions { get; }
         IRoleRepository Roles { get; }
+        IRolePermissionRepository RolePermissions { get; }
 
         //IEmployeeRepository Employees { get; }
 

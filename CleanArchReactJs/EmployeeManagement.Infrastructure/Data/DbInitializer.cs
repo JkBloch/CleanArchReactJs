@@ -51,30 +51,34 @@ namespace EmployeeManagement.Infrastructure.Data
                     Name = "ALL"
                 };
                 await context.Permissions.AddAsync(permission);
-                //var admin = new User
-                //{
-                //    FirstName = "System",
-                //    LastName = "Administrator",
-                //    UserName = "admin",
-                //    Email = "admin@company.com",
-                //    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
-                //    Role = UserRole.Admin,
-                //    IsActive = true
-                //};
-
-                //await context.Users.AddAsync(admin);
-
                 await context.SaveChangesAsync();
             }
             if (!context.Roles.Any())
             {
                 var role = new Role
                 {
-                    Code = "R001",
+                    Code = "R0001",
                     Name = "Admin"
                 };
                 await context.Roles.AddAsync(role);
                 await context.SaveChangesAsync();
+            }
+            if (!context.RolePermissions.Any())
+            {
+                var role=  context.Roles.Where(x => x.Code == "R0001").FirstOrDefault();
+                var permission = context.Permissions.Where(x => x.Code == "ALL").FirstOrDefault();
+
+                if (role != null && permission != null)
+                {
+                    var rolePermission = new RolePermission
+                    {
+                        RoleId = role.Id,
+                        PermissionId = permission.Id
+                    };
+                    await context.RolePermissions.AddAsync(rolePermission);
+                    await context.SaveChangesAsync();
+
+                }
             }
 
 

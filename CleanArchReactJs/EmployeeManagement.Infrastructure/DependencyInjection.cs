@@ -24,6 +24,7 @@ namespace EmployeeManagement.Infrastructure
 
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
 
             //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 

@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Application.DTOs;
 using EmployeeManagement.Application.DTOs.Permissions;
+using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
 using EmployeeManagement.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagement.API.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = false)]
     //[Authorize]
     [ApiController]
     [Route("api/export")]
@@ -67,6 +68,30 @@ namespace EmployeeManagement.API.Controllers
                 pdf,
                 "application/pdf",
                 $"RoleReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        #endregion
+        #region RolePermission
+        [HttpPost("rolePermissions/excel")]
+        public async Task<IActionResult> ExportRolePermissionsExcel(SearchRolePermissionDto request)
+        {
+            var bytes =
+                await _excelExportService
+                    .ExportRolePermissionsAsync(request);
+
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"RolePermissions_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        [HttpPost("rolePermissions/pdf")]
+        public async Task<IActionResult> ExportRolePermissionsPdf(SearchRolePermissionDto request)
+        {
+            var pdf = await _pdfExportService.ExportRolePermissionsAsync(request);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"RolePermissionReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
         #endregion
     }

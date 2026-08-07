@@ -10,6 +10,7 @@ namespace EmployeeManagement.Application.Services
     using EmployeeManagement.Application.Common;
     using EmployeeManagement.Application.DTOs;
     using EmployeeManagement.Application.DTOs.Permissions;
+    using EmployeeManagement.Application.DTOs.RolePermissions;
     using EmployeeManagement.Application.DTOs.Roles;
     using EmployeeManagement.Application.Interfaces;
     using EmployeeManagement.Domain.Interfaces;
@@ -177,5 +178,80 @@ namespace EmployeeManagement.Application.Services
                 });
             }).GeneratePdf();
         }
+        public async Task<byte[]> ExportRolePermissionsAsync(SearchRolePermissionDto request)
+        {
+            var query = _unitOfWork.RolePermissions.Query();
+            var (rolePermissions, iTotalRecord) = await SearchExportData.GetExportRolePermissionData(query, request, "pdf");
+
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+
+                    page.Size(PageSizes.A4.Landscape());
+
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Text("RolePermission List Report")
+                        .FontSize(22)
+                        .Bold();
+
+                    page.Content()
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item()
+                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.ConstantColumn(120);
+                                        columns.ConstantColumn(200);
+                                        columns.ConstantColumn(150);
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Text("Role").Bold();
+
+                                        header.Cell().Text("Permission").Bold();
+
+                                        header.Cell().Text("CreatedDate").Bold();
+                                    });
+
+                                    foreach (var rolePermission in rolePermissions)
+                                    {
+                                        table.Cell().Text(rolePermission.Role.Name);
+
+                                        table.Cell().Text(rolePermission.Permission.Name);
+
+                                        table.Cell().Text(rolePermission.CreatedDate.ToShortDateString());
+                                    }
+                                });
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+
+                            x.CurrentPageNumber();
+
+                            x.Span(" of ");
+
+                            x.TotalPages();
+                        });
+                });
+            }).GeneratePdf();
+        }
+
     }
 }
