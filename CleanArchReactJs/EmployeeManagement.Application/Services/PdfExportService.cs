@@ -180,7 +180,9 @@ namespace EmployeeManagement.Application.Services
         }
         public async Task<byte[]> ExportRolePermissionsAsync(SearchRolePermissionDto request)
         {
-            var query = _unitOfWork.RolePermissions.Query();
+            var query = _unitOfWork.RolePermissions.Query()
+                .Include(x => x.Role)
+                .Include(x => x.Permission);
             var (rolePermissions, iTotalRecord) = await SearchExportData.GetExportRolePermissionData(query, request, "pdf");
 
 

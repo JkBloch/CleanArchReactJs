@@ -12,10 +12,13 @@ export async function downloadExcel(filters,reportName) {
     switch (reportName) {
         case "PermissionReport":
             response = await exportPermissionsExcel(filters);
-            break
+            break;
         case "RoleReport":
             response = await exportRolesExcel(filters);
-            break
+            break;
+        case "RolePermissionReport":
+            response = await exportRolePermissionsExcel(filters);
+            break;            
         default:
     }
 
@@ -51,6 +54,9 @@ export async function downloadPdf(filters, reportName) {
             break
         case "RoleReport":
             response = await exportRolesPdf(filters);
+            break
+        case "RolePermissionReport":
+            response = await exportRolePermissionsPdf(filters);
             break
         default:
     }
@@ -108,3 +114,18 @@ export const exportRolesPdf = filters =>
             responseType: "blob"
         });
 
+export const exportRolePermissionsExcel = request =>
+    apiClient.post(
+        "/export/rolePermissions/excel",
+        request,
+        {
+            responseType: "blob"
+        })
+
+export const exportRolePermissionsPdf = filters =>
+    apiClient.post(
+        "/export/rolePermissions/pdf",
+        filters,
+        {
+            responseType: "blob"
+        });

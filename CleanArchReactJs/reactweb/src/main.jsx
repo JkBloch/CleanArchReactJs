@@ -6,7 +6,12 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../src/assets/button.css';
 import { ToastContainer } from "react-toastify";
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+    
+    //<StrictMode>
+    //    </StrictMode > 
+    
+    <>
+
         <App />
         <ToastContainer
 
@@ -21,6 +26,6 @@ createRoot(document.getElementById('root')).render(
             closeOnClick
 
         />
-  </StrictMode >
+    </>
   ,
 )

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagement.API.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = false)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     //[Authorize]
     [ApiController]
     [Route("api/export")]

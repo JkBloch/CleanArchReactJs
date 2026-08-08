@@ -1,7 +1,7 @@
 //roleApi.js
 import apiClient from "../common/apiClient";
 
-export const getRoles = () =>
+export const getRoles = async () =>
     apiClient.get("/Role");
 
 export const getRole = id =>

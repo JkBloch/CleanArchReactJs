@@ -55,7 +55,8 @@ namespace EmployeeManagement.Application.Services
                 _logger.LogInformation(
                     "Loading rolePermission {RolePermissionId}", id);
 
-                var rolePermission = await _unitOfWork.RolePermissions.GetByIdAsync(id);
+                //var rolePermission = await _unitOfWork.RolePermissions.GetByIdAsync(id);
+                var rolePermission = await _unitOfWork.RolePermissions.GetRolePermissionByIdAsync(id);
 
                 if (rolePermission == null)
                 {
@@ -110,7 +111,7 @@ namespace EmployeeManagement.Application.Services
                     dto.RoleId);
 
                 return ApiResponse<string>.Ok(
-                    rolePermission.Role.Name + rolePermission.Role.RolePermissions,
+                    rolePermission.Id.ToString(),
                     "RolePermission created successfully.");
             }
             catch (Exception ex)
@@ -161,7 +162,7 @@ namespace EmployeeManagement.Application.Services
                     rolePermission.Id);
 
                 return ApiResponse<string>.Ok(
-                    rolePermission.Role.Name +rolePermission.Permission.Name,
+                    rolePermission.Id.ToString(),
                     "RolePermission updated successfully.");
             }
             catch (Exception ex)
@@ -204,7 +205,7 @@ namespace EmployeeManagement.Application.Services
                     id);
 
                 return ApiResponse<string>.Ok(
-                    rolePermission.Role.Name + rolePermission.Permission.Name,
+                    rolePermission.Id.ToString(),
                     "RolePermission deleted successfully.");
             }
             catch (Exception ex)
@@ -292,7 +293,7 @@ namespace EmployeeManagement.Application.Services
                     "RolePermission restored successfully.");
 
                 return ApiResponse<string>.Ok(
-                    rolePermission.Role.Name + rolePermission.Permission.Name,
+                    rolePermission.Id.ToString(),
                     "RolePermission restored successfully.");
             }
             catch (Exception ex)
@@ -309,7 +310,8 @@ namespace EmployeeManagement.Application.Services
         {
             try
             {
-                IQueryable<RolePermission> query = _unitOfWork.RolePermissions.Query();
+                IQueryable<RolePermission> query = _unitOfWork.RolePermissions.Query()
+                    .Include(x=>x.Role).Include(x=>x.Permission);
 
                 //-------------------------
                 // Keyword Search
@@ -323,11 +325,11 @@ namespace EmployeeManagement.Application.Services
                         EF.Functions.Like(x.Role.Name, $"%{keyword}%") ||
                         EF.Functions.Like(x.Permission.Name, $"%{keyword}%"));
                 }
-                if (dto.RoleId != Guid.Empty)
+                if (dto.RoleId != null && dto.RoleId != Guid.Empty)
                 {
                     query = query.Where(x =>x.RoleId== dto.RoleId);
                 }
-                if (dto.PermissionId != Guid.Empty)
+                if (dto.PermissionId != null && dto.PermissionId != Guid.Empty)
                 {
                     query = query.Where(x => x.PermissionId == dto.PermissionId);
                 }

@@ -1,7 +1,7 @@
 //permissionApi
 import apiClient from "../common/apiClient";
 
-export const getPermissions = () =>
+export const getPermissions = async () =>
     apiClient.get("/Permission");
 
 export const getPermission = id =>

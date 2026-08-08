@@ -17,7 +17,11 @@ namespace EmployeeManagement.Infrastructure.Repositories
         {
         }
 
-
+        public async Task<RolePermission?> GetRolePermissionByIdAsync(Guid id)
+        {
+            return await _context.RolePermissions.Include(x=>x.Role).Include(x=>x.Permission)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
         public async Task<bool> RolePermissionExistsAsync(Guid roleId, Guid permissionId, Guid excludeRolePermissionId)
         {
             return await _context.RolePermissions

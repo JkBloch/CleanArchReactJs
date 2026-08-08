@@ -20,3 +20,10 @@ export function useRole(role) {
 
     return user?.roles?.includes(role);
 }
+
+export function useRolePermission(rolePermission) {
+
+    const { user } = useAuth();
+
+    return user?.rolePermissions?.includes(rolePermission);
+}

@@ -20,7 +20,17 @@ const menus = [
         name: "Permission",
         icon: <FaListAlt />,
         path: "/permissions"
-    },   
+    },
+    {
+        name: "Roles",
+        icon: <FaUserShield />,
+        path: "/roles"
+    },
+    {
+        name: "RolePermissions",
+        icon: <FaUserShield />,
+        path: "/rolePermissions"
+    },
     {
         name: "Dashboard",
         icon: <FaHome />,
@@ -51,11 +61,7 @@ const menus = [
         path: "/users"
     },
 
-    {
-        name: "Roles",
-        icon: <FaUserShield />,
-        path: "/roles"
-    },
+  
 
     {
         name: "Audit Logs",

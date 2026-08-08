@@ -241,7 +241,9 @@ namespace EmployeeManagement.Application.Services
         #region RolePermission
         public async Task<byte[]> ExportRolePermissionsAsync(SearchRolePermissionDto request)
         {
-            var query = _unitOfWork.RolePermissions.Query();
+            var query = _unitOfWork.RolePermissions.Query()
+                .Include(x=>x.Role)
+                .Include(x=>x.Permission);
 
             var (rolePermissions, iTotalRecord) = await SearchExportData.GetExportRolePermissionData(query, request, "excel");
 
@@ -306,8 +308,8 @@ namespace EmployeeManagement.Application.Services
             var ws =
                 workbook.Worksheets.Add("RolePermissions");
 
-            ws.Cell(1, 1).Value = "Code";
-            ws.Cell(1, 2).Value = "Name";
+            ws.Cell(1, 1).Value = "Role";
+            ws.Cell(1, 2).Value = "Permission";
             ws.Cell(1, 3).Value = "Created";
 
             var header =

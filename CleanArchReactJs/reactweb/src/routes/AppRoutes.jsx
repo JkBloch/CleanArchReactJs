@@ -18,6 +18,10 @@ import RoleList from "../pages/admin/role/RoleList";
 import RoleCreate from "../pages/admin/role/RoleCreate";
 import RoleEdit from "../pages/admin/role/RoleEdit";
 import RoleDetails from "../pages/admin/role/RoleDetails";
+import RolePermissionList from "../pages/admin/rolePermission/RolePermissionList";
+import RolePermissionCreate from "../pages/admin/rolePermission/RolePermissionCreate";
+import RolePermissionEdit from "../pages/admin/rolePermission/RolePermissionEdit";
+import RolePermissionDetails from "../pages/admin/rolePermission/RolePermissionDetails";
 function AppRoutes() {
         
 
@@ -70,6 +74,30 @@ function AppRoutes() {
                     path="/roles/edit/:id"
                     element={
                         <RoleEdit />
+                    }
+                />
+                <Route
+                    path="/rolePermissions"
+                    element={<RolePermissionList />
+                    }
+                />
+                <Route
+                    path="/rolePermissions/create"
+                    element={
+                        <RolePermissionCreate />
+                    }
+                />
+
+                <Route
+                    path="/rolePermissions/:id"
+                    element={
+                        <RolePermissionDetails />
+                    }
+                />
+                <Route
+                    path="/rolePermissions/edit/:id"
+                    element={
+                        <RolePermissionEdit />
                     }
                 />
                 <Route
