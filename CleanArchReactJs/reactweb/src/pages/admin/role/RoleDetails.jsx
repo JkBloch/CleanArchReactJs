@@ -25,7 +25,7 @@ import {
     getRole,
     restoreRole
 
-} from "../../../api/roleApi";
+} from "../../../api/admin/roleApi";
 
 import RoleDeleteModal from "./RoleDeleteModal";
 import { notify } from "../../../services/notificationService";

@@ -1,4 +1,5 @@
-import apiClient from "./apiClient";
+//permissionApi
+import apiClient from "../common/apiClient";
 
 export const getPermissions = () =>
     apiClient.get("/Permission");

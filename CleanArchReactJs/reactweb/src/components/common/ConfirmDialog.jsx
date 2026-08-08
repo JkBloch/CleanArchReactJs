@@ -16,10 +16,10 @@ function ConfirmDialog({
     const buttonStyle = `btn btn-${confirmVariant ? confirmVariant : 'danger'}`;
     if (!show)
         return null;
-    function onConfirmation()
+    async function onConfirmation()
     {
-        onConfirm();
-        loadData(pageNumber)
+        await onConfirm();
+        await loadData(pageNumber)
     }
     return (
 

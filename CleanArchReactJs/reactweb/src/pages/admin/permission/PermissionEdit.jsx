@@ -6,7 +6,7 @@ import PermissionForm from "../permission/PermissionForm";
 import {
     getPermission,
     updatePermission
-} from "../.././../api/permissionApi";
+} from "../.././../api/admin/permissionApi";
 import { notify } from "../../../services/notificationService";
 
 function PermissionEdit() {

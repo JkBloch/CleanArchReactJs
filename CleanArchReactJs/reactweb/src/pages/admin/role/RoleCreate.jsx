@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import { createRole } from "../.././../api/roleApi";
+import { createRole } from "../.././../api/admin/roleApi";
 
 import RoleForm from "../role/RoleForm";
 import { notify } from "../../../services/notificationService";

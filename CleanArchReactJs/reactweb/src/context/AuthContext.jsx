@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { login as loginApi } from "../api/authApi";
+import { login as loginApi } from "../api/common/authApi";
 import { tokenStorage } from "../utils/tokenHelper";
 
 export const AuthContext = createContext(null);

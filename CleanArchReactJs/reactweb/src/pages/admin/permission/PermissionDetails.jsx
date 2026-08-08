@@ -25,7 +25,7 @@ import {
     getPermission,
     restorePermission
 
-} from "../../../api/permissionApi";
+} from "../../../api/admin/permissionApi";
 
 import PermissionDeleteModal from "./PermissionDeleteModal";
 import { notify } from "../../../services/notificationService";

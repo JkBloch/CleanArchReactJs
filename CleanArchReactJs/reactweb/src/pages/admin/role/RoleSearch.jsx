@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { FaSearch, FaFileExcel, FaFilePdf } from "react-icons/fa";
-import { downloadExcel, downloadPdf } from "../../../api/exportApi";
+import { downloadExcel, downloadPdf } from "../../../api/common/exportApi";
 
 function RoleSearch({ handleChange, filters, loadRoles,
+    loading,
+    setLoading,
     keyword,
     searchcode,
     searchname,
@@ -11,10 +13,13 @@ function RoleSearch({ handleChange, filters, loadRoles,
     sortBy,
     descending
 }) {
-    function handleSearch(e) {
-        loadRoles(1, sortBy, descending);
+    async function handleSearch(e) {
+        setLoading(true);
+        await loadRoles(1, sortBy, descending);
+        setLoading(false);
     }
-    function handleExcelExport(e) {
+    async function handleExcelExport(e) {
+        setLoading(true);
         const revfilters = {
             keyword: keyword,
             code: searchcode,
@@ -25,9 +30,11 @@ function RoleSearch({ handleChange, filters, loadRoles,
             descending: descending
         }
         //var roles = loadRoles(pageNumber, sortBy, descending);
-        downloadExcel(revfilters,"RoleReport");
+        await downloadExcel(revfilters, "RoleReport");
+        setLoading(false);
     }
-    function handlePdfExport(e) {
+    async function handlePdfExport(e) {
+        setLoading(true);
         const revfilters = {
             keyword: keyword,
             code: searchcode,
@@ -37,8 +44,11 @@ function RoleSearch({ handleChange, filters, loadRoles,
             sortBy: sortBy,
             descending: descending
         }
-        downloadPdf(revfilters,"RoleReport");
+        await downloadPdf(revfilters, "RoleReport");
+        setLoading(false);
     }
+    if (loading)
+        return <Loader />;
     return (
 
         <div className="card mb-3">

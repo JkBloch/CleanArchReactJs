@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { getRoles, deleteRole, restoreRole, searchRoles, deletePermanentRoles } from "../../../api/roleApi";
+import { getRoles, deleteRole, restoreRole, searchRoles, deletePermanentRoles } from "../../../api/admin/roleApi";
 import Loader from "../../../components/common/Loader";
 import RoleTable from "../../../components/admin/role/RoleTable";
 import { FaPlus } from "react-icons/fa";
@@ -125,13 +125,6 @@ function RoleList() {
         setShowConfirmRestore(false);
     };
 
-    function sort(column) {
-        if (column === sortBy) {
-            setDescending(!descending);
-        }
-        setSortBy(column);
-    }
-
     if (loading)
         return <Loader />;
 
@@ -161,6 +154,8 @@ function RoleList() {
                 handleChange={handleChange}
                 filters={filters}
                 loadRoles={loadRoles}
+                loading={loading}
+                setLoading={setLoading}
                 keyword={keyword}
                 searchcode={searchcode}
                 searchname={searchname}

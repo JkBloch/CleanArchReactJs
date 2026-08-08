@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { getPermissions, deletePermission, restorePermission, searchPermissions, deletePermanentPermissions } from "../../../api/permissionApi";
+import { getPermissions, deletePermission, restorePermission, searchPermissions, deletePermanentPermissions } from "../../../api/admin/permissionApi";
 import Loader from "../../../components/common/Loader";
 import PermissionTable from "../../../components/admin/permission/PermissionTable";
 import { FaPlus } from "react-icons/fa";
@@ -161,6 +161,8 @@ function PermissionList() {
                 handleChange={handleChange}
                 filters={filters}
                 loadPermissions={loadPermissions}
+                loading={loading}
+                setLoading={setLoading }
                 keyword={keyword}
                 searchcode={searchcode}
                 searchname={searchname}

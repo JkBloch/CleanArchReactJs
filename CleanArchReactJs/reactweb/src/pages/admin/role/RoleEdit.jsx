@@ -6,7 +6,7 @@ import RoleForm from "../role/RoleForm";
 import {
     getRole,
     updateRole
-} from "../.././../api/roleApi";
+} from "../.././../api/admin/roleApi";
 import { notify } from "../../../services/notificationService";
 
 function RoleEdit() {

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { FaSearch, FaFileExcel, FaFilePdf } from "react-icons/fa";
-import { downloadExcel, downloadPdf } from "../../../api/exportApi";
+import { downloadExcel, downloadPdf } from "../../../api/common/exportApi";
+import Loader from "../../../components/common/Loader";
 
 function PermissionSearch({ handleChange, filters, loadPermissions,
+    loading,
+    setLoading,
     keyword,
     searchcode,
     searchname,
@@ -12,10 +15,13 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
     descending
 })
 {
-    function handleSearch(e) {     
-        loadPermissions(1,sortBy, descending);
+    async function handleSearch(e) {
+        setLoading(true);
+        await loadPermissions(1, sortBy, descending);
+        setLoading(false);
     }
-    function handleExcelExport(e) {
+    async function handleExcelExport(e) {
+        setLoading(true);
         const revfilters = {
             keyword: keyword,
             code: searchcode,
@@ -26,9 +32,11 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
             descending: descending
         } 
         //var permissions = loadPermissions(pageNumber, sortBy, descending);
-        downloadExcel(revfilters,"PermissionReport");
+        await downloadExcel(revfilters, "PermissionReport");
+        setLoading(false);
     }
-    function handlePdfExport(e) {
+    async function handlePdfExport(e) {
+        setLoading(true);
         const revfilters = {
             keyword: keyword,
             code: searchcode,
@@ -38,8 +46,12 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
             sortBy: sortBy,
             descending: descending
         }
-        downloadPdf(revfilters,"PermissionReport");
+        await downloadPdf(revfilters, "PermissionReport");
+        setLoading(false);
     }
+
+    if (loading)
+        return <Loader />;
     return (
 
         <div className="card mb-3">

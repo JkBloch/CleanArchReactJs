@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
  
-import { createPermission } from "../.././../api/permissionApi";
+import { createPermission } from "../.././../api/admin/permissionApi";
 
 import PermissionForm from "../permission/PermissionForm";
 import { notify } from "../../../services/notificationService";

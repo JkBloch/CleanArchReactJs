@@ -1,4 +1,5 @@
-import apiClient from "./apiClient";
+//roleApi.js
+import apiClient from "../common/apiClient";
 
 export const getRoles = () =>
     apiClient.get("/Role");
