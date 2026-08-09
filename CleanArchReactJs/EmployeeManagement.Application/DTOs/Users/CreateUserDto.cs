@@ -8,21 +8,17 @@ namespace EmployeeManagement.Application.DTOs.Users
 {
     public class CreateUserDto
     {
-        public string FirstName { get; set; } = "";
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
 
-        public string LastName { get; set; } = "";
-
-        public string UserName { get; set; } = "";
-
-        public string Email { get; set; } = "";
-
-        public string Password { get; set; } = "";
-
-        public string ConfirmPassword { get; set; } = "";
-
+        public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
-
-        public List<Guid> RoleIds { get; set; }
-            = new();
+        public bool IsActive { get; set; } = true;
+        public bool IsLocked { get; set; }
+        public string? ProfileImage { get; set; }
     }
 }

@@ -17,9 +17,10 @@ namespace EmployeeManagement.Infrastructure.Repositories
 
         public IRolePermissionRepository RolePermissions { get; }
 
+        public IUserRepository Users { get; }
+
         //public IEmployeeRepository Employees { get; }
 
-        //public IUserRepository Users { get; }
 
         //public IRefreshTokenRepository RefreshTokens { get; }
 
@@ -32,9 +33,10 @@ namespace EmployeeManagement.Infrastructure.Repositories
             Permissions = new PermissionRepository(context);
             Roles =new RoleRepository(context);
             RolePermissions = new RolePermissionRepository(context);
+            Users = new UserRepository(context);
+
             //Employees = new EmployeeRepository(context);
 
-            //Users = new UserRepository(context);
 
             //RefreshTokens = new RefreshTokenRepository(context);
             //Reports = new ReportRepository(context);

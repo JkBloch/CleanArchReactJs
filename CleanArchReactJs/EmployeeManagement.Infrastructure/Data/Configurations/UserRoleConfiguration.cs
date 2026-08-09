@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Infrastructure.Data.Configurations
 {
- 
 
     public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
     {
@@ -30,4 +29,5 @@ namespace EmployeeManagement.Infrastructure.Data.Configurations
 
         }
     }
+
 }

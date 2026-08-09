@@ -2,6 +2,7 @@
 using EmployeeManagement.Application.DTOs.Permissions;
 using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
+using EmployeeManagement.Application.DTOs.Users;
 using EmployeeManagement.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -94,5 +95,31 @@ namespace EmployeeManagement.API.Controllers
                 $"RolePermissionReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
         #endregion
+        #region User
+        [HttpPost("users/excel")]
+        public async Task<IActionResult> ExportUsersExcel(SearchUserDto request)
+        {
+            var bytes =
+                await _excelExportService
+                    .ExportUsersAsync(request);
+
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Users_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        [HttpPost("users/pdf")]
+        public async Task<IActionResult> ExportUsersPdf(SearchUserDto request)
+        {
+            var pdf = await _pdfExportService.ExportUsersAsync(request);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"UserReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        #endregion
+
+
     }
 }

@@ -47,7 +47,7 @@ namespace EmployeeManagement.Infrastructure.Data
             {
                 var permission = new Permission
                 {
-                    Code = "ALL",
+                    Code = "P0001",
                     Name = "ALL"
                 };
                 await context.Permissions.AddAsync(permission);
@@ -66,7 +66,7 @@ namespace EmployeeManagement.Infrastructure.Data
             if (!context.RolePermissions.Any())
             {
                 var role=  context.Roles.Where(x => x.Code == "R0001").FirstOrDefault();
-                var permission = context.Permissions.Where(x => x.Code == "ALL").FirstOrDefault();
+                var permission = context.Permissions.Where(x => x.Code == "P0001").FirstOrDefault();
 
                 if (role != null && permission != null)
                 {
@@ -80,8 +80,22 @@ namespace EmployeeManagement.Infrastructure.Data
 
                 }
             }
-
-
+            if (!context.Users.Any())
+            {
+                var user = new User
+                {                 
+                    FirstName = "Javed",
+                    LastName = "Bloch",
+                    UserName = "jkbloch",
+                    Email = "blochjavedk@gmail.com",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin@123"),
+                    IsActive = true,
+                    IsLocked = false,
+                    AccessFailedCount = 0
+                };
+                await context.Users.AddAsync(user);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

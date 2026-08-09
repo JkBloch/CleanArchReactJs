@@ -25,10 +25,10 @@ namespace EmployeeManagement.Infrastructure
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+          //  services.AddScoped<IUserRepository, UserRepository>();
 
             //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
-            //services.AddScoped<IUserRepository, UserRepository>();
 
             //services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 

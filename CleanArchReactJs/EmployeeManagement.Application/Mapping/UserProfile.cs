@@ -16,11 +16,11 @@ namespace EmployeeManagement.Application.Mapping
             CreateMap<User, UserDto>()
                 .ForMember(
                     d => d.FullName,
-                    o => o.MapFrom(s => s.FirstName + " " + s.LastName))
-                .ForMember(
-                    d => d.Roles,
-                    o => o.MapFrom(s =>
-                        s.UserRoles.Select(r => r.Role.Name)));
+                    o => o.MapFrom(s => s.FirstName + " " + s.LastName));
+                //.ForMember(
+                //    d => d.Roles,
+                //    o => o.MapFrom(s =>
+                //        s.UserRoles.Select(r => r.Role.Name)));
 
             CreateMap<CreateUserDto, User>();
 

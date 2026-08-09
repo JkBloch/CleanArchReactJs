@@ -25,4 +25,6 @@ namespace EmployeeManagement.Infrastructure.Data.Configurations
                 .HasForeignKey(x => x.UserId);
         }
     }
+
+
 }

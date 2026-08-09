@@ -5,6 +5,7 @@ using EmployeeManagement.Application.DTOs;
 using EmployeeManagement.Application.DTOs.Permissions;
 using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
+using EmployeeManagement.Application.DTOs.Users;
 using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
@@ -21,8 +22,7 @@ namespace EmployeeManagement.Application.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        #region Permission
-        #endregion
+        #region Permission       
         public async Task<byte[]> ExportPermissionsAsync(SearchPermissionDto request)
         {
             var query = _unitOfWork.Permissions.Query();
@@ -127,7 +127,7 @@ namespace EmployeeManagement.Application.Services
             ws.RangeUsed()
                 .SetAutoFilter();
         }
-
+        #endregion
         #region Role
         public async Task<byte[]> ExportRolesAsync(SearchRoleDto request)
         {
@@ -349,5 +349,123 @@ namespace EmployeeManagement.Application.Services
         }
 
         #endregion
+
+        #region User
+        public async Task<byte[]> ExportUsersAsync(SearchUserDto request)
+        {
+            var query = _unitOfWork.Users.Query();
+
+            var (users, iTotalRecord) = await SearchExportData.GetExportUserData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                users);
+
+            CreateUserSheet(
+                workbook,
+                users);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<User> users)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "User Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total Users";
+
+            ws.Cell("B5").Value =
+                users.Count;
+
+            ws.Cell("A6").Value =
+                "Names";
+
+            ws.Cell("B6").Value =
+                users
+                .Select(x => x.UserName)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateUserSheet(XLWorkbook workbook, List<User> users)
+        {
+            var ws =
+                workbook.Worksheets.Add("Users");
+
+            ws.Cell(1, 1).Value = "FirstName";
+            ws.Cell(1, 2).Value = "LastName";
+            ws.Cell(1, 3).Value = "UserName";
+            ws.Cell(1, 4).Value = "Email";
+            ws.Cell(1, 5).Value = "PhoneNumber";
+            ws.Cell(1, 6).Value = "IsActive";
+            ws.Cell(1, 7).Value = "IsLocked";
+            ws.Cell(1, 8).Value = "AccessFailedCount";
+
+
+            var header =
+                ws.Range("A1:H1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var user in users)
+            {
+                ws.Cell(row, 1).Value = user.FirstName;
+                ws.Cell(row, 2).Value = user.LastName;
+                ws.Cell(row, 3).Value = user.UserName;
+                ws.Cell(row, 4).Value = user.Email;
+                ws.Cell(row, 5).Value = user.PhoneNumber;
+                ws.Cell(row, 6).Value = user.IsActive;
+                ws.Cell(row, 7).Value = user.IsLocked;
+                ws.Cell(row, 8).Value = user.AccessFailedCount;
+                ws.Cell(row, 9).Value = user.CreatedDate;
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
+
     }
 }

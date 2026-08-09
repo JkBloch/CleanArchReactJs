@@ -2,6 +2,7 @@
 using EmployeeManagement.Application.DTOs.Permissions;
 using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
+using EmployeeManagement.Application.DTOs.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,7 @@ namespace EmployeeManagement.Application.Interfaces
         Task<byte[]> ExportPermissionsAsync(SearchPermissionDto request);
         Task<byte[]> ExportRolesAsync(SearchRoleDto request);
         Task<byte[]> ExportRolePermissionsAsync(SearchRolePermissionDto request);
+        Task<byte[]> ExportUsersAsync(SearchUserDto request);
+
     }
 }
