@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
 import { createRole } from "../.././../api/admin/roleApi";
-
 import RoleForm from "../role/RoleForm";
 import { notify } from "../../../services/notificationService";
 import { getErrorMessage } from "../../../utils/errorHandling";
+
 function RoleCreate() {
 
     const navigate = useNavigate();
@@ -14,12 +13,7 @@ function RoleCreate() {
     const [initialValues, setInitialValues] = useState({
         code: "",
         name: ""
-    });
-
-    //const initialValues = {
-    //    code: "",
-    //    name: ""
-    //};
+    });   
 
     async function save(role) {
 
@@ -39,11 +33,7 @@ function RoleCreate() {
             notify.error(
                 getErrorMessage(error)
             );
-            setInitialValues(role);
-            //alert(getErrorMessage(error))
-            //    error.response?.data?.message ??
-            //    "Unable to create role."
-            //);
+            setInitialValues(role);           
 
         }
         finally {

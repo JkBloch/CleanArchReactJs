@@ -1,35 +1,11 @@
-import {
-
-    useEffect,
-    useState
-
-} from "react";
-
-import {
-
-    useNavigate,
-    useParams
-
-} from "react-router-dom";
-import {
-    FaArrowLeft,
-    FaMinusCircle,
-    FaEdit,
-    FaUndo,
-    FaRegTimesCircle
-} from "react-icons/fa";
-import {
-
-    deleteRolePermission,
-    deletePermanentRolePermissions,
-    getRolePermission,
-    restoreRolePermission
-
-} from "../../../api/admin/rolePermissionApi";
-
-import RolePermissionDeleteModal from "./RolePermissionDeleteModal";
+import {useEffect,useState} from "react";
+import {useNavigate,useParams} from "react-router-dom";
+import {FaArrowLeft,FaMinusCircle,FaEdit,FaUndo,FaRegTimesCircle} from "react-icons/fa";
+import {deleteRolePermission,deletePermanentRolePermissions,getRolePermission,restoreRolePermission} from "../../../api/admin/rolePermissionApi";
 import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
+import ConfirmDialog from "../../../components/common/ConfirmDialog";
+import { getErrorMessage } from "../../../utils/errorHandling";
 
 function RolePermissionDetails() {
 
@@ -41,7 +17,7 @@ function RolePermissionDetails() {
 
     const [showDelete, setShowDelete] = useState(false);
     const [showDeletePermanent, setShowDeletePermanent] = useState(false);
-
+    const [showRestore, setShowRestore] = useState(false);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -70,8 +46,13 @@ function RolePermissionDetails() {
                 "RolePermission deleted successfully."
 
             );
-            navigate("/rolePermissions");
+            await loadRolePermission();
+            setShowDelete(false); 
 
+        }
+        catch (error) {
+            notify.error(getErrorMessage(error));
+            setShowDelete(false);
         }
         finally {
 
@@ -95,6 +76,10 @@ function RolePermissionDetails() {
             navigate("/rolePermissions");
 
         }
+        catch (error) {
+            notify.error(getErrorMessage(error));
+            setShowDeletePermanent(false);
+        }
         finally {
 
             setLoading(false);
@@ -112,8 +97,8 @@ function RolePermissionDetails() {
             "RolePermission restore successfully."
 
         );
-        navigate("/rolePermissions");
-
+        await loadRolePermission();
+        setShowRestore(false);
     }
 
     if (!rolePermission)
@@ -203,7 +188,8 @@ function RolePermissionDetails() {
 
                                 <button
                                     className="icon-btn-success icon-btn"
-                                    onClick={restore}
+                                    onClick={() => setShowRestore(true)
+                                    }
                                 >
                                     <span className="icon-section">
                                         <FaUndo></FaUndo>
@@ -263,37 +249,46 @@ function RolePermissionDetails() {
                 </div>
 
             </div>
-
-            <RolePermissionDeleteModal
-
+            <ConfirmDialog
                 show={showDelete}
-
-                rolePermission={rolePermission}
-
-                loading={loading}
-
-                onDelete={removeRolePermission}
-
-                onCancel={() =>
-                    setShowDelete(false)
-                }
+                title="Delete RolePermission"
+                message="Are your sure wan't to delete record ?"
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                onConfirm={removeRolePermission}
+                loadData={undefined}
+                pageNumber="1"
+                onCancel={() => setShowDelete(false)}
 
             />
-            <RolePermissionDeleteModal
-
+            <ConfirmDialog
                 show={showDeletePermanent}
-
-                rolePermission={rolePermission}
-
-                loading={loading}
-
-                onDelete={removePermanentRolePermission}
-
-                onCancel={() =>
-                    setShowDeletePermanent(false)
-                }
+                title="Permenent Delete RolePermission"
+                message="Are your sure want to delete record permenent ?"
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                onConfirm={removePermanentRolePermission}
+                loadData={undefined}
+                pageNumber="1"
+                onCancel={() => setShowDeletePermanent(false)}
 
             />
+            <ConfirmDialog
+                show={showRestore}
+                title="Restore RolePermission"
+                message="Are your sure want to restore record ?"
+                confirmText="Restore"
+                cancelText="Cancel"
+                confirmVariant="success"
+                onConfirm={restore}
+                loadData={undefined}
+                pageNumber="1"
+                onCancel={() => setShowRestore(false)}
+
+            />
+    
         </div>
 
     );

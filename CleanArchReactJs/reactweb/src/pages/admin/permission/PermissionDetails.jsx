@@ -1,49 +1,21 @@
-import {
-
-    useEffect,
-    useState
-
-} from "react";
-
-import {
-
-    useNavigate,
-    useParams
-
-} from "react-router-dom";
-import {
-    FaArrowLeft,
-    FaMinusCircle,
-    FaEdit,
-    FaUndo,
-    FaRegTimesCircle
-} from "react-icons/fa";
-import {
-
-    deletePermission,
-    deletePermanentPermissions,
-    getPermission,
-    restorePermission
-
-} from "../../../api/admin/permissionApi";
-
-import PermissionDeleteModal from "./PermissionDeleteModal";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { FaArrowLeft, FaMinusCircle, FaEdit, FaUndo, FaRegTimesCircle } from "react-icons/fa";
+import { deletePermission, deletePermanentPermissions, getPermission, restorePermission } from "../../../api/admin/permissionApi";
 import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
+import ConfirmDialog from "../../../components/common/ConfirmDialog";
+import { getErrorMessage } from "../../../utils/errorHandling";
 
 function PermissionDetails() {
 
     const { id } = useParams();
-
     const navigate = useNavigate();
-
     const [permission, setPermission] = useState(null);
-
     const [showDelete, setShowDelete] = useState(false);
     const [showDeletePermanent, setShowDeletePermanent] = useState(false);
-
+    const [showRestore, setShowRestore] = useState(false);
     const [loading, setLoading] = useState(false);
-
     useEffect(() => {
 
         loadPermission();
@@ -51,88 +23,59 @@ function PermissionDetails() {
     }, []);
 
     async function loadPermission() {
-
         const response = await getPermission(id);
-
         setPermission(response.data.data);
-
     }
 
     async function removePermission() {
-
         setLoading(true);
-
         try {
-
             await deletePermission(id);
-            notify.success(
-
-                "Permission deleted successfully."
-
-            );
-            navigate("/permissions");
-
+            notify.success("Permission deleted successfully.");
+            loadPermission();
+            setShowDelete(false);
+        }
+        catch (error) {
+            notify.error(getErrorMessage(error));
+            setShowDelete(false);
         }
         finally {
-
             setLoading(false);
-
         }
-
     }
     async function removePermanentPermission() {
-
         setLoading(true);
-
         try {
-
             await deletePermanentPermissions(id);
-            notify.success(
-
-                "Permission Permanent deleted successfully."
-
-            );
+            notify.success("Permission Permanent deleted successfully.");
             navigate("/permissions");
-
+        }
+        catch (error) {
+            notify.error(getErrorMessage(error));
+            setShowDeletePermanent(false);
         }
         finally {
-
             setLoading(false);
-
         }
-
     }
 
     async function restore() {
-
         await restorePermission(id);
-
-        notify.success(
-
-            "Permission restore successfully."
-
-        );
-        navigate("/permissions");
-
+        notify.success("Permission restore successfully.");
+        loadPermission();
+        setShowRestore(false);
     }
 
     if (!permission)
         return <div>Loading...</div>;
 
     return (
-
         <div className="container">
-
             <div className="card shadow">
-
                 <div className="card-header">
-
                     <h3>
-
                         Permission Details
-
                     </h3>
-
                 </div>
 
                 <div className="card-body">
@@ -161,7 +104,7 @@ function PermissionDetails() {
 
                             </p>
 
-                        
+
 
                             <p>
 
@@ -183,9 +126,9 @@ function PermissionDetails() {
 
                     <hr />
                     <div>
-                    <button
+                        <button
                             className="icon-btn-warning icon-btn no-underline"
-                        onClick={() => navigate(`/permissions/edit/${id}`)} >
+                            onClick={() => navigate(`/permissions/edit/${id}`)} >
                             <span className="icon-section">
                                 <FaEdit></FaEdit>
                             </span>
@@ -195,15 +138,18 @@ function PermissionDetails() {
 
                         </button>
 
-                    {
+                        {
 
-                        permission.isDeleted
+                            permission.isDeleted
 
-                            ?
+                                ?
 
-                            <button
+                                <button
                                     className="icon-btn-success icon-btn"
-                                onClick={restore}
+                                    onClick={() =>
+                                        setShowRestore(true)
+                                    }
+
                                 >
                                     <span className="icon-section">
                                         <FaUndo></FaUndo>
@@ -213,15 +159,15 @@ function PermissionDetails() {
                                     </span>
 
 
-                            </button>
+                                </button>
 
-                            :
+                                :
 
-                            <button
+                                <button
                                     className="icon-btn-danger icon-btn"
-                                onClick={() =>
-                                    setShowDelete(true)
-                                }
+                                    onClick={() =>
+                                        setShowDelete(true)
+                                    }
                                 >
                                     <span className="icon-section">
                                         <FaMinusCircle></FaMinusCircle>
@@ -229,15 +175,15 @@ function PermissionDetails() {
                                     <span className="text-section">
                                         Delete
                                     </span>
-                                
-                            </button>
 
-                    }
-                    <button
-                            className="icon-btn-danger icon-btn"
-                        onClick={() =>
-                            setShowDeletePermanent(true)
+                                </button>
+
                         }
+                        <button
+                            className="icon-btn-danger icon-btn"
+                            onClick={() =>
+                                setShowDeletePermanent(true)
+                            }
                         >
                             <span className="icon-section">
                                 <FaRegTimesCircle></FaRegTimesCircle>
@@ -247,7 +193,7 @@ function PermissionDetails() {
                             </span>
 
 
-                    </button>
+                        </button>
                         <Link to="/permissions"
                             className="icon-btn-info icon-btn no-underline">
 
@@ -264,34 +210,43 @@ function PermissionDetails() {
 
             </div>
 
-            <PermissionDeleteModal
-
+            <ConfirmDialog
                 show={showDelete}
-
-                permission={permission}
-
-                loading={loading}
-
-                onDelete={removePermission}
-
-                onCancel={() =>
-                    setShowDelete(false)
-                }
+                title="Delete Permission"
+                message="Are your sure wan't to delete record ?"
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                onConfirm={removePermission}
+                loadData={undefined}
+                pageNumber="1"
+                onCancel={() => setShowDelete(false)}
 
             />
-            <PermissionDeleteModal
-
+            <ConfirmDialog
                 show={showDeletePermanent}
+                title="Permenent Delete Permission"
+                message="Are your sure want to delete record permenent ?"
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmVariant="danger"
+                onConfirm={removePermanentPermission}
+                loadData={undefined}
+                pageNumber="1"
+                onCancel={() => setShowDeletePermanent(false)}
 
-                permission={permission}
-
-                loading={loading}
-
-                onDelete={removePermanentPermission}
-
-                onCancel={() =>
-                    setShowDeletePermanent(false)
-                }
+            />
+            <ConfirmDialog
+                show={showRestore}
+                title="Restore Permission"
+                message="Are your sure want to restore record ?"
+                confirmText="Restore"
+                cancelText="Cancel"
+                confirmVariant="success"
+                onConfirm={restore}
+                loadData={undefined}
+                pageNumber="1"
+                onCancel={() => setShowRestore(false)}
 
             />
         </div>

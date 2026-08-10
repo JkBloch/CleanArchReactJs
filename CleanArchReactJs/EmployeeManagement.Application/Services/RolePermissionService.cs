@@ -244,7 +244,7 @@ namespace EmployeeManagement.Application.Services
                     id);
 
                 return ApiResponse<string>.Ok(
-                    rolePermission.Role.Name + rolePermission.Permission.Name,
+                    rolePermission.Id.ToString(),
                     "RolePermission deleted successfully.");
             }
             catch (Exception ex)

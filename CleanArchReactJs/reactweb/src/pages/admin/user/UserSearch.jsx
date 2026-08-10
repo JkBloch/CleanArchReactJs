@@ -1,54 +1,56 @@
 import { FaSearch, FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { downloadExcel, downloadPdf } from "../../../api/common/exportApi";
-import Loader from "../../../components/common/Loader";
 
-function PermissionSearch({ handleChange, filters, loadPermissions,
+function UserSearch({ handleChange, filters, loadUsers,
     loading,
     setLoading,
     keyword,
-    searchcode,
-    searchname,
+    searchFirstName,
+    searchLastName,
+    searchUserName,
+    searchEmail,
     selectedPageNumber,
     pageSize,
     sortBy,
     descending
-})
-{
+}) {
     async function handleSearch(e) {
         setLoading(true);
-        await loadPermissions(1, sortBy, descending);
+        await loadUsers(1, sortBy, descending);
         setLoading(false);
     }
     async function handleExcelExport(e) {
         setLoading(true);
         const revfilters = {
             keyword: keyword,
-            code: searchcode,
-            name: searchname,
+            firstName : searchFirstName,
+            lastName:searchLastName,
+            userName:searchUserName,
+            email:searchEmail,
             pageNumber: selectedPageNumber,
             pageSize: pageSize,
             sortBy: sortBy,
             descending: descending
-        } 
-        
-        await downloadExcel(revfilters, "PermissionReport");
+        }      
+        await downloadExcel(revfilters, "UserReport");
         setLoading(false);
     }
     async function handlePdfExport(e) {
         setLoading(true);
         const revfilters = {
             keyword: keyword,
-            code: searchcode,
-            name: searchname,
+            firstName: searchFirstName,
+            lastName: searchLastName,
+            userName: searchUserName,
+            email: searchEmail,
             pageNumber: selectedPageNumber,
             pageSize: pageSize,
             sortBy: sortBy,
             descending: descending
         }
-        await downloadPdf(revfilters, "PermissionReport");
+        await downloadPdf(revfilters, "UserReport");
         setLoading(false);
     }
-
     if (loading)
         return <Loader />;
     return (
@@ -64,7 +66,7 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
                         <input
                             className="form-control"
                             name="keyword"
-                            placeholder="Search permission..."
+                            placeholder="Search user..."
                             value={filters.keyword}
                             onChange={handleChange}
                         />
@@ -74,22 +76,40 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
                     <div className="col-md-2">
                         <input
                             className="form-control"
-                            name="code"
-                            placeholder="Code"
-                            value={filters.code}
+                            name="firstName"
+                            placeholder="FirstName"
+                            value={filters.firstName}
                             onChange={handleChange}
                         />
                     </div>
                     <div className="col-md-2">
                         <input
                             className="form-control"
-                            name="name"
-                            placeholder="Name"
-                            value={filters.name}
+                            name="lastName"
+                            placeholder="LastName"
+                            value={filters.lastName}
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="col-md-5">
+                    <div className="col-md-2">
+                        <input
+                            className="form-control"
+                            name="userName"
+                            placeholder="UserName"
+                            value={filters.userName}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="col-md-2">
+                        <input
+                            className="form-control"
+                            name="email"
+                            placeholder="Email"
+                            value={filters.email}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="col-md-5 mt-3">
                         <div className="row">
                             <div className="col">
                                 <button className="icon-btn icon-btn-info"
@@ -135,4 +155,4 @@ function PermissionSearch({ handleChange, filters, loadPermissions,
     );
 }
 
-export default PermissionSearch;
+export default UserSearch;

@@ -1,5 +1,4 @@
 import { useContext } from "react";
-
 import { AuthContext } from "../context/AuthContext";
 
 export default function useAuth() {
@@ -26,4 +25,11 @@ export function useRolePermission(rolePermission) {
     const { user } = useAuth();
 
     return user?.rolePermissions?.includes(rolePermission);
+}
+
+export function useUser(user) {
+
+    const { user1 } = useAuth();
+
+    return user1?.users?.includes(user);
 }

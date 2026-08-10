@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import {  deletePermission, restorePermission, searchPermissions, deletePermanentPermissions } from "../../../api/admin/permissionApi";
+import { deleteUser, restoreUser, searchUsers, deletePermanentUsers } from "../../../api/admin/userApi";
 import Loader from "../../../components/common/Loader";
-import PermissionTable from "../../../components/admin/permission/PermissionTable";
+import UserTable from "../../../components/admin/user/UserTable";
 import { FaPlus } from "react-icons/fa";
-import PermissionSearch from "../permission/PermissionSearch";
+import UserSearch from "../user/UserSearch";
 import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
-import { getErrorMessage } from "../../../utils/errorHandling";
 
-function PermissionList() {
+function UserList() {
     const [selectedId, setSelectedId] = useState(null);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
     const [showConfirmDeletePermanent, setShowConfirmDeletePermanent] = useState(false);
     const [showConfirmRestore, setShowConfirmRestore] = useState(false);
-    const [permissions, setPermissions] = useState([]);
+    const [users, setUsers] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
 
 
     const [keyword, setKeyword] = useState("");
-    const [searchcode, setSearchcode] = useState("");
-    const [searchname, setSearchname] = useState("");
+    const [searchFirstName, setSearchFirstName] = useState("");
+    const [searchLastName, setSearchLastName] = useState("");
+    const [searchUserName, setSearchUserName] = useState("");
+    const [searchEmail, setSearchEmail] = useState("");
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [sortBy, setSortBy] = useState("code");
@@ -30,8 +31,10 @@ function PermissionList() {
     const [filters, setFilters] = useState({
 
         keyword: "",
-        code: "",
-        name: "",
+        firstName: "",
+        lastName: "",
+        userName: "",
+        email: "",
         pageNumber: 1,
         pageSize: 10,
         sortBy: sortBy,
@@ -45,11 +48,17 @@ function PermissionList() {
             case "keyword":
                 setKeyword(value);
                 break;
-            case "code":
-                setSearchcode(value);
+            case "firstName":
+                setSearchFirstName(value);
                 break;
-            case "name":
-                setSearchname(value);
+            case "lastName":
+                setSearchLastName(value);
+                break;
+            case "userName":
+                setSearchUserName(value);
+                break;
+            case "email":
+                setSearchEmail(value);
                 break;
             default:
         }
@@ -60,24 +69,28 @@ function PermissionList() {
         }));
 
     }
-    async function loadPermissions(selectedPageNumber = 1, sortBy = "code", descending=false) {
+    async function loadUsers(selectedPageNumber = 1, sortBy = "userName", descending = false) {
 
         try {
-          
+
+            //const response = await getUsers();
+            //setUsers(response.data.data ?? []);
             const revfilters = {
                 keyword: keyword,
-                code: searchcode,
-                name: searchname,
+                firstName: searchFirstName,
+                lastName: searchLastName,
+                userName: searchUserName,
+                email: searchEmail,
                 pageNumber: selectedPageNumber,
                 pageSize: pageSize,
                 sortBy: sortBy,
                 descending: descending
-            } 
-            const response = await searchPermissions(revfilters);
+            }
+            const response = await searchUsers(revfilters);
 
             const result = response.data.data;
 
-            setPermissions(result.items);
+            setUsers(result.items);
 
             setTotalPages(result.totalPages);
 
@@ -90,35 +103,36 @@ function PermissionList() {
 
     useEffect(() => {
 
-        loadPermissions();
+        loadUsers();
 
     }, []);
 
-    const handleDelete=(id)=> {
+    const handleDelete = (id) => {
         setSelectedId(id);
         setShowConfirmDelete(true);
     };
-    const handleDeletePermanent = (id) =>{
+    const handleDeletePermanent = (id) => {
         setSelectedId(id);
         setShowConfirmDeletePermanent(true);
     };
-    const handleRestore=(id)=> {
+    const handleRestore = (id) => {
         setSelectedId(id);
         setShowConfirmRestore(true);
     };
 
     const handleConfirmDelete = async () => {
-        await deletePermission(selectedId);
-        notify.success("Permission deleted successfully.");
+        await deleteUser(selectedId);
+        notify.success("User deleted successfully.");
         setShowConfirmDelete(false);
     };
     const handleConfirmDeletePermanent = async () => {
         try {
-            await deletePermanentPermissions(selectedId);
-            notify.success("Permission Permanent deleted successfully.");
+            await deletePermanentUsers(selectedId);
+            notify.success("User Permanent deleted successfully.");
             setShowConfirmDeletePermanent(false);
 
-        } catch (error) {
+        }
+        catch (error) {
             notify.error(getErrorMessage(error));
             setShowConfirmDeletePermanent(false);
         }
@@ -126,19 +140,11 @@ function PermissionList() {
             setShowConfirmDeletePermanent(false);
         }
     };
-
     const handleConfirmRestore = async () => {
-        await restorePermission(selectedId);
-        notify.success("Permission resore successfully.");
+        await restoreUser(selectedId);
+        notify.success("User resore successfully.");
         setShowConfirmRestore(false);
-    };    
-
-    function sort(column) {
-        if (column === sortBy) {
-            setDescending(!descending);
-        }
-        setSortBy(column);
-    }
+    };
 
     if (loading)
         return <Loader />;
@@ -150,10 +156,10 @@ function PermissionList() {
             <div className="d-flex justify-content-between mb-3">
 
                 <h2>
-                    Permissions                    
+                    Users
                 </h2>
                 <div>
-                    <NavLink to="/permissions/create"
+                    <NavLink to="/users/create"
                         className="icon-btn icon-btn-success no-underline m-1">
                         <span className="icon-section">
                             <FaPlus ></FaPlus>
@@ -161,30 +167,32 @@ function PermissionList() {
                         <span className="text-section">
                             Add
                         </span>
-                    </NavLink>                
-                   
+                    </NavLink>
+
                 </div>
             </div>
-            <PermissionSearch
+            <UserSearch
                 handleChange={handleChange}
                 filters={filters}
-                loadPermissions={loadPermissions}
+                loadUsers={loadUsers}
                 loading={loading}
-                setLoading={setLoading }
+                setLoading={setLoading}
                 keyword={keyword}
-                searchcode={searchcode}
-                searchname={searchname}
+                searchFirstName={searchFirstName}
+                searchLastName={searchLastName}
+                searchUserName={searchUserName}
+                searchEmail={searchEmail}
                 selectedPageNumber={pageNumber}
                 pageSize={pageSize}
                 sortBy={sortBy}
                 descending={descending}
             />
-            <PermissionTable
-                permissions={permissions}
+            <UserTable
+                users={users}
                 onDelete={handleDelete}
                 onDeletePermanent={handleDeletePermanent}
                 onRestore={handleRestore}
-                loadData={loadPermissions}
+                loadData={loadUsers}
                 pageNumber={pageNumber}
                 sortBy={sortBy}
                 setSortBy={setSortBy}
@@ -196,38 +204,38 @@ function PermissionList() {
                 pageNumber={pageNumber}
                 totalPages={totalPages}
                 setPageNumber={setPageNumber}
-                loadData={loadPermissions}
+                loadData={loadUsers}
             />
             <ConfirmDialog
                 show={showConfirmDelete}
-                title="Delete Permission"
-                message="Are you sure you want to delete this permission?"
+                title="Delete User"
+                message="Are you sure you want to delete this user?"
                 confirmText="Delete"
                 confirmVariant="danger"
                 onConfirm={handleConfirmDelete}
-                loadData={loadPermissions}
+                loadData={loadUsers}
                 pageNumber={pageNumber}
                 onCancel={() => setShowConfirmDelete(false)}
             />
             <ConfirmDialog
                 show={showConfirmDeletePermanent}
-                title="Delete Permission Permanent"
-                message="Are you sure you want to delete Permanent this permission?"
+                title="Delete User Permanent"
+                message="Are you sure you want to delete Permanent this user?"
                 confirmText="Delete Permanent"
                 confirmVariant="danger"
                 onConfirm={handleConfirmDeletePermanent}
-                loadData={loadPermissions}
+                loadData={loadUsers}
                 pageNumber={pageNumber}
                 onCancel={() => setShowConfirmDeletePermanent(false)}
             />
             <ConfirmDialog
                 show={showConfirmRestore}
-                title="Restore Permission"
-                message="Are you sure you want to restore this permission?"
+                title="Restore User"
+                message="Are you sure you want to restore this user?"
                 confirmText="Resote"
                 confirmVariant="success"
                 onConfirm={handleConfirmRestore}
-                loadData={loadPermissions}
+                loadData={loadUsers}
                 pageNumber={pageNumber}
                 onCancel={() => setShowConfirmRestore(false)}
             />
@@ -236,4 +244,4 @@ function PermissionList() {
     );
 }
 
-export default PermissionList;
+export default UserList;

@@ -1,58 +1,79 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaArrowLeft, FaMinusCircle, FaEdit, FaUndo, FaRegTimesCircle } from "react-icons/fa";
-import { deleteRole, deletePermanentRoles, getRole, restoreRole } from "../../../api/admin/roleApi";
-import { notify } from "../../../services/notificationService";
+import {FaArrowLeft,FaMinusCircle,FaEdit,FaUndo,FaRegTimesCircle} from "react-icons/fa";
+import {deleteUser,deletePermanentUsers,getUser,restoreUser} from "../../../api/admin/userApi";import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { getErrorMessage } from "../../../utils/errorHandling";
 
-function RoleDetails() {
+function UserDetails() {
 
     const { id } = useParams();
 
     const navigate = useNavigate();
 
-    const [role, setRole] = useState(null);
+    const [user, setUser] = useState(null);
 
     const [showDelete, setShowDelete] = useState(false);
     const [showDeletePermanent, setShowDeletePermanent] = useState(false);
     const [showRestore, setShowRestore] = useState(false);
+
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        loadRole();
+
+        loadUser();
 
     }, []);
 
-    async function loadRole() {
-        const response = await getRole(id);
-        setRole(response.data.data);
+    async function loadUser() {
+
+        const response = await getUser(id);
+
+        setUser(response.data.data);
+
     }
 
-    async function removeRole() {
+    async function removeUser() {
+
         setLoading(true);
+
         try {
-            await deleteRole(id);
-            notify.success("Role deleted successfully.");
-            loadRole();
+
+            await deleteUser(id);
+            notify.success(
+
+                "User deleted successfully."
+
+            );
+            await loadUser();
             setShowDelete(false);
+
         }
         catch (error) {
             notify.error(getErrorMessage(error));
             setShowDelete(false);
         }
         finally {
+
             setLoading(false);
+
         }
+
     }
-    async function removePermanentRole() {
+    async function removePermanentUser() {
+
         setLoading(true);
+
         try {
 
-            await deletePermanentRoles(id);
-            notify.success("Role Permanent deleted successfully.");
-            navigate("/roles");
+            await deletePermanentUsers(id);
+            notify.success(
+
+                "User Permanent deleted successfully."
+
+            );
+            navigate("/users");
 
         }
         catch (error) {
@@ -69,18 +90,18 @@ function RoleDetails() {
 
     async function restore() {
 
-        await restoreRole(id);
+        await restoreUser(id);
 
         notify.success(
 
-            "Role restore successfully."
+            "User restore successfully."
 
         );
-        loadRole();
+        await loadUser();
         setShowRestore(false);
     }
 
-    if (!role)
+    if (!user)
         return <div>Loading...</div>;
 
     return (
@@ -93,7 +114,7 @@ function RoleDetails() {
 
                     <h3>
 
-                        Role Details
+                        User Details
 
                     </h3>
 
@@ -107,36 +128,131 @@ function RoleDetails() {
 
                             <p>
 
-                                <strong>Code</strong>
+                                <strong>FirstName</strong>
 
                                 <br />
 
-                                {role.code}
+                                {user.firstName}
 
                             </p>
+                            </div>
+                        <div className="col-md-6">
 
                             <p>
 
-                                <strong>Name</strong>
+                                <strong>LastName</strong>
 
                                 <br />
 
-                                {role.name}
+                                {user.lastName}
 
                             </p>
-
-
+                        </div>
+                        <div className="col-md-6">
 
                             <p>
 
-                                <strong>Status</strong>
+                                <strong>LastName</strong>
+
+                                <br />
+
+                                {user.lastName}
+
+                            </p>
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>UserName</strong>
+
+                                <br />
+
+                                {user.userName}
+
+                            </p>
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>Email</strong>
+
+                                <br />
+
+                                {user.email}
+
+                            </p>
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>PhoneNumber</strong>
+
+                                <br />
+
+                                {user.phoneNumber}
+
+                            </p>
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>AccessFailedCount</strong>
+
+                                <br />
+
+                                {user.accessFailedCount}
+
+                            </p>
+
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>Delete Status</strong>
 
                                 <br />
 
                                 {
-                                    role.isDeleted
+                                    user.isDeleted
                                         ? "Deleted"
                                         : "Active"
+                                }
+
+                            </p>
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>Active Status</strong>
+
+                                <br />
+
+                                {
+                                    user.isActive
+                                        ? "Actived"
+                                        : "InActive"
+                                }
+
+                            </p>
+                        </div>
+                        <div className="col-md-6">
+
+                            <p>
+
+                                <strong>Locking Status</strong>
+
+                                <br />
+
+                                {
+                                    user.isLocked
+                                        ? "Locked"
+                                        : "UnLocked"
                                 }
 
                             </p>
@@ -149,7 +265,7 @@ function RoleDetails() {
                     <div>
                         <button
                             className="icon-btn-warning icon-btn no-underline"
-                            onClick={() => navigate(`/roles/edit/${id}`)} >
+                            onClick={() => navigate(`/users/edit/${id}`)} >
                             <span className="icon-section">
                                 <FaEdit></FaEdit>
                             </span>
@@ -161,16 +277,13 @@ function RoleDetails() {
 
                         {
 
-                            role.isDeleted
+                            user.isDeleted
 
                                 ?
 
                                 <button
                                     className="icon-btn-success icon-btn"
-                                    onClick={() =>
-                                        setShowRestore(true)
-                                    }
-                                >
+                                    onClick={() => setShowRestore(true) } >
                                     <span className="icon-section">
                                         <FaUndo></FaUndo>
                                     </span>
@@ -214,7 +327,7 @@ function RoleDetails() {
 
 
                         </button>
-                        <Link to="/roles"
+                        <Link to="/users"
                             className="icon-btn-info icon-btn no-underline">
 
                             <span className="icon-section">
@@ -231,12 +344,12 @@ function RoleDetails() {
             </div>
             <ConfirmDialog
                 show={showDelete}
-                title="Delete Role"
+                title="Delete User"
                 message="Are your sure wan't to delete record ?"
                 confirmText="Delete"
                 cancelText="Cancel"
                 confirmVariant="danger"
-                onConfirm={removeRole}
+                onConfirm={removeUser}
                 loadData={undefined}
                 pageNumber="1"
                 onCancel={() => setShowDelete(false)}
@@ -244,12 +357,12 @@ function RoleDetails() {
             />
             <ConfirmDialog
                 show={showDeletePermanent}
-                title="Permanent Delete Permission"
-                message="Are your sure want to delete record permanent ?"
+                title="Permenent Delete User"
+                message="Are your sure want to delete record permenent ?"
                 confirmText="Delete"
                 cancelText="Cancel"
                 confirmVariant="danger"
-                onConfirm={removePermanentRole}
+                onConfirm={removePermanentUser}
                 loadData={undefined}
                 pageNumber="1"
                 onCancel={() => setShowDeletePermanent(false)}
@@ -257,7 +370,7 @@ function RoleDetails() {
             />
             <ConfirmDialog
                 show={showRestore}
-                title="Restore Role"
+                title="Restore User"
                 message="Are your sure want to restore record ?"
                 confirmText="Restore"
                 cancelText="Cancel"
@@ -267,10 +380,11 @@ function RoleDetails() {
                 pageNumber="1"
                 onCancel={() => setShowRestore(false)}
             />
+           
         </div>
 
     );
 
 }
 
-export default RoleDetails;
+export default UserDetails;

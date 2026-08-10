@@ -1,5 +1,4 @@
 function ConfirmDialog({
-
     show,
     title,
     message,
@@ -19,7 +18,9 @@ function ConfirmDialog({
     async function onConfirmation()
     {
         await onConfirm();
-        await loadData(pageNumber)
+        if (loadData != undefined) {
+            await loadData(pageNumber)
+        }
     }
     return (
 

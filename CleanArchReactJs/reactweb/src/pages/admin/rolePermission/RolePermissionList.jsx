@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { getRolePermissions, deleteRolePermission, restoreRolePermission, searchRolePermissions, deletePermanentRolePermissions } from "../../../api/admin/rolePermissionApi";
+import { NavLink } from "react-router-dom";
+import {  deleteRolePermission, restoreRolePermission, searchRolePermissions, deletePermanentRolePermissions } from "../../../api/admin/rolePermissionApi";
 import Loader from "../../../components/common/Loader";
 import RolePermissionTable from "../../../components/admin/rolePermission/RolePermissionTable";
 import { FaPlus } from "react-icons/fa";
@@ -9,6 +9,7 @@ import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
 import { EMPTY_GUID } from "../../../constants/common";
+
 function RolePermissionList() {
     const [selectedId, setSelectedId] = useState(null);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -114,9 +115,19 @@ function RolePermissionList() {
         setShowConfirmDelete(false);
     };
     const handleConfirmDeletePermanent = async () => {
-        await deletePermanentRolePermissions(selectedId);
-        notify.success("RolePermission Permanent deleted successfully.");
-        setShowConfirmDeletePermanent(false);
+        try {
+            await deletePermanentRolePermissions(selectedId);
+            notify.success("RolePermission Permanent deleted successfully.");
+            setShowConfirmDeletePermanent(false);
+        } 
+        catch(error) {
+            notify.error(getErrorMessage(error));
+            setShowConfirmDeletePermanent(false);
+        }
+        finally {
+            setShowConfirmDeletePermanent(false);
+        }
+        
     };
 
     const handleConfirmRestore = async () => {

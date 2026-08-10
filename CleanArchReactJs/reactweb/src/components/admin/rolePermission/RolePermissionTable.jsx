@@ -1,12 +1,5 @@
 import { Link } from "react-router-dom";
-FaRegEye
-import {
-    FaRegEye,
-    FaMinusCircle,
-    FaEdit,
-    FaUndo,
-    FaRegTimesCircle
-} from "react-icons/fa";
+import {FaRegEye,FaMinusCircle,FaEdit,FaUndo,FaRegTimesCircle} from "react-icons/fa";
 function RolePermissionTable({
     rolePermissions,
     onDelete,

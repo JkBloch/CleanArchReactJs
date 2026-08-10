@@ -1,21 +1,15 @@
-import {
-    NavLink
-} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 import {
-    FaListAlt,
-    FaHome,
-    FaUsers,
-    FaBuilding,
-    FaChartBar,
-    FaUserShield,
-    FaUserCog,
-    FaHistory,
-    FaCog
-
-} from "react-icons/fa";
+    FaListAlt, FaHome, FaUsers, FaBuilding, FaChartBar,
+    FaUserShield, FaUserCog, FaHistory, FaCog} from "react-icons/fa";
 
 const menus = [
+    {
+        name: "Dashboard",
+        icon: <FaHome />,
+        path: "/dashboard"
+    },
     {
         name: "Permission",
         icon: <FaListAlt />,
@@ -32,9 +26,9 @@ const menus = [
         path: "/rolePermissions"
     },
     {
-        name: "Dashboard",
-        icon: <FaHome />,
-        path: "/dashboard"
+        name: "Users",
+        icon: <FaUserCog />,
+        path: "/users"
     },
 
     {
@@ -55,11 +49,7 @@ const menus = [
         path: "/reports"
     },
 
-    {
-        name: "Users",
-        icon: <FaUserCog />,
-        path: "/users"
-    },
+
 
   
 

@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
 import { createRolePermission } from "../.././../api/admin/rolePermissionApi";
-
 import RolePermissionForm from "../rolePermission/RolePermissionForm";
 import { notify } from "../../../services/notificationService";
 import { getErrorMessage } from "../../../utils/errorHandling";
+
 function RolePermissionCreate() {
 
     const navigate = useNavigate();

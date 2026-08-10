@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { getRoles, deleteRole, restoreRole, searchRoles, deletePermanentRoles } from "../../../api/admin/roleApi";
+import { NavLink } from "react-router-dom";
+import { deleteRole, restoreRole, searchRoles, deletePermanentRoles } from "../../../api/admin/roleApi";
 import Loader from "../../../components/common/Loader";
 import RoleTable from "../../../components/admin/role/RoleTable";
 import { FaPlus } from "react-icons/fa";
@@ -8,7 +8,7 @@ import RoleSearch from "../role/RoleSearch";
 import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
-import IconButton from "../../../components/common/IconButton";
+
 function RoleList() {
     const [selectedId, setSelectedId] = useState(null);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -62,9 +62,7 @@ function RoleList() {
     async function loadRoles(selectedPageNumber = 1, sortBy = "code", descending = false) {
 
         try {
-
-            //const response = await getRoles();
-            //setRoles(response.data.data ?? []);
+           
             const revfilters = {
                 keyword: keyword,
                 code: searchcode,
@@ -114,9 +112,19 @@ function RoleList() {
         setShowConfirmDelete(false);
     };
     const handleConfirmDeletePermanent = async () => {
-        await deletePermanentRoles(selectedId);
-        notify.success("Role Permanent deleted successfully.");
-        setShowConfirmDeletePermanent(false);
+        try {
+            await deletePermanentRoles(selectedId);
+            notify.success("Role Permanent deleted successfully.");
+            setShowConfirmDeletePermanent(false);
+        }
+        catch (error) {
+            notify.error(getErrorMessage(error));
+            setShowConfirmDeletePermanent(false);
+        }
+        finally {
+            setShowConfirmDeletePermanent(false);
+        }
+      
     };
 
     const handleConfirmRestore = async () => {

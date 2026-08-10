@@ -56,8 +56,7 @@ function RolePermissionSearch({ handleChange, filters, loadRolePermissions,
             pageSize: pageSize,
             sortBy: sortBy,
             descending: descending
-        }
-        //var rolePermissions = loadRolePermissions(pageNumber, sortBy, descending);
+        }       
         await downloadExcel(revfilters, "RolePermissionReport");
         setLoading(false);
     }
@@ -111,14 +110,7 @@ function RolePermissionSearch({ handleChange, filters, loadRolePermissions,
                                     {role.name}
                                 </option>
                             ))}
-                        </select>
-                        {/*<input*/}
-                        {/*    className="form-control"*/}
-                        {/*    name="code"*/}
-                        {/*    placeholder="Code"*/}
-                        {/*    value={filters.code}*/}
-                        {/*    onChange={handleChange}*/}
-                        {/*/>*/}
+                        </select>                       
                     </div>
                     <div className="col-md-2">
                         <select

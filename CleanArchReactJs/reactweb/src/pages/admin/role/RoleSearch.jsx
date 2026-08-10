@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { FaSearch, FaFileExcel, FaFilePdf } from "react-icons/fa";
 import { downloadExcel, downloadPdf } from "../../../api/common/exportApi";
 
@@ -28,8 +27,7 @@ function RoleSearch({ handleChange, filters, loadRoles,
             pageSize: pageSize,
             sortBy: sortBy,
             descending: descending
-        }
-        //var roles = loadRoles(pageNumber, sortBy, descending);
+        }       
         await downloadExcel(revfilters, "RoleReport");
         setLoading(false);
     }

@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import RoleForm from "../role/RoleForm";
-
-import {
-    getRole,
-    updateRole
-} from "../.././../api/admin/roleApi";
+import {getRole,updateRole} from "../.././../api/admin/roleApi";
 import { notify } from "../../../services/notificationService";
 
 function RoleEdit() {

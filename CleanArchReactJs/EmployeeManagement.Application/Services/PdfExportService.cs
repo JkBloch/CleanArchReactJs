@@ -260,88 +260,93 @@ namespace EmployeeManagement.Application.Services
             var query = _unitOfWork.Users.Query();
             var (users, iTotalRecord) = await SearchExportData.GetExportUserData(query, request, "pdf");
 
-
-            return Document.Create(container =>
+            try
             {
-                container.Page(page =>
+                return Document.Create(container =>
                 {
-                    page.Margin(20);
+                    container.Page(page =>
+                    {
+                        page.Margin(20);
 
-                    page.Size(PageSizes.A4.Landscape());
+                        page.Size(PageSizes.A4.Landscape());
 
-                    page.DefaultTextStyle(x => x.FontSize(10));
+                        page.DefaultTextStyle(x => x.FontSize(10));
 
-                    page.Header()
-                        .Text("User List Report")
-                        .FontSize(22)
-                        .Bold();
+                        page.Header()
+                            .Text("User List Report")
+                            .FontSize(22)
+                            .Bold();
 
-                    page.Content()
-                        .Column(column =>
-                        {
-                            column.Spacing(15);
+                        page.Content()
+                            .Column(column =>
+                            {
+                                column.Spacing(15);
 
-                            column.Item()
-                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+                                column.Item()
+                                    .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
 
-                            column.Item()
-                                .Table(table =>
-                                {
-                                    table.ColumnsDefinition(columns =>
+                                column.Item()
+                                    .Table(table =>
                                     {
-                                        columns.ConstantColumn(120);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(200);
-                                        columns.ConstantColumn(150);
+                                        table.ColumnsDefinition(columns =>
+                                        {
+                                            columns.ConstantColumn(120);
+                                            columns.ConstantColumn(80);
+                                            columns.ConstantColumn(80);
+                                            columns.ConstantColumn(80);
+                                            columns.ConstantColumn(80);
+                                            columns.ConstantColumn(80);
+                                            columns.ConstantColumn(80);
+                                            columns.ConstantColumn(80);
+                                        });
+
+                                        table.Header(header =>
+                                        {
+                                            header.Cell().Text("FirstName").Bold();
+                                            header.Cell().Text("LastName").Bold();
+                                            header.Cell().Text("UserName").Bold();
+                                            header.Cell().Text("Email").Bold();
+                                            header.Cell().Text("PhoneNumber").Bold();
+                                            header.Cell().Text("IsActive").Bold();
+                                            header.Cell().Text("IsLocked").Bold();
+                                            header.Cell().Text("AccessFailedCount").Bold(); 
+                                        });
+
+                                        foreach (var user in users)
+                                        {
+                                            table.Cell().Text(user.FirstName);
+                                            table.Cell().Text(user.LastName);
+                                            table.Cell().Text(user.UserName);
+                                            table.Cell().Text(user.Email);
+                                            table.Cell().Text(user.PhoneNumber);
+                                            table.Cell().Text(user.IsActive.ToString());
+                                            table.Cell().Text(user.IsLocked.ToString());
+                                            table.Cell().Text(user.AccessFailedCount.ToString()); 
+                                        }
                                     });
+                            });
 
-                                    table.Header(header =>
-                                    {
-                                        header.Cell().Text("FirstName").Bold();
-                                        header.Cell().Text("LastName").Bold();
-                                        header.Cell().Text("UserName").Bold();
-                                        header.Cell().Text("Email").Bold();
-                                        header.Cell().Text("PhoneNumber").Bold();
-                                        header.Cell().Text("IsActive").Bold();
-                                        header.Cell().Text("IsLocked").Bold();
-                                        header.Cell().Text("AccessFailedCount").Bold();
-                                        header.Cell().Text("CreatedDate").Bold();
-                                    });
+                        page.Footer()
+                            .AlignCenter()
+                            .Text(x =>
+                            {
+                                x.Span("Page ");
 
-                                    foreach (var user in users)
-                                    {
-                                        table.Cell().Text(user.FirstName);
-                                        table.Cell().Text(user.LastName);
-                                        table.Cell().Text(user.UserName);
-                                        table.Cell().Text(user.Email);
-                                        table.Cell().Text(user.PhoneNumber);
-                                        table.Cell().Text(user.IsActive.ToString());
-                                        table.Cell().Text(user.IsLocked.ToString());
-                                        table.Cell().Text(user.AccessFailedCount.ToString());
-                                        table.Cell().Text(user.CreatedDate.ToShortDateString());
-                                    }
-                                });
-                        });
+                                x.CurrentPageNumber();
 
-                    page.Footer()
-                        .AlignCenter()
-                        .Text(x =>
-                        {
-                            x.Span("Page ");
+                                x.Span(" of ");
 
-                            x.CurrentPageNumber();
+                                x.TotalPages();
+                            });
+                    });
+                }).GeneratePdf();
 
-                            x.Span(" of ");
+            }
+            catch (Exception ex)
+            {
 
-                            x.TotalPages();
-                        });
-                });
-            }).GeneratePdf();
+                throw;
+            }
         }
 
     }

@@ -1,30 +1,30 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import RolePermissionForm from "../rolePermission/RolePermissionForm";
-import {getRolePermission,updateRolePermission} from "../.././../api/admin/rolePermissionApi";
+import UserForm from "../user/UserForm";
+import {getUser,updateUser} from "../.././../api/admin/userApi";
 import { notify } from "../../../services/notificationService";
 
-function RolePermissionEdit() {
+function UserEdit() {
 
     const { id } = useParams();
 
     const navigate = useNavigate();
 
-    const [rolePermission, setRolePermission] = useState(null);
+    const [user, setUser] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
 
-        loadRolePermission();
+        loadUser();
 
     }, []);
 
-    async function loadRolePermission() {
+    async function loadUser() {
 
-        const response = await getRolePermission(id);
+        const response = await getUser(id);
 
-        setRolePermission(response.data.data);
+        setUser(response.data.data);
 
         setLoading(false);
     }
@@ -35,15 +35,15 @@ function RolePermissionEdit() {
 
         try {
 
-            await updateRolePermission(id, data);
+            await updateUser(id, data);
             notify.success(
 
-                "RolePermission updated successfully."
+                "User updated successfully."
 
             );
 
 
-            navigate("/rolePermissions");
+            navigate("/users");
 
         }
         finally {
@@ -61,10 +61,10 @@ function RolePermissionEdit() {
 
         <div className="container">
 
-            <h2>Edit RolePermission</h2>
+            <h2>Edit User</h2>
 
-            <RolePermissionForm
-                initialValues={rolePermission}
+            <UserForm
+                initialValues={user}
                 onSubmit={save}
                 loading={loading}
             />
@@ -74,4 +74,4 @@ function RolePermissionEdit() {
     );
 }
 
-export default RolePermissionEdit;
+export default UserEdit;

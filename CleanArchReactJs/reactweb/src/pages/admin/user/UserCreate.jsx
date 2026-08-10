@@ -1,52 +1,68 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react"; 
-import { createPermission } from "../.././../api/admin/permissionApi";
-import PermissionForm from "../permission/PermissionForm";
+import { useState } from "react";
+import { createUser } from "../.././../api/admin/userApi";
+import UserForm from "../user/UserForm";
 import { notify } from "../../../services/notificationService";
 import { getErrorMessage } from "../../../utils/errorHandling";
-
-function PermissionCreate() {
+function UserCreate() {
 
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [initialValues, setInitialValues] = useState({
-        code: "",
-        name: ""
+        firstName: "",
+        lastName: "",
+        userName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        phoneNumber: "",
+        isActive: false,
+        isLocked: false,
     });
-   
+    async function save(user) {
 
-    async function save(permission) {
         setLoading(true);
+
         try {
-            await createPermission(permission);
+
+            await createUser(user);
             notify.success(
-                "Permission created successfully."
+                "User created successfully."
             );
-            navigate("/permissions");
+
+            navigate("/users");
 
         }
         catch (error) {
             notify.error(
                 getErrorMessage(error)
             );
-            setInitialValues(permission);  
+            setInitialValues(user); 
         }
         finally {
+
             setLoading(false);
+
         }
+
     }
 
     return (
+
         <div className="container">
-            <h2>Add Permission</h2>
-            <PermissionForm
+
+            <h2>Add User</h2>
+
+            <UserForm
                 initialValues={initialValues}
                 onSubmit={save}
                 loading={loading}
             />
+
         </div>
+
     );
 }
 
-export default PermissionCreate;
+export default UserCreate;

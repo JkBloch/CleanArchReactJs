@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import PermissionForm from "../permission/PermissionForm";
-
-import {
-    getPermission,
-    updatePermission
-} from "../.././../api/admin/permissionApi";
+import {getPermission, updatePermission} from "../.././../api/admin/permissionApi";
 import { notify } from "../../../services/notificationService";
 
 function PermissionEdit() {

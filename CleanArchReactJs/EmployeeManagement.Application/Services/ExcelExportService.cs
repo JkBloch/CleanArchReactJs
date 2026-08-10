@@ -451,7 +451,6 @@ namespace EmployeeManagement.Application.Services
                 ws.Cell(row, 6).Value = user.IsActive;
                 ws.Cell(row, 7).Value = user.IsLocked;
                 ws.Cell(row, 8).Value = user.AccessFailedCount;
-                ws.Cell(row, 9).Value = user.CreatedDate;
                 row++;
             }
 
