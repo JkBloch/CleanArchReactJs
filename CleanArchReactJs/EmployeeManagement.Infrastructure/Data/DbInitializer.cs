@@ -96,6 +96,23 @@ namespace EmployeeManagement.Infrastructure.Data
                 await context.Users.AddAsync(user);
                 await context.SaveChangesAsync();
             }
+            if (!context.UserRoles.Any())
+            {
+                var role = context.Roles.Where(x => x.Code == "R0001").FirstOrDefault();
+                var user = context.Users.Where(x => x.UserName == "jkbloch").FirstOrDefault();
+
+                if (role != null && user != null)
+                {
+                    var userRole = new UserRole
+                    {
+                        RoleId = role.Id,
+                        UserId = user.Id
+                    };
+                    await context.UserRoles.AddAsync(userRole);
+                    await context.SaveChangesAsync();
+
+                }
+            }
         }
     }
 }

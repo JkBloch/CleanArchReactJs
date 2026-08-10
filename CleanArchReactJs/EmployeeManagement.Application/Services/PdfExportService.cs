@@ -12,6 +12,7 @@ namespace EmployeeManagement.Application.Services
     using EmployeeManagement.Application.DTOs.Permissions;
     using EmployeeManagement.Application.DTOs.RolePermissions;
     using EmployeeManagement.Application.DTOs.Roles;
+    using EmployeeManagement.Application.DTOs.UserRoles;
     using EmployeeManagement.Application.DTOs.Users;
     using EmployeeManagement.Application.Interfaces;
     using EmployeeManagement.Domain.Interfaces;
@@ -347,6 +348,82 @@ namespace EmployeeManagement.Application.Services
 
                 throw;
             }
+        }
+        public async Task<byte[]> ExportUserRolesAsync(SearchUserRoleDto request)
+        {
+            var query = _unitOfWork.UserRoles.Query()
+                .Include(x => x.Role)
+                .Include(x => x.User);
+            var (userRoles, iTotalRecord) = await SearchExportData.GetExportUserRoleData(query, request, "pdf");
+
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+
+                    page.Size(PageSizes.A4.Landscape());
+
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Text("UserRole List Report")
+                        .FontSize(22)
+                        .Bold();
+
+                    page.Content()
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item()
+                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.ConstantColumn(120);
+                                        columns.ConstantColumn(200);
+                                        columns.ConstantColumn(150);
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Text("Role").Bold();
+
+                                        header.Cell().Text("Permission").Bold();
+
+                                        header.Cell().Text("CreatedDate").Bold();
+                                    });
+
+                                    foreach (var userRole in userRoles)
+                                    {
+                                        table.Cell().Text(userRole.Role.Name);
+
+                                        table.Cell().Text(userRole.User.UserName);
+
+                                        table.Cell().Text(userRole.CreatedDate.ToShortDateString());
+                                    }
+                                });
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+
+                            x.CurrentPageNumber();
+
+                            x.Span(" of ");
+
+                            x.TotalPages();
+                        });
+                });
+            }).GeneratePdf();
         }
 
     }

@@ -33,3 +33,10 @@ export function useUser(user) {
 
     return user1?.users?.includes(user);
 }
+
+export function useUserRole(userRole) {
+
+    const { user } = useAuth();
+
+    return user?.userRoles?.includes(userRole);
+}

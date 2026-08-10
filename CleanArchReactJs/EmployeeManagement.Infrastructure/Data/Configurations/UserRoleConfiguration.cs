@@ -26,6 +26,12 @@ namespace EmployeeManagement.Infrastructure.Data.Configurations
                 .WithMany(x => x.UserRoles)
                 .HasForeignKey(x => x.UserId);
 
+            builder.HasIndex(x => new
+            {
+                x.UserId,
+                x.RoleId
+            }).IsUnique();
+
 
         }
     }

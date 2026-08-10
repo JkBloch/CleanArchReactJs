@@ -151,3 +151,19 @@ export const exportUsersPdf = filters =>
         {
             responseType: "blob"
         });
+
+export const exportUserRolesExcel = request =>
+    apiClient.post(
+        "/export/userRoles/excel",
+        request,
+        {
+            responseType: "blob"
+        })
+
+export const exportUserRolesPdf = filters =>
+    apiClient.post(
+        "/export/userRoles/pdf",
+        filters,
+        {
+            responseType: "blob"
+        });

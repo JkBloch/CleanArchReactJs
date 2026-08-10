@@ -20,7 +20,6 @@ namespace EmployeeManagement.Infrastructure.Data
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<RolePermission> RolePermissions   => Set<RolePermission>();
         public DbSet<User> Users => Set<User>();
-
         public DbSet<UserRole> UserRoles => Set<UserRole>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 

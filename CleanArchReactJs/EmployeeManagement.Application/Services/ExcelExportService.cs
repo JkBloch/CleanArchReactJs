@@ -5,6 +5,7 @@ using EmployeeManagement.Application.DTOs;
 using EmployeeManagement.Application.DTOs.Permissions;
 using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
+using EmployeeManagement.Application.DTOs.UserRoles;
 using EmployeeManagement.Application.DTOs.Users;
 using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Entities;
@@ -451,6 +452,118 @@ namespace EmployeeManagement.Application.Services
                 ws.Cell(row, 6).Value = user.IsActive;
                 ws.Cell(row, 7).Value = user.IsLocked;
                 ws.Cell(row, 8).Value = user.AccessFailedCount;
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
+
+        #region UserRole
+        public async Task<byte[]> ExportUserRolesAsync(SearchUserRoleDto request)
+        {
+            var query = _unitOfWork.UserRoles.Query()
+                .Include(x => x.Role)
+                .Include(x => x.User);
+
+            var (userRoles, iTotalRecord) = await SearchExportData.GetExportUserRoleData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                userRoles);
+
+            CreateUserRoleSheet(
+                workbook,
+                userRoles);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<UserRole> userRoles)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "UserRole Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total UserRoles";
+
+            ws.Cell("B5").Value =
+                userRoles.Count;
+
+            ws.Cell("A6").Value =
+                "Roles";
+
+            ws.Cell("B6").Value =
+                userRoles
+                .Select(x => x.Role)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateUserRoleSheet(XLWorkbook workbook, List<UserRole> userRoles)
+        {
+            var ws =
+                workbook.Worksheets.Add("UserRoles");
+
+            ws.Cell(1, 1).Value = "Role";
+            ws.Cell(1, 2).Value = "User";
+            ws.Cell(1, 3).Value = "Created";
+
+            var header =
+                ws.Range("A1:C1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var userRole in userRoles)
+            {
+                ws.Cell(row, 1).Value =
+                    userRole.Role.Name;
+
+                ws.Cell(row, 2).Value =
+                    userRole.User.UserName;
+                ws.Cell(row, 3).Value =
+                    userRole.CreatedDate;
+
                 row++;
             }
 

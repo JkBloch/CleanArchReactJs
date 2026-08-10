@@ -14,13 +14,11 @@ namespace EmployeeManagement.Infrastructure.Repositories
         private readonly AppDbContext _context;
         public IPermissionRepository Permissions { get; }
         public IRoleRepository Roles { get; }
-
         public IRolePermissionRepository RolePermissions { get; }
-
         public IUserRepository Users { get; }
+        public IUserRoleRepository UserRoles { get; }
 
         //public IEmployeeRepository Employees { get; }
-
 
         //public IRefreshTokenRepository RefreshTokens { get; }
 
@@ -34,7 +32,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
             Roles =new RoleRepository(context);
             RolePermissions = new RolePermissionRepository(context);
             Users = new UserRepository(context);
-
+            UserRoles = new UserRoleRepository(context);
             //Employees = new EmployeeRepository(context);
 
 

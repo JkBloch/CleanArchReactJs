@@ -30,6 +30,11 @@ const menus = [
         icon: <FaUserCog />,
         path: "/users"
     },
+    {
+        name: "UserRoles",
+        icon: <FaUserCog />,
+        path: "/userRoles"
+    },
 
     {
         name: "Employees",

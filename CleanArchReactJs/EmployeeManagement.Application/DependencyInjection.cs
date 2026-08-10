@@ -29,6 +29,7 @@ namespace EmployeeManagement.Application
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRolePermissionService, RolePermissionService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
 
             //services.AddScoped<IEmployeeService, EmployeeService>();
 
