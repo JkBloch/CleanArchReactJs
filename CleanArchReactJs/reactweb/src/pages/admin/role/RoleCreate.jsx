@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createRole } from "../.././../api/admin/roleApi";
 import RoleForm from "../role/RoleForm";
 import { notify } from "../../../services/notificationService";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function RoleCreate() {
 
@@ -30,9 +30,9 @@ function RoleCreate() {
 
         }
         catch (error) {
-            notify.error(
-                getErrorMessage(error)
-            );
+            //notify.error(
+            //    getErrorMessage(error)
+            //);
             setInitialValues(role);           
 
         }

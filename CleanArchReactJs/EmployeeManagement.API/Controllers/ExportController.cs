@@ -2,6 +2,7 @@
 using EmployeeManagement.Application.DTOs.Permissions;
 using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
+using EmployeeManagement.Application.DTOs.State;
 using EmployeeManagement.Application.DTOs.UserRoles;
 using EmployeeManagement.Application.DTOs.Users;
 using EmployeeManagement.Application.Interfaces;
@@ -144,7 +145,30 @@ namespace EmployeeManagement.API.Controllers
                 $"UserRoleReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
         #endregion
+        #region State
+        [HttpPost("states/excel")]
+        public async Task<IActionResult> ExportStatesExcel(SearchStateDto request)
+        {
+            var bytes =
+                await _excelExportService
+                    .ExportStatesAsync(request);
 
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"States_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        [HttpPost("states/pdf")]
+        public async Task<IActionResult> ExportStatesPdf(SearchStateDto request)
+        {
+            var pdf = await _pdfExportService.ExportStatesAsync(request);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"StateReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        #endregion
 
     }
 }

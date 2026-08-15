@@ -8,7 +8,7 @@ import PermissionSearch from "../permission/PermissionSearch";
 import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function PermissionList() {
     const [selectedId, setSelectedId] = useState(null);
@@ -119,7 +119,7 @@ function PermissionList() {
             setShowConfirmDeletePermanent(false);
 
         } catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowConfirmDeletePermanent(false);
         }
         finally {

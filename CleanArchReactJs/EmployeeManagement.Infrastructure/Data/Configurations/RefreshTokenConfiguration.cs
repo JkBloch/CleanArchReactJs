@@ -20,9 +20,7 @@ namespace EmployeeManagement.Infrastructure.Data.Configurations
             builder.Property(x => x.Token)
                 .IsRequired();
 
-            builder.HasOne(x => x.User)
-                .WithMany(x => x.RefreshTokens)
-                .HasForeignKey(x => x.UserId);
+
         }
     }
 

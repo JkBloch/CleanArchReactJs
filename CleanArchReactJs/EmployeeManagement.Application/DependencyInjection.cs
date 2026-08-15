@@ -30,12 +30,13 @@ namespace EmployeeManagement.Application
             services.AddScoped<IRolePermissionService, RolePermissionService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<IStateService, StateService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             //services.AddScoped<IEmployeeService, EmployeeService>();
 
-            //services.AddScoped<IAuthService, AuthService>();
 
-            //services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

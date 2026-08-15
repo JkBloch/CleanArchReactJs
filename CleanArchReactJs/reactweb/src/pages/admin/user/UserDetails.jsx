@@ -4,7 +4,7 @@ import {FaArrowLeft,FaMinusCircle,FaEdit,FaUndo,FaRegTimesCircle} from "react-ic
 import {deleteUser,deletePermanentUsers,getUser,restoreUser} from "../../../api/admin/userApi";import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function UserDetails() {
 
@@ -51,7 +51,7 @@ function UserDetails() {
 
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowDelete(false);
         }
         finally {
@@ -77,7 +77,7 @@ function UserDetails() {
 
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowDeletePermanent(false);
         }
         finally {

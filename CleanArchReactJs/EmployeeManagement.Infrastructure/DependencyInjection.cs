@@ -27,11 +27,10 @@ namespace EmployeeManagement.Infrastructure
             services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IStateRepository, StateRepository>();
             //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
-
-            //services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;

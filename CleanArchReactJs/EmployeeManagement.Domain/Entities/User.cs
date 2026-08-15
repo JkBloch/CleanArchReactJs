@@ -23,7 +23,7 @@ namespace EmployeeManagement.Domain.Entities
         public DateTime? LastLoginDate { get; set; }   
         public ICollection<UserRole> UserRoles { get; set; }
             = new List<UserRole>();
-        public ICollection<RefreshToken> RefreshTokens { get; set; }
-            = new List<RefreshToken>();
+
+        public RefreshToken? RefreshToken { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Domain.Interfaces
@@ -13,11 +14,11 @@ namespace EmployeeManagement.Domain.Interfaces
         IRolePermissionRepository RolePermissions { get; }
         IUserRepository Users  { get; }
         IUserRoleRepository UserRoles { get; }
-
+        IRefreshTokenRepository RefreshTokens { get; }
+        IStateRepository States { get; }
         //IEmployeeRepository Employees { get; }
 
-        //IRefreshTokenRepository RefreshTokens { get; }
 
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

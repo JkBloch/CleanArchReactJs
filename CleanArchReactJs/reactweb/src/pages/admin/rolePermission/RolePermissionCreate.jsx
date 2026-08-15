@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createRolePermission } from "../.././../api/admin/rolePermissionApi";
 import RolePermissionForm from "../rolePermission/RolePermissionForm";
 import { notify } from "../../../services/notificationService";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function RolePermissionCreate() {
 
@@ -32,9 +32,9 @@ function RolePermissionCreate() {
 
         }
         catch (error) {
-            notify.error(
-                getErrorMessage(error)
-            );
+            //notify.error(
+            //    getErrorMessage(error)
+            //);
             setInitialValues(rolePermission);
            
 

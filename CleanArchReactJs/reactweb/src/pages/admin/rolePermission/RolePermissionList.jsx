@@ -9,7 +9,7 @@ import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
 import { EMPTY_GUID } from "../../../constants/common";
-
+//import { getErrorMessage } from "../../../utils/errorHandling";
 function RolePermissionList() {
     const [selectedId, setSelectedId] = useState(null);
     const [showConfirmDelete, setShowConfirmDelete] = useState(false);
@@ -121,7 +121,7 @@ function RolePermissionList() {
             setShowConfirmDeletePermanent(false);
         } 
         catch(error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowConfirmDeletePermanent(false);
         }
         finally {

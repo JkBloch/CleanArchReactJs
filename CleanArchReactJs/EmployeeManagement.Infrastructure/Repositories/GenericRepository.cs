@@ -22,23 +22,23 @@ namespace EmployeeManagement.Infrastructure.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.ToListAsync(cancellationToken);
         }
 
-        public virtual async Task<T?> GetByIdAsync(Guid id)
+        public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet.FindAsync(id, cancellationToken);
         }
-        public virtual async Task AddAsync(T entity)
+        public virtual async Task AddAsync(T entity, CancellationToken cancellationToken = default)
         {
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity, cancellationToken);
         }
 
         public virtual void Update(T entity)
         {
-            _dbSet.Update(entity);
+            _dbSet.Update (entity);
         }
 
         public virtual void Delete(T entity)

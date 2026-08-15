@@ -11,12 +11,12 @@ namespace EmployeeManagement.Domain.Interfaces
 
     public interface IUserRepository : IGenericRepository<User>
     {
-        Task<User?> GetByNameAsync(string name);
-        Task<User?> GetByEmailAsync(string email);
-        Task<bool> NameExistsAsync(string name, Guid excludeUserId);
-        Task<bool> EmailExistsAsync(string userCode, Guid excludeUserId);
-        Task<User?> GetDeletedUserAsync(Guid id);
-        Task<IEnumerable<User>> SearchAsync(string keyword);
+        Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
+        Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
+        Task<bool> NameExistsAsync(string name, Guid excludeUserId, CancellationToken cancellationToken = default);
+        Task<bool> EmailExistsAsync(string userCode, Guid excludeUserId, CancellationToken cancellationToken = default);
+        Task<User?> GetDeletedUserAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<IEnumerable<User>> SearchAsync(string keyword, CancellationToken cancellationToken = default);
         IQueryable<User> Query();
     }
 }

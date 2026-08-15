@@ -12,30 +12,53 @@ namespace EmployeeManagement.API.Authorization
 
         public static class PageList
         {
-            public const string Employee = "Employee";
             public const string Permission = "Permission";
-            public const string RolePermission = "RolePermission";
             public const string Role = "Role";
+            public const string RolePermission = "RolePermission";
             public const string User = "User";
             public const string UserRole = "UserRole";
-            public const string Dashboard = "Dashboard";
-            public const string Report = "Report";
-            public const string Audit = "Audit";
-            public const string Settings = "Settings";
+            public const string State = "State";
+            //public const string Employee = "Employee";
+            //public const string Dashboard = "Dashboard";
+            //public const string Report = "Report";
+            //public const string Audit = "Audit";
+            //public const string Settings = "Settings";
 
         }
         public static class PageOpration
         {
-            public const string View = "View";
             public const string Create = "Create";
-            public const string Update = "Update";
             public const string Delete = "Delete";
-            public const string Restore = "Restore";
             public const string ExportExcel = "ExportExcel";
             public const string ExportPdf = "ExportPdf";
+            public const string Restore = "Restore";
+            public const string Update = "Update";
+            public const string View = "View";
             public const string Manage = "Manage";
         }
-        
+        public static List<string> GetPageList()
+        {
+            // 1. Get all public static fields of the class
+            List<string?> lstPage = typeof(PageList)
+                .GetFields(BindingFlags.Public | BindingFlags.Static)
+                // 2. Filter fields that are specifically of type 'string'
+                .Where(f => f.FieldType == typeof(string))
+                // 3. Extract the value (passing null because it's a static class)
+                .Select(f => (string)f.GetValue(null))
+                .ToList();
+            return lstPage;
+        }
+        public static List<string> GetPageOperationList()
+        {
+            List<string?> lstPageOpration = typeof(PageOpration)
+                 .GetFields(BindingFlags.Public | BindingFlags.Static)
+                 // 2. Filter fields that are specifically of type 'string'
+                 .Where(f => f.FieldType == typeof(string))
+                 // 3. Extract the value (passing null because it's a static class)
+                 .Select(f => (string)f.GetValue(null))
+                 .ToList();
+            return lstPageOpration;
+        }
         public static List<string> GetPermisionList()
         {
             

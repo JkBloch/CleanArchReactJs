@@ -5,6 +5,7 @@ using EmployeeManagement.Application.DTOs;
 using EmployeeManagement.Application.DTOs.Permissions;
 using EmployeeManagement.Application.DTOs.RolePermissions;
 using EmployeeManagement.Application.DTOs.Roles;
+using EmployeeManagement.Application.DTOs.State;
 using EmployeeManagement.Application.DTOs.UserRoles;
 using EmployeeManagement.Application.DTOs.Users;
 using EmployeeManagement.Application.Interfaces;
@@ -579,5 +580,114 @@ namespace EmployeeManagement.Application.Services
 
         #endregion
 
+        #region State
+        public async Task<byte[]> ExportStatesAsync(SearchStateDto request)
+        {
+            var query = _unitOfWork.States.Query();
+
+            var (states, iTotalRecord) = await SearchExportData.GetExportStateData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                states);
+
+            CreateStateSheet(
+                workbook,
+                states);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<State> states)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "State Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total States";
+
+            ws.Cell("B5").Value =
+                states.Count;
+
+            ws.Cell("A6").Value =
+                "Names";
+
+            ws.Cell("B6").Value =
+                states
+                .Select(x => x.Name)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateStateSheet(XLWorkbook workbook, List<State> states)
+        {
+            var ws =
+                workbook.Worksheets.Add("States");
+
+            ws.Cell(1, 1).Value = "Code";
+            ws.Cell(1, 2).Value = "Name";
+            ws.Cell(1, 3).Value = "Created";
+
+            var header =
+                ws.Range("A1:C1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var state in states)
+            {
+                ws.Cell(row, 1).Value =
+                    state.Code;
+
+                ws.Cell(row, 2).Value =
+                    state.Name;
+                ws.Cell(row, 3).Value =
+                    state.CreatedDate;
+
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
     }
 }

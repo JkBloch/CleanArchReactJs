@@ -77,8 +77,8 @@ namespace EmployeeManagement.Infrastructure.Migrations
                     b.Property<DateTime>("Expires")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Revoked")
-                        .HasColumnType("bit");
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -89,7 +89,8 @@ namespace EmployeeManagement.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("RefreshTokens", (string)null);
                 });
@@ -173,6 +174,49 @@ namespace EmployeeManagement.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("RolePermissions", (string)null);
+                });
+
+            modelBuilder.Entity("EmployeeManagement.Domain.Entities.State", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("States", (string)null);
                 });
 
             modelBuilder.Entity("EmployeeManagement.Domain.Entities.User", b =>
@@ -292,8 +336,8 @@ namespace EmployeeManagement.Infrastructure.Migrations
             modelBuilder.Entity("EmployeeManagement.Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("EmployeeManagement.Domain.Entities.User", "User")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("EmployeeManagement.Domain.Entities.RefreshToken", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -352,7 +396,7 @@ namespace EmployeeManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("EmployeeManagement.Domain.Entities.User", b =>
                 {
-                    b.Navigation("RefreshTokens");
+                    b.Navigation("RefreshToken");
 
                     b.Navigation("UserRoles");
                 });

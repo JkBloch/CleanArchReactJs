@@ -11,5 +11,6 @@ namespace EmployeeManagement.Domain.Interfaces
     : IGenericRepository<RefreshToken>
     {
         Task<RefreshToken?> GetByTokenAsync(string token);
+        Task<RefreshToken?> GetByUserIdAsync(Guid userId);
     }
 }

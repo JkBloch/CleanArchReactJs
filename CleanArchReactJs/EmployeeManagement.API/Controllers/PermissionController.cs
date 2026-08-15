@@ -8,7 +8,7 @@ namespace EmployeeManagement.API.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class PermissionController : ControllerBase
     {
         private readonly IPermissionService _permissionService;

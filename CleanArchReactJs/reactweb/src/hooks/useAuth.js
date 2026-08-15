@@ -6,37 +6,44 @@ export default function useAuth() {
     return useContext(AuthContext);
 }
 
-export function usePermission(permission) {
+export function usePermissions(permission) {
 
     const { user } = useAuth();
 
     return user?.permissions?.includes(permission);
 }
 
-export function useRole(role) {
+export function useRoles(role) {
 
     const { user } = useAuth();
 
     return user?.roles?.includes(role);
 }
 
-export function useRolePermission(rolePermission) {
+export function useRolePermissions(rolePermission) {
 
     const { user } = useAuth();
 
     return user?.rolePermissions?.includes(rolePermission);
 }
 
-export function useUser(user) {
+export function useUsers(user) {
 
     const { user1 } = useAuth();
 
     return user1?.users?.includes(user);
 }
 
-export function useUserRole(userRole) {
+export function useUserRoles(userRole) {
 
     const { user } = useAuth();
 
     return user?.userRoles?.includes(userRole);
+}
+
+export function useStates(state) {
+
+    const { user } = useAuth();
+
+    return user?.states?.includes(state);
 }

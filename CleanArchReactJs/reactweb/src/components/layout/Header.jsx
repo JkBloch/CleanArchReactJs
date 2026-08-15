@@ -1,8 +1,8 @@
-//import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 function Header() {
 
-    //const { logout, user } = useAuth();
+    const { logout, user } = useAuth();
 
     return (
 
@@ -11,17 +11,17 @@ function Header() {
             <div className="container">
 
                 <span className="navbar-brand">
-                Welcome
-                    {/*Welcome {user?.firstName}*/}
+
+                    Welcome {user?.firstName}
 
                 </span>
 
-                {/*<button*/}
-                {/*    className="btn btn-danger"*/}
-                {/*    onClick={logout}*/}
-                {/*>*/}
-                {/*    Logout*/}
-                {/*</button>*/}
+                <button
+                    className="btn btn-danger"
+                    onClick={logout}
+                >
+                    Logout
+                </button>
 
             </div>
 

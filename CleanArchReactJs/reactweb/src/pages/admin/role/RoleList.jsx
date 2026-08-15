@@ -118,7 +118,7 @@ function RoleList() {
             setShowConfirmDeletePermanent(false);
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowConfirmDeletePermanent(false);
         }
         finally {

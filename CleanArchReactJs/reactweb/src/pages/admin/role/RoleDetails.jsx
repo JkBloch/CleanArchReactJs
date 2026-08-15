@@ -5,7 +5,7 @@ import { deleteRole, deletePermanentRoles, getRole, restoreRole } from "../../..
 import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function RoleDetails() {
 
@@ -39,7 +39,7 @@ function RoleDetails() {
             setShowDelete(false);
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowDelete(false);
         }
         finally {
@@ -56,7 +56,7 @@ function RoleDetails() {
 
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowDeletePermanent(false);
         }
         finally {

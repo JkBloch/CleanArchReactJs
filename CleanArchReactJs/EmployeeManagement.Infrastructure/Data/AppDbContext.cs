@@ -22,7 +22,7 @@ namespace EmployeeManagement.Infrastructure.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<UserRole> UserRoles => Set<UserRole>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-
+        public DbSet<State> States => Set<State>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

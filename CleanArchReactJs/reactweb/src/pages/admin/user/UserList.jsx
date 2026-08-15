@@ -133,7 +133,7 @@ function UserList() {
 
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowConfirmDeletePermanent(false);
         }
         finally {

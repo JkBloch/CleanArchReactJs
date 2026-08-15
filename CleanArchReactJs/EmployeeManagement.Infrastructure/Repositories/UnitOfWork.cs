@@ -17,10 +17,11 @@ namespace EmployeeManagement.Infrastructure.Repositories
         public IRolePermissionRepository RolePermissions { get; }
         public IUserRepository Users { get; }
         public IUserRoleRepository UserRoles { get; }
+        public IRefreshTokenRepository RefreshTokens { get; }
+        public IStateRepository States { get; }
 
         //public IEmployeeRepository Employees { get; }
 
-        //public IRefreshTokenRepository RefreshTokens { get; }
 
         //public IReportRepository Reports { get; }
 
@@ -33,20 +34,21 @@ namespace EmployeeManagement.Infrastructure.Repositories
             RolePermissions = new RolePermissionRepository(context);
             Users = new UserRepository(context);
             UserRoles = new UserRoleRepository(context);
+            RefreshTokens = new RefreshTokenRepository(context);
+            States=new StateRepository(context);
             //Employees = new EmployeeRepository(context);
 
 
-            //RefreshTokens = new RefreshTokenRepository(context);
             //Reports = new ReportRepository(context);
 
 
         }
 
-        public async Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             try
             {
-                return await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync(cancellationToken);
 
             }
             catch (Exception ex)

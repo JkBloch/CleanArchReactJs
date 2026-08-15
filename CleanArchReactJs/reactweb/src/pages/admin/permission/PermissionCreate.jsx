@@ -3,7 +3,7 @@ import { useState } from "react";
 import { createPermission } from "../.././../api/admin/permissionApi";
 import PermissionForm from "../permission/PermissionForm";
 import { notify } from "../../../services/notificationService";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function PermissionCreate() {
 
@@ -23,13 +23,13 @@ function PermissionCreate() {
             notify.success(
                 "Permission created successfully."
             );
-            navigate("/permissions");
+           // navigate("/permissions");
 
         }
         catch (error) {
-            notify.error(
-                getErrorMessage(error)
-            );
+            //notify.error(
+            //    getErrorMessage(error)
+            //);
             setInitialValues(permission);  
         }
         finally {

@@ -9,6 +9,7 @@ import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
 import { EMPTY_GUID } from "../../../constants/common";
+import { useLoading } from "../../../context/LoadingContext";
 
 function UserRoleList() {
     const [selectedId, setSelectedId] = useState(null);
@@ -26,7 +27,7 @@ function UserRoleList() {
     const [pageSize, setPageSize] = useState(10);
     const [sortBy, setSortBy] = useState("role");
     const [descending, setDescending] = useState(false);
-
+    const { showLoading, hideLoading } = useLoading();
     const [filters, setFilters] = useState({
 
         keyword: "",
@@ -63,7 +64,7 @@ function UserRoleList() {
     async function loadUserRoles(selectedPageNumber = 1, sortBy = "role", descending = false) {
 
         try {
-
+            showLoading();
             const revfilters = {
                 keyword: keyword,
                 roleId: searchRoleId,
@@ -82,7 +83,7 @@ function UserRoleList() {
             setTotalPages(result.totalPages);
 
         } finally {
-
+            hideLoading();
             setLoading(false);
 
         }
@@ -119,7 +120,7 @@ function UserRoleList() {
             setShowConfirmDeletePermanent(false);
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowConfirmDeletePermanent(false);
         }
         finally {

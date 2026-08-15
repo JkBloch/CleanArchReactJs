@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserRoleForm from "./UserRoleForm";
 import { getUserRole, updateUserRole } from "../../../api/admin/userRoleApi";
 import { notify } from "../../../services/notificationService";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function UserRoleEdit() {
 
@@ -44,7 +44,7 @@ function UserRoleEdit() {
 
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setUserRole(data);
             setLoading(false);
         }

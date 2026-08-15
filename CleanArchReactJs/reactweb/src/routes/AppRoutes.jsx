@@ -1,163 +1,54 @@
 import { Routes, Route } from "react-router-dom";
-
 import AppLayout from "../layouts/AppLayout";
 import AuthLayout from "../layouts/AuthLayout";
-
 import ProtectedRoute from "../routes/ProtectedRoute";
 import PublicRoute from "../routes/PublicRoute";
-
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
 import Dashboard from "../pages/dashboard/Dashboard";
-import PermissionList from "../pages/admin/permission/PermissionList";
-import PermissionCreate from "../pages/admin/permission/PermissionCreate";
-import PermissionEdit from "../pages/admin/permission/PermissionEdit";
-import PermissionDetails from "../pages/admin/permission/PermissionDetails";
-import RoleList from "../pages/admin/role/RoleList";
-import RoleCreate from "../pages/admin/role/RoleCreate";
-import RoleEdit from "../pages/admin/role/RoleEdit";
-import RoleDetails from "../pages/admin/role/RoleDetails";
-import RolePermissionList from "../pages/admin/rolePermission/RolePermissionList";
-import RolePermissionCreate from "../pages/admin/rolePermission/RolePermissionCreate";
-import RolePermissionEdit from "../pages/admin/rolePermission/RolePermissionEdit";
-import RolePermissionDetails from "../pages/admin/rolePermission/RolePermissionDetails";
-import UserList from "../pages/admin/user/UserList";
-import UserCreate from "../pages/admin/user/UserCreate";
-import UserEdit from "../pages/admin/user/UserEdit";
-import UserDetails from "../pages/admin/user/UserDetails";
-import UserRoleList from "../pages/admin/userRole/UserRoleList";
-import UserRoleCreate from "../pages/admin/userRole/UserRoleCreate";
-import UserRoleEdit from "../pages/admin/userRole/UserRoleEdit";
-import UserRoleDetails from "../pages/admin/userRole/UserRoleDetails";
-
+import AdminRoute from "./admin/AdminRoute";
+import MasterRoute from "./master/MasterRoute";
 function AppRoutes() {
         
 
     return (
+        <>
         <Routes>
-            <Route element={<AppLayout />} >
+
+            <Route element={<AuthLayout />}>
+
                 <Route
-                    path="/permissions"
-                    element={<PermissionList />
-                    }
-                />
-                <Route
-                    path="/permissions/create"
+                    path="/login"
                     element={
-                        <PermissionCreate />
+                        <PublicRoute>
+                            <Login />
+                        </PublicRoute>
                     }
                 />
 
                 <Route
-                    path="/permissions/:id"
+                    path="/register"
                     element={
-                        <PermissionDetails />
-                    }
-                />
-                <Route
-                    path="/permissions/edit/:id"
-                    element={
-                        <PermissionEdit />
-                    }
-                />
-                <Route
-                    path="/roles"
-                    element={<RoleList />
-                    }
-                />
-                <Route
-                    path="/roles/create"
-                    element={
-                        <RoleCreate />
+                        <PublicRoute>
+                            <Register />
+                        </PublicRoute>
                     }
                 />
 
-                <Route
-                    path="/roles/:id"
-                    element={
-                        <RoleDetails />
-                    }
-                />
-                <Route
-                    path="/roles/edit/:id"
-                    element={
-                        <RoleEdit />
-                    }
-                />
-                <Route
-                    path="/users"
-                    element={<UserList />
-                    }
-                />
-                <Route
-                    path="/users/create"
-                    element={
-                        <UserCreate />
-                    }
-                />
+            </Route>
+            <Route
+                element={
+                    <ProtectedRoute>
 
-                <Route
-                    path="/users/:id"
-                    element={
-                        <UserDetails />
-                    }
-                />
-                <Route
-                    path="/users/edit/:id"
-                    element={
-                        <UserEdit />
-                    }
-                />
-                <Route
-                    path="/rolePermissions"
-                    element={<RolePermissionList />
-                    }
-                />
-                <Route
-                    path="/rolePermissions/create"
-                    element={
-                        <RolePermissionCreate />
-                    }
-                />
+                        <AppLayout />
 
-                <Route
-                    path="/rolePermissions/:id"
-                    element={
-                        <RolePermissionDetails />
-                    }
-                />
-                <Route
-                    path="/rolePermissions/edit/:id"
-                    element={
-                        <RolePermissionEdit />
-                    }
-                />
-                <Route
-                    path="/userRoles"
-                    element={<UserRoleList />
-                    }
-                />
-                <Route
-                    path="/userRoles/create"
-                    element={
-                        <UserRoleCreate />
-                    }
-                />
-
-                <Route
-                    path="/userRoles/:id"
-                    element={
-                        <UserRoleDetails />
-                    }
-                />
-                <Route
-                    path="/userRoles/edit/:id"
-                    element={
-                        <UserRoleEdit />
-                    }
-                />
-                <Route
+                    </ProtectedRoute>
+                }
+            >
+           
+                  
+                <Route roles={["Admin","HR"] }
                     path="/dashboard"
                     element={<Dashboard />
                     }
@@ -171,7 +62,9 @@ function AppRoutes() {
             </Route>
         </Routes>
 
-
+            <AdminRoute></AdminRoute>
+            <MasterRoute></MasterRoute>
+        </>
         //<Routes>
 
         //    <Route element={<AuthLayout />}>

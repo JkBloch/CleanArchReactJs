@@ -15,8 +15,10 @@ namespace EmployeeManagement.Domain.Entities
 
         public DateTime Created { get; set; }
 
-        public bool Revoked { get; set; }
+        public DateTime? Revoked { get; set; }
+        public bool IsExpired => DateTime.UtcNow >= Expires;
 
+        public bool IsActive => Revoked == null && !IsExpired;
         public Guid UserId { get; set; }
 
         public User User { get; set; } = null!;

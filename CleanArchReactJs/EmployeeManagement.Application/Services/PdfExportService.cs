@@ -12,6 +12,7 @@ namespace EmployeeManagement.Application.Services
     using EmployeeManagement.Application.DTOs.Permissions;
     using EmployeeManagement.Application.DTOs.RolePermissions;
     using EmployeeManagement.Application.DTOs.Roles;
+    using EmployeeManagement.Application.DTOs.State;
     using EmployeeManagement.Application.DTOs.UserRoles;
     using EmployeeManagement.Application.DTOs.Users;
     using EmployeeManagement.Application.Interfaces;
@@ -406,6 +407,80 @@ namespace EmployeeManagement.Application.Services
                                         table.Cell().Text(userRole.User.UserName);
 
                                         table.Cell().Text(userRole.CreatedDate.ToShortDateString());
+                                    }
+                                });
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+
+                            x.CurrentPageNumber();
+
+                            x.Span(" of ");
+
+                            x.TotalPages();
+                        });
+                });
+            }).GeneratePdf();
+        }
+        public async Task<byte[]> ExportStatesAsync(SearchStateDto request)
+        {
+            var query = _unitOfWork.States.Query();
+            var (states, iTotalRecord) = await SearchExportData.GetExportStateData(query, request, "pdf");
+
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+
+                    page.Size(PageSizes.A4.Landscape());
+
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Text("State List Report")
+                        .FontSize(22)
+                        .Bold();
+
+                    page.Content()
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item()
+                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.ConstantColumn(120);
+                                        columns.ConstantColumn(200);
+                                        columns.ConstantColumn(150);
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Text("Code").Bold();
+
+                                        header.Cell().Text("Name").Bold();
+
+                                        header.Cell().Text("CreatedDate").Bold();
+                                    });
+
+                                    foreach (var state in states)
+                                    {
+                                        table.Cell().Text(state.Code);
+
+                                        table.Cell().Text(state.Name);
+
+                                        table.Cell().Text(state.CreatedDate.ToShortDateString());
                                     }
                                 });
                         });

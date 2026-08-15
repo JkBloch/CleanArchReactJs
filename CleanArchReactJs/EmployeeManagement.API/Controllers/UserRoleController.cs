@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagement.API.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = false)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
     //[Authorize]

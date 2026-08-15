@@ -5,7 +5,7 @@ import { deletePermission, deletePermanentPermissions, getPermission, restorePer
 import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
-import { getErrorMessage } from "../../../utils/errorHandling";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 
 function PermissionDetails() {
 
@@ -36,7 +36,8 @@ function PermissionDetails() {
             setShowDelete(false);
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
+
             setShowDelete(false);
         }
         finally {
@@ -51,7 +52,7 @@ function PermissionDetails() {
             navigate("/permissions");
         }
         catch (error) {
-            notify.error(getErrorMessage(error));
+            //notify.error(getErrorMessage(error));
             setShowDeletePermanent(false);
         }
         finally {
