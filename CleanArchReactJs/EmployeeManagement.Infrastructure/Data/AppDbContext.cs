@@ -25,7 +25,7 @@ namespace EmployeeManagement.Infrastructure.Data
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<State> States => Set<State>();
         public DbSet<City> Cities => Set<City>();
-
+        public DbSet<Department> Departments => Set<Department>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -5,6 +5,7 @@ using EmployeeManagement.Application.DTOs.Admin.Roles;
 using EmployeeManagement.Application.DTOs.Admin.UserRoles;
 using EmployeeManagement.Application.DTOs.Admin.Users;
 using EmployeeManagement.Application.DTOs.Master.City;
+using EmployeeManagement.Application.DTOs.Master.Department;
 using EmployeeManagement.Application.DTOs.Master.State;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,6 @@ namespace EmployeeManagement.Application.Interfaces
         Task<byte[]> ExportUserRolesAsync(SearchUserRoleDto request);
         Task<byte[]> ExportStatesAsync(SearchStateDto request);
         Task<byte[]> ExportCitiesAsync(SearchCityDto request);
+        Task<byte[]> ExportDepartmentsAsync(SearchDepartmentDto request);
     }
 }

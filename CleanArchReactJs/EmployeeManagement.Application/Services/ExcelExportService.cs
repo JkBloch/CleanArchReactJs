@@ -10,6 +10,7 @@ using EmployeeManagement.Application.DTOs.Admin.Roles;
 using EmployeeManagement.Application.DTOs.Admin.UserRoles;
 using EmployeeManagement.Application.DTOs.Admin.Users;
 using EmployeeManagement.Application.DTOs.Master.City;
+using EmployeeManagement.Application.DTOs.Master.Department;
 using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Entities.Admin;
@@ -788,6 +789,116 @@ namespace EmployeeManagement.Application.Services
                     city.Name;
                 ws.Cell(row, 3).Value =
                     city.CreatedDate;
+
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
+
+        #region Department
+        public async Task<byte[]> ExportDepartmentsAsync(SearchDepartmentDto request)
+        {
+            var query = _unitOfWork.Departments.Query();
+
+            var (departments, iTotalRecord) = await DepartmentSearchData.GetExportDepartmentData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                departments);
+
+            CreateDepartmentSheet(
+                workbook,
+                departments);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<Department> departments)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "Department Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total Departments";
+
+            ws.Cell("B5").Value =
+                departments.Count;
+
+            ws.Cell("A6").Value =
+                "Names";
+
+            ws.Cell("B6").Value =
+                departments
+                .Select(x => x.Name)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateDepartmentSheet(XLWorkbook workbook, List<Department> departments)
+        {
+            var ws =
+                workbook.Worksheets.Add("Departments");
+
+            ws.Cell(1, 1).Value = "Code";
+            ws.Cell(1, 2).Value = "Name";
+            ws.Cell(1, 3).Value = "Created";
+
+            var header =
+                ws.Range("A1:C1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var department in departments)
+            {
+                ws.Cell(row, 1).Value =
+                    department.Code;
+
+                ws.Cell(row, 2).Value =
+                    department.Name;
+                ws.Cell(row, 3).Value =
+                    department.CreatedDate;
 
                 row++;
             }

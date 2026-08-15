@@ -24,6 +24,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
         public IRefreshTokenRepository RefreshTokens { get; }
         public IStateRepository States { get; }
         public ICityRepository Cities { get; }
+        public IDepartmentRepository Departments { get; }
 
         //public IEmployeeRepository Employees { get; }
 
@@ -42,7 +43,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
             RefreshTokens = new RefreshTokenRepository(context);
             States=new StateRepository(context);
             Cities = new CityRepository(context);
-
+            Departments = new DepartmentRepository(context);
             //Employees = new EmployeeRepository(context);
 
 

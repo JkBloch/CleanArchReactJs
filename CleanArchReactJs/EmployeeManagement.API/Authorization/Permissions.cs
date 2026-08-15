@@ -19,6 +19,8 @@ namespace EmployeeManagement.API.Authorization
             public const string UserRole = "UserRole";
             public const string State = "State";
             public const string City = "City";
+            public const string Department = "Department";
+
             //public const string Employee = "Employee";
             //public const string Dashboard = "Dashboard";
             //public const string Report = "Report";

@@ -1,4 +1,5 @@
 import CityRoute from "./CityRoute";
+import DepartmentRoute from "./DepartmentRoute";
 import StateRoute from "./StateRoute";
 
 function MasterRoute() {
@@ -6,6 +7,7 @@ function MasterRoute() {
         <>
             <StateRoute></StateRoute>
             <CityRoute></CityRoute>
+            <DepartmentRoute></DepartmentRoute>
         </>);
 }
 

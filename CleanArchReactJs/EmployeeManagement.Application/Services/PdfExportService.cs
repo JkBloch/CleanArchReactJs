@@ -1,30 +1,30 @@
-﻿using System;
+﻿using AutoMapper;
+using EmployeeManagement.Application.Common;
+using EmployeeManagement.Application.Common.SearchExport.Admin;
+using EmployeeManagement.Application.Common.SearchExport.Master;
+using EmployeeManagement.Application.DTOs;
+using EmployeeManagement.Application.DTOs.Admin.Permissions;
+using EmployeeManagement.Application.DTOs.Admin.RolePermissions;
+using EmployeeManagement.Application.DTOs.Admin.Roles;
+using EmployeeManagement.Application.DTOs.Admin.UserRoles;
+using EmployeeManagement.Application.DTOs.Admin.Users;
+using EmployeeManagement.Application.DTOs.Master.City;
+using EmployeeManagement.Application.DTOs.Master.Department;
+using EmployeeManagement.Application.DTOs.Master.State;
+using EmployeeManagement.Application.Interfaces;
+using EmployeeManagement.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Application.Services
-{
-    using AutoMapper;
-    using EmployeeManagement.Application.Common;
-    using EmployeeManagement.Application.Common.SearchExport.Admin;
-    using EmployeeManagement.Application.Common.SearchExport.Master;
-    using EmployeeManagement.Application.DTOs;
-    using EmployeeManagement.Application.DTOs.Admin.Permissions;
-    using EmployeeManagement.Application.DTOs.Admin.RolePermissions;
-    using EmployeeManagement.Application.DTOs.Admin.Roles;
-    using EmployeeManagement.Application.DTOs.Admin.UserRoles;
-    using EmployeeManagement.Application.DTOs.Admin.Users;
-    using EmployeeManagement.Application.DTOs.Master.City;
-    using EmployeeManagement.Application.DTOs.Master.State;
-    using EmployeeManagement.Application.Interfaces;
-    using EmployeeManagement.Domain.Interfaces;
-    using Microsoft.EntityFrameworkCore;
-    using QuestPDF.Fluent;
-    using QuestPDF.Helpers;
-    using QuestPDF.Infrastructure;
-
+{ 
     public class PdfExportService : IPdfExportService
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -558,6 +558,80 @@ namespace EmployeeManagement.Application.Services
                                         table.Cell().Text(city.Name);
 
                                         table.Cell().Text(city.CreatedDate.ToShortDateString());
+                                    }
+                                });
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+
+                            x.CurrentPageNumber();
+
+                            x.Span(" of ");
+
+                            x.TotalPages();
+                        });
+                });
+            }).GeneratePdf();
+        }
+        public async Task<byte[]> ExportDepartmentsAsync(SearchDepartmentDto request)
+        {
+            var query = _unitOfWork.Departments.Query();
+            var (departments, iTotalRecord) = await DepartmentSearchData.GetExportDepartmentData(query, request, "pdf");
+
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+
+                    page.Size(PageSizes.A4.Landscape());
+
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Text("Department List Report")
+                        .FontSize(22)
+                        .Bold();
+
+                    page.Content()
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item()
+                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.ConstantColumn(120);
+                                        columns.ConstantColumn(200);
+                                        columns.ConstantColumn(150);
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Text("Code").Bold();
+
+                                        header.Cell().Text("Name").Bold();
+
+                                        header.Cell().Text("CreatedDate").Bold();
+                                    });
+
+                                    foreach (var department in departments)
+                                    {
+                                        table.Cell().Text(department.Code);
+
+                                        table.Cell().Text(department.Name);
+
+                                        table.Cell().Text(department.CreatedDate.ToShortDateString());
                                     }
                                 });
                         });

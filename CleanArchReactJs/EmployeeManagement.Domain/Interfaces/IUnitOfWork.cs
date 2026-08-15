@@ -19,7 +19,7 @@ namespace EmployeeManagement.Domain.Interfaces
         IRefreshTokenRepository RefreshTokens { get; }
         IStateRepository States { get; }
         ICityRepository Cities { get; }
-
+        IDepartmentRepository Departments { get; }
         //IEmployeeRepository Employees { get; }
 
 

@@ -29,28 +29,22 @@ function Sidebar() {
                 name: "Cities",
                 icon: <FaUserShield />,
                 path: "/cities"
+            },   
+            {
+                name: "Departments",
+                icon: <FaBuilding />,
+                path: "/departments"
             },
             {
                 name: "Employees",
                 icon: <FaUsers />,
                 path: "/employees"
             },
-
-            {
-                name: "Departments",
-                icon: <FaBuilding />,
-                path: "/departments"
-            },
-
             {
                 name: "Reports",
                 icon: <FaChartBar />,
                 path: "/reports"
-            },
-
-
-
-
+            }, 
 
             {
                 name: "Audit Logs",
