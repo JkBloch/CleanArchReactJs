@@ -1,6 +1,10 @@
 ﻿using EmployeeManagement.Domain.Entities;
 using EmployeeManagement.Domain.Interfaces;
+using EmployeeManagement.Domain.Interfaces.Admin;
+using EmployeeManagement.Domain.Interfaces.Master;
 using EmployeeManagement.Infrastructure.Data;
+using EmployeeManagement.Infrastructure.Repositories.Admin;
+using EmployeeManagement.Infrastructure.Repositories.Master;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +23,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
         public IUserRoleRepository UserRoles { get; }
         public IRefreshTokenRepository RefreshTokens { get; }
         public IStateRepository States { get; }
+        public ICityRepository Cities { get; }
 
         //public IEmployeeRepository Employees { get; }
 
@@ -36,6 +41,8 @@ namespace EmployeeManagement.Infrastructure.Repositories
             UserRoles = new UserRoleRepository(context);
             RefreshTokens = new RefreshTokenRepository(context);
             States=new StateRepository(context);
+            Cities = new CityRepository(context);
+
             //Employees = new EmployeeRepository(context);
 
 

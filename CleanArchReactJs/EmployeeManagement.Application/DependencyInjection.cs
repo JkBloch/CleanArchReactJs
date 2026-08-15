@@ -1,6 +1,10 @@
 ﻿using EmployeeManagement.Application.Interfaces;
-using EmployeeManagement.Application.Mapping;
+using EmployeeManagement.Application.Interfaces.Admin;
+using EmployeeManagement.Application.Interfaces.Master;
+using EmployeeManagement.Application.Mapping.Admin;
 using EmployeeManagement.Application.Services;
+using EmployeeManagement.Application.Services.Admin;
+using EmployeeManagement.Application.Services.Master;
 using EmployeeManagement.Application.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -33,6 +37,7 @@ namespace EmployeeManagement.Application
             services.AddScoped<IStateService, StateService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICityService, CityService>();
 
             //services.AddScoped<IEmployeeService, EmployeeService>();
 

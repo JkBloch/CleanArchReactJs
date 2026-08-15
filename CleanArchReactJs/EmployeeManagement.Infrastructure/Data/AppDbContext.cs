@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.Domain.Entities;
+﻿using EmployeeManagement.Domain.Entities.Admin;
+using EmployeeManagement.Domain.Entities.Master;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace EmployeeManagement.Infrastructure.Data
         public DbSet<UserRole> UserRoles => Set<UserRole>();
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<State> States => Set<State>();
+        public DbSet<City> Cities => Set<City>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EmployeeManagement.Domain.Interfaces.Admin;
+using EmployeeManagement.Domain.Interfaces.Master;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +18,8 @@ namespace EmployeeManagement.Domain.Interfaces
         IUserRoleRepository UserRoles { get; }
         IRefreshTokenRepository RefreshTokens { get; }
         IStateRepository States { get; }
+        ICityRepository Cities { get; }
+
         //IEmployeeRepository Employees { get; }
 
 

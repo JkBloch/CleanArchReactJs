@@ -1,10 +1,11 @@
 ﻿using EmployeeManagement.Application.DTOs;
-using EmployeeManagement.Application.DTOs.Permissions;
-using EmployeeManagement.Application.DTOs.RolePermissions;
-using EmployeeManagement.Application.DTOs.Roles;
-using EmployeeManagement.Application.DTOs.State;
-using EmployeeManagement.Application.DTOs.UserRoles;
-using EmployeeManagement.Application.DTOs.Users;
+using EmployeeManagement.Application.DTOs.Admin.Permissions;
+using EmployeeManagement.Application.DTOs.Admin.RolePermissions;
+using EmployeeManagement.Application.DTOs.Admin.Roles;
+using EmployeeManagement.Application.DTOs.Admin.UserRoles;
+using EmployeeManagement.Application.DTOs.Admin.Users;
+using EmployeeManagement.Application.DTOs.Master.City;
+using EmployeeManagement.Application.DTOs.Master.State;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,5 +22,7 @@ namespace EmployeeManagement.Application.Interfaces
         Task<byte[]> ExportUsersAsync(SearchUserDto request);
         Task<byte[]> ExportUserRolesAsync(SearchUserRoleDto request);
         Task<byte[]> ExportStatesAsync(SearchStateDto request);
+        Task<byte[]> ExportCitiesAsync(SearchCityDto request);
+
     }
 }

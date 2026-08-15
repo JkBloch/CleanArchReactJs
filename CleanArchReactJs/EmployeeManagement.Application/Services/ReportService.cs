@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using EmployeeManagement.Application.Common;
-using EmployeeManagement.Application.DTOs.Permissions;
+using EmployeeManagement.Application.DTOs.Admin.Permissions;
 using EmployeeManagement.Application.DTOs.Reports.Permissions;
 using EmployeeManagement.Application.Interfaces;
-using EmployeeManagement.Domain.Entities;
+using EmployeeManagement.Domain.Entities.Admin;
 using EmployeeManagement.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

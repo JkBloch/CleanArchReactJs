@@ -1,10 +1,11 @@
 ﻿using EmployeeManagement.Application.DTOs;
-using EmployeeManagement.Application.DTOs.Permissions;
-using EmployeeManagement.Application.DTOs.RolePermissions;
-using EmployeeManagement.Application.DTOs.Roles;
-using EmployeeManagement.Application.DTOs.State;
-using EmployeeManagement.Application.DTOs.UserRoles;
-using EmployeeManagement.Application.DTOs.Users;
+using EmployeeManagement.Application.DTOs.Admin.Permissions;
+using EmployeeManagement.Application.DTOs.Admin.RolePermissions;
+using EmployeeManagement.Application.DTOs.Admin.Roles;
+using EmployeeManagement.Application.DTOs.Admin.UserRoles;
+using EmployeeManagement.Application.DTOs.Admin.Users;
+using EmployeeManagement.Application.DTOs.Master.City;
+using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -169,6 +170,29 @@ namespace EmployeeManagement.API.Controllers
                 $"StateReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
         #endregion
+        #region City
+        [HttpPost("cities/excel")]
+        public async Task<IActionResult> ExportCitiesExcel(SearchCityDto request)
+        {
+            var bytes =
+                await _excelExportService
+                    .ExportCitiesAsync(request);
 
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Cities_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        [HttpPost("cities/pdf")]
+        public async Task<IActionResult> ExportCitiesPdf(SearchCityDto request)
+        {
+            var pdf = await _pdfExportService.ExportCitiesAsync(request);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"CityReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        #endregion
     }
 }

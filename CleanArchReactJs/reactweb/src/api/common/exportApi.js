@@ -23,7 +23,7 @@ export async function downloadExcel(filters,reportName) {
             response = await exportUsersExcel(filters);
             break;    
         case "StateReport":
-            response = await exportRolesExcel(filters);
+            response = await exportStatesExcel(filters);
             break;
         default:
     }
@@ -68,7 +68,7 @@ export async function downloadPdf(filters, reportName) {
             response = await exportUsersPdf(filters);
             break;
         case "StateReport":
-            response = await exportRolesPdf(filters);
+            response = await exportStatesPdf(filters);
             break;
         default:
     }

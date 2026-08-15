@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Domain.Entities;
+using EmployeeManagement.Domain.Entities.Admin;
 using EmployeeManagement.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

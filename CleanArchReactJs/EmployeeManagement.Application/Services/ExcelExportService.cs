@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
 using ClosedXML.Excel;
 using EmployeeManagement.Application.Common;
+using EmployeeManagement.Application.Common.SearchExport.Admin;
+using EmployeeManagement.Application.Common.SearchExport.Master;
 using EmployeeManagement.Application.DTOs;
-using EmployeeManagement.Application.DTOs.Permissions;
-using EmployeeManagement.Application.DTOs.RolePermissions;
-using EmployeeManagement.Application.DTOs.Roles;
-using EmployeeManagement.Application.DTOs.State;
-using EmployeeManagement.Application.DTOs.UserRoles;
-using EmployeeManagement.Application.DTOs.Users;
+using EmployeeManagement.Application.DTOs.Admin.Permissions;
+using EmployeeManagement.Application.DTOs.Admin.RolePermissions;
+using EmployeeManagement.Application.DTOs.Admin.Roles;
+using EmployeeManagement.Application.DTOs.Admin.UserRoles;
+using EmployeeManagement.Application.DTOs.Admin.Users;
+using EmployeeManagement.Application.DTOs.Master.City;
+using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces;
-using EmployeeManagement.Domain.Entities;
+using EmployeeManagement.Domain.Entities.Admin;
+using EmployeeManagement.Domain.Entities.Master;
 using EmployeeManagement.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace EmployeeManagement.Application.Services
@@ -29,7 +33,7 @@ namespace EmployeeManagement.Application.Services
         {
             var query = _unitOfWork.Permissions.Query();
              
-            var (permissions, iTotalRecord) = await SearchExportData.GetExportPermissionData(query, request, "excel");
+            var (permissions, iTotalRecord) = await PermissionSearchData.GetExportPermissionData(query, request, "excel");
 
             using var workbook = new XLWorkbook();
 
@@ -135,7 +139,7 @@ namespace EmployeeManagement.Application.Services
         {
             var query = _unitOfWork.Roles.Query();
 
-            var (roles, iTotalRecord) = await SearchExportData.GetExportRoleData(query, request, "excel");
+            var (roles, iTotalRecord) = await RoleSearchData.GetExportRoleData(query, request, "excel");
 
 
             using var workbook =
@@ -247,7 +251,7 @@ namespace EmployeeManagement.Application.Services
                 .Include(x=>x.Role)
                 .Include(x=>x.Permission);
 
-            var (rolePermissions, iTotalRecord) = await SearchExportData.GetExportRolePermissionData(query, request, "excel");
+            var (rolePermissions, iTotalRecord) = await RolePermissionSearchData.GetExportRolePermissionData(query, request, "excel");
 
 
             using var workbook =
@@ -357,7 +361,7 @@ namespace EmployeeManagement.Application.Services
         {
             var query = _unitOfWork.Users.Query();
 
-            var (users, iTotalRecord) = await SearchExportData.GetExportUserData(query, request, "excel");
+            var (users, iTotalRecord) = await UserSearchData.GetExportUserData(query, request, "excel");
 
 
             using var workbook =
@@ -475,7 +479,7 @@ namespace EmployeeManagement.Application.Services
                 .Include(x => x.Role)
                 .Include(x => x.User);
 
-            var (userRoles, iTotalRecord) = await SearchExportData.GetExportUserRoleData(query, request, "excel");
+            var (userRoles, iTotalRecord) = await UserRoleSearchData.GetExportUserRoleData(query, request, "excel");
 
 
             using var workbook =
@@ -585,7 +589,7 @@ namespace EmployeeManagement.Application.Services
         {
             var query = _unitOfWork.States.Query();
 
-            var (states, iTotalRecord) = await SearchExportData.GetExportStateData(query, request, "excel");
+            var (states, iTotalRecord) = await StateSearchData.GetExportStateData(query, request, "excel");
 
 
             using var workbook =
@@ -674,6 +678,116 @@ namespace EmployeeManagement.Application.Services
                     state.Name;
                 ws.Cell(row, 3).Value =
                     state.CreatedDate;
+
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
+
+        #region City
+        public async Task<byte[]> ExportCitiesAsync(SearchCityDto request)
+        {
+            var query = _unitOfWork.Cities.Query();
+
+            var (cities, iTotalRecord) = await CitySearchData.GetExportCityData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                cities);
+
+            CreateCitySheet(
+                workbook,
+                cities);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<City> cities)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "City Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total Cities";
+
+            ws.Cell("B5").Value =
+                cities.Count;
+
+            ws.Cell("A6").Value =
+                "Names";
+
+            ws.Cell("B6").Value =
+                cities
+                .Select(x => x.Name)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateCitySheet(XLWorkbook workbook, List<City> cities)
+        {
+            var ws =
+                workbook.Worksheets.Add("Cities");
+
+            ws.Cell(1, 1).Value = "Code";
+            ws.Cell(1, 2).Value = "Name";
+            ws.Cell(1, 3).Value = "Created";
+
+            var header =
+                ws.Range("A1:C1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var city in cities)
+            {
+                ws.Cell(row, 1).Value =
+                    city.Code;
+
+                ws.Cell(row, 2).Value =
+                    city.Name;
+                ws.Cell(row, 3).Value =
+                    city.CreatedDate;
 
                 row++;
             }

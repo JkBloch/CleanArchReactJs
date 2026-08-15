@@ -1,6 +1,10 @@
 ﻿using EmployeeManagement.Domain.Interfaces;
+using EmployeeManagement.Domain.Interfaces.Admin;
+using EmployeeManagement.Domain.Interfaces.Master;
 using EmployeeManagement.Infrastructure.Data;
 using EmployeeManagement.Infrastructure.Repositories;
+using EmployeeManagement.Infrastructure.Repositories.Admin;
+using EmployeeManagement.Infrastructure.Repositories.Master;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +33,8 @@ namespace EmployeeManagement.Infrastructure
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IStateRepository, StateRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+
             //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 

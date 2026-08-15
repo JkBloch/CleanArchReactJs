@@ -1,5 +1,5 @@
 ﻿using EmployeeManagement.Application.Common;
-using EmployeeManagement.Application.DTOs.Permissions;
+using EmployeeManagement.Application.DTOs.Admin.Permissions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
