@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmployeeManagement.Application.Common;
+using EmployeeManagement.Application.Common.SearchExport.Master;
 using EmployeeManagement.Application.DTOs.Master.City;
 using EmployeeManagement.Application.Interfaces.Master;
 using EmployeeManagement.Domain.Entities.Master;
@@ -55,7 +56,7 @@ namespace EmployeeManagement.Application.Services.Master
                 _logger.LogInformation(
                     "Loading city {CityId}", id);
 
-                var city = await _unitOfWork.Cities.GetByIdAsync(id);
+                var city = await _unitOfWork.Cities.GetCityByIdAsync(id, cancellationToken);
 
                 if (city == null)
                 {
@@ -322,73 +323,9 @@ namespace EmployeeManagement.Application.Services.Master
         {
             try
             {
-                IQueryable<City> query = _unitOfWork.Cities.Query();
+                IQueryable<City> query = _unitOfWork.Cities.Query().Include(x=>x.State);
 
-                //-------------------------
-                // Keyword Search
-                //-------------------------
-
-                if (!string.IsNullOrWhiteSpace(dto.Keyword))
-                {
-                    var keyword = dto.Keyword.Trim();
-
-                    query = query.Where(x =>
-                        EF.Functions.Like(x.Name, $"%{keyword}%") ||
-                        EF.Functions.Like(x.Code, $"%{keyword}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.Code))
-                {
-                    var code = dto.Code.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.Code, $"{code}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.Name))
-                {
-                    var name = dto.Name.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.Name, $"{name}%"));
-                }
-
-
-
-
-                //-------------------------
-                // Sorting
-                //-------------------------
-
-                query = dto.SortBy?.ToLower() switch
-                {
-                    "code" => dto.Descending
-                        ? query.OrderByDescending(x => x.Code)
-                        : query.OrderBy(x => x.Code),
-
-                    "name" => dto.Descending
-                        ? query.OrderByDescending(x => x.Name)
-                        : query.OrderBy(x => x.Name),
-
-                    _ => dto.Descending
-                        ? query.OrderByDescending(x => x.Name)
-                        : query.OrderBy(x => x.Name)
-                };
-
-                //-------------------------
-                // Count
-                //-------------------------
-
-                var totalRecords = await query.CountAsync(cancellationToken);
-
-                //-------------------------
-                // Paging
-                //-------------------------
-
-                dto.PageSize = Math.Min(dto.PageSize, 100);
-
-                var cities = await query
-                    .Skip((dto.PageNumber - 1) * dto.PageSize)
-                    .Take(dto.PageSize)
-                    .ToListAsync(cancellationToken);
+                var (cities, totalRecords) = await CitySearchData.GetExportCityData(query, dto, "page", cancellationToken);
 
                 //-------------------------
                 // Response

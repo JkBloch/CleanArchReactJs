@@ -9,6 +9,7 @@ namespace EmployeeManagement.Application.DTOs.Master.City
     public class SearchCityDto
     {
         public string? Keyword { get; set; }
+        public Guid? StateId { get; set; }
         public string? Name { get; set; }
         public string? Code { get; set; }
         public int PageNumber { get; set; } = 1;

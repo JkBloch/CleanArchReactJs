@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmployeeManagement.Application.Common;
+using EmployeeManagement.Application.Common.SearchExport.Admin;
 using EmployeeManagement.Application.DTOs.Admin.RolePermissions;
 using EmployeeManagement.Application.Interfaces.Admin;
 using EmployeeManagement.Domain.Entities.Admin;
@@ -312,62 +313,7 @@ namespace EmployeeManagement.Application.Services.Admin
             {
                 IQueryable<RolePermission> query = _unitOfWork.RolePermissions.Query()
                     .Include(x=>x.Role).Include(x=>x.Permission);
-
-                //-------------------------
-                // Keyword Search
-                //-------------------------
-
-                if (!string.IsNullOrWhiteSpace(dto.Keyword))
-                {
-                    var keyword = dto.Keyword.Trim();
-
-                    query = query.Where(x =>
-                        EF.Functions.Like(x.Role.Name, $"%{keyword}%") ||
-                        EF.Functions.Like(x.Permission.Name, $"%{keyword}%"));
-                }
-                if (dto.RoleId != null && dto.RoleId != Guid.Empty)
-                {
-                    query = query.Where(x =>x.RoleId== dto.RoleId);
-                }
-                if (dto.PermissionId != null && dto.PermissionId != Guid.Empty)
-                {
-                    query = query.Where(x => x.PermissionId == dto.PermissionId);
-                }
-                //-------------------------
-                // Sorting
-                //-------------------------
-
-                query = dto.SortBy?.ToLower() switch
-                {
-                    "role" => dto.Descending
-                        ? query.OrderByDescending(x => x.Role.Name)
-                        : query.OrderBy(x => x.Role.Name),
-
-                    "permission" => dto.Descending
-                        ? query.OrderByDescending(x => x.Permission.Name)
-                        : query.OrderBy(x => x.Permission.Name),
-
-                    _ => dto.Descending
-                        ? query.OrderByDescending(x => x.Role.Name)
-                        : query.OrderBy(x => x.Role.Name)
-                };
-
-                //-------------------------
-                // Count
-                //-------------------------
-
-                var totalRecords = await query.CountAsync();
-
-                //-------------------------
-                // Paging
-                //-------------------------
-
-                dto.PageSize = Math.Min(dto.PageSize, 100);
-
-                var rolePermissions = await query
-                    .Skip((dto.PageNumber - 1) * dto.PageSize)
-                    .Take(dto.PageSize)
-                    .ToListAsync();
+                var (rolePermissions, totalRecords) = await RolePermissionSearchData.GetExportRolePermissionData(query, dto, "page");
 
                 //-------------------------
                 // Response

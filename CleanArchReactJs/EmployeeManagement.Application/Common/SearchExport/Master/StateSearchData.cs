@@ -11,7 +11,7 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
 {
     public static class StateSearchData
     {
-        public async static Task<(List<State> states, int totalRecords)> GetExportStateData(IQueryable<State> query, SearchStateDto dto, string searchFor)
+        public async static Task<(List<State> states, int totalRecords)> GetExportStateData(IQueryable<State> query, SearchStateDto dto, string searchFor, CancellationToken cancellationToken = default)
         {
             //-------------------------
             // Keyword Search
@@ -76,15 +76,16 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
             if (searchFor == "page")
             {
                 states = await query
+                    .IgnoreQueryFilters()
                    .Skip((dto.PageNumber - 1) * dto.PageSize)
                    .Take(dto.PageSize)
-                   .ToListAsync();
+                   .ToListAsync(cancellationToken);
 
             }
             else
             {
                 states =
-                    await query.ToListAsync();
+                    await query.IgnoreQueryFilters().ToListAsync();
 
             }
 

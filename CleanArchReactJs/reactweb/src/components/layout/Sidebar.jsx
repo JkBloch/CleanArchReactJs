@@ -26,6 +26,11 @@ function Sidebar() {
                 path: "/states"
             },
             {
+                name: "Cities",
+                icon: <FaUserShield />,
+                path: "/cities"
+            },
+            {
                 name: "Employees",
                 icon: <FaUsers />,
                 path: "/employees"

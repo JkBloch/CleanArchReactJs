@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeManagement.Application.Common;
+using EmployeeManagement.Application.Common.SearchExport.Admin;
+using EmployeeManagement.Application.Common.SearchExport.Master;
 using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces.Master;
 using EmployeeManagement.Domain.Entities.Master;
@@ -324,71 +326,7 @@ namespace EmployeeManagement.Application.Services.Master
             {
                 IQueryable<State> query = _unitOfWork.States.Query();
 
-                //-------------------------
-                // Keyword Search
-                //-------------------------
-
-                if (!string.IsNullOrWhiteSpace(dto.Keyword))
-                {
-                    var keyword = dto.Keyword.Trim();
-
-                    query = query.Where(x =>
-                        EF.Functions.Like(x.Name, $"%{keyword}%") ||
-                        EF.Functions.Like(x.Code, $"%{keyword}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.Code))
-                {
-                    var code = dto.Code.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.Code, $"{code}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.Name))
-                {
-                    var name = dto.Name.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.Name, $"{name}%"));
-                }
-
-
-
-
-                //-------------------------
-                // Sorting
-                //-------------------------
-
-                query = dto.SortBy?.ToLower() switch
-                {
-                    "code" => dto.Descending
-                        ? query.OrderByDescending(x => x.Code)
-                        : query.OrderBy(x => x.Code),
-
-                    "name" => dto.Descending
-                        ? query.OrderByDescending(x => x.Name)
-                        : query.OrderBy(x => x.Name),
-
-                    _ => dto.Descending
-                        ? query.OrderByDescending(x => x.Name)
-                        : query.OrderBy(x => x.Name)
-                };
-
-                //-------------------------
-                // Count
-                //-------------------------
-
-                var totalRecords = await query.CountAsync(cancellationToken);
-
-                //-------------------------
-                // Paging
-                //-------------------------
-
-                dto.PageSize = Math.Min(dto.PageSize, 100);
-
-                var states = await query
-                    .Skip((dto.PageNumber - 1) * dto.PageSize)
-                    .Take(dto.PageSize)
-                    .ToListAsync(cancellationToken);
+                var (states, totalRecords) = await StateSearchData.GetExportStateData(query, dto, "page", cancellationToken); 
 
                 //-------------------------
                 // Response

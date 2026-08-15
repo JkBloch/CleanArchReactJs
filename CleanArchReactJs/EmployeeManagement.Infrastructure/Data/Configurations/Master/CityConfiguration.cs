@@ -30,6 +30,11 @@ namespace EmployeeManagement.Infrastructure.Data.Configurations.Master
 
             builder.HasIndex(x => x.Name)
                 .IsUnique();
+
+            builder.HasOne(x => x.State)
+            .WithMany(x => x.Cities)
+            .HasForeignKey(x => x.StateId)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

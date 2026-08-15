@@ -9,6 +9,7 @@ namespace EmployeeManagement.Domain.Interfaces.Master
 {
     public interface ICityRepository : IGenericRepository<City>
     {
+        Task<City?> GetCityByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<City?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
         Task<City?> GetByCodeAsync(string code, CancellationToken cancellationToken = default);
         Task<bool> NameExistsAsync(string name, Guid excludeCityId, CancellationToken cancellationToken = default);

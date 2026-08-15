@@ -11,6 +11,9 @@ namespace EmployeeManagement.Application.DTOs.Master.City
         public Guid Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public Guid StateId { get; set; }
+        public string StateName { get; set; } = string.Empty;
+
         public bool IsDeleted { get; set; }
 
     }

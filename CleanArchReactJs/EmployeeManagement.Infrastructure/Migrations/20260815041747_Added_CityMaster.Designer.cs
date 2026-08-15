@@ -4,6 +4,7 @@ using EmployeeManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmployeeManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260815041747_Added_CityMaster")]
+    partial class Added_CityMaster
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,9 +325,6 @@ namespace EmployeeManagement.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("StateId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
@@ -332,8 +332,6 @@ namespace EmployeeManagement.Infrastructure.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
-
-                    b.HasIndex("StateId");
 
                     b.ToTable("Cities", (string)null);
                 });
@@ -430,17 +428,6 @@ namespace EmployeeManagement.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EmployeeManagement.Domain.Entities.Master.City", b =>
-                {
-                    b.HasOne("EmployeeManagement.Domain.Entities.Master.State", "State")
-                        .WithMany("Cities")
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("State");
-                });
-
             modelBuilder.Entity("EmployeeManagement.Domain.Entities.Admin.Permission", b =>
                 {
                     b.Navigation("RolePermissions");
@@ -458,11 +445,6 @@ namespace EmployeeManagement.Infrastructure.Migrations
                     b.Navigation("RefreshToken");
 
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("EmployeeManagement.Domain.Entities.Master.State", b =>
-                {
-                    b.Navigation("Cities");
                 });
 #pragma warning restore 612, 618
         }

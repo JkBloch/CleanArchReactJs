@@ -9,6 +9,7 @@ namespace EmployeeManagement.Application.DTOs.Master.City
     public class UpdateCityDto
     {
         public Guid Id { get; set; }
+        public Guid StateId { get; set; }
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
     }

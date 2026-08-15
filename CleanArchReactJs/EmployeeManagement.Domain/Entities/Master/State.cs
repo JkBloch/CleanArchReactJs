@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Domain.Common;
+using EmployeeManagement.Domain.Entities.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace EmployeeManagement.Domain.Entities.Master
         public string Code { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;
+        public ICollection<City> Cities { get; set; } = new List<City>();
     }
 }

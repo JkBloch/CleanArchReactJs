@@ -11,7 +11,8 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
 {
     public static class CitySearchData
     {
-        public async static Task<(List<City> cities, int totalRecords)> GetExportCityData(IQueryable<City> query, SearchCityDto dto, string searchFor)
+        public async static Task<(List<City> cities, int totalRecords)> GetExportCityData(IQueryable<City> query, 
+            SearchCityDto dto, string searchFor, CancellationToken cancellationToken = default)
         {
             //-------------------------
             // Keyword Search
@@ -25,6 +26,10 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
                 query = query.Where(x =>
                     EF.Functions.Like(x.Name, $"%{keyword}%") ||
                     EF.Functions.Like(x.Code, $"%{keyword}%"));
+            }
+            if (dto.StateId != null && dto.StateId != Guid.Empty)
+            {
+                query = query.Where(x => x.StateId == dto.StateId);
             }
             if (!string.IsNullOrWhiteSpace(dto.Code))
             {
@@ -76,15 +81,16 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
             if (searchFor == "page")
             {
                 cities = await query
+                    .IgnoreQueryFilters()
                    .Skip((dto.PageNumber - 1) * dto.PageSize)
                    .Take(dto.PageSize)
-                   .ToListAsync();
+                   .ToListAsync(cancellationToken);
 
             }
             else
             {
                 cities =
-                    await query.ToListAsync();
+                    await query.IgnoreQueryFilters().ToListAsync(cancellationToken);
 
             }
 

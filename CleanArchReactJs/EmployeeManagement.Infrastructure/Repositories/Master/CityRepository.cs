@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.Domain.Entities.Master;
+﻿using EmployeeManagement.Domain.Entities.Admin;
+using EmployeeManagement.Domain.Entities.Master;
 using EmployeeManagement.Domain.Interfaces.Master;
 using EmployeeManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Infrastructure.Repositories.Master
@@ -15,6 +17,11 @@ namespace EmployeeManagement.Infrastructure.Repositories.Master
         public CityRepository(AppDbContext context)
            : base(context)
         {
+        }
+        public async Task<City?> GetCityByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Cities.Include(x => x.State)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
         public async Task<City?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
         {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Math;
 using EmployeeManagement.Application.Common;
+using EmployeeManagement.Application.Common.SearchExport.Admin;
 using EmployeeManagement.Application.DTOs.Admin.Users;
 using EmployeeManagement.Application.Interfaces.Admin;
 using EmployeeManagement.Domain.Entities.Admin;
@@ -324,94 +325,7 @@ namespace EmployeeManagement.Application.Services.Admin
             try
             {
                 IQueryable<User> query = _unitOfWork.Users.Query();
-
-                //-------------------------
-                // Keyword Search
-                //-------------------------
-
-                if (!string.IsNullOrWhiteSpace(dto.Keyword))
-                {
-                    var keyword = dto.Keyword.Trim();
-
-                    query = query.Where(x =>
-                        EF.Functions.Like(x.FirstName, $"%{keyword}%") ||
-                        EF.Functions.Like(x.LastName, $"%{keyword}%") || 
-                        EF.Functions.Like(x.UserName, $"%{keyword}%") || 
-                        EF.Functions.Like(x.Email, $"%{keyword}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.FirstName))
-                {
-                    var firstname = dto.FirstName.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.FirstName, $"{firstname}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.LastName))
-                {
-                    var lastname = dto.LastName.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.LastName, $"{lastname}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.UserName))
-                {
-                    var username = dto.UserName.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.UserName, $"{username}%"));
-                }
-                if (!string.IsNullOrWhiteSpace(dto.Email))
-                {
-                    var email = dto.Email.Trim();
-
-                    query = query.Where(x =>
-                    EF.Functions.Like(x.Email, $"{email}%"));
-                }
-
-
-
-
-                //-------------------------
-                // Sorting
-                //-------------------------
-
-                query = dto.SortBy?.ToLower() switch
-                {
-                    "firstname" => dto.Descending
-                        ? query.OrderByDescending(x => x.FirstName)
-                        : query.OrderBy(x => x.FirstName),
-
-                    "lastname" => dto.Descending
-                        ? query.OrderByDescending(x => x.LastName)
-                        : query.OrderBy(x => x.LastName),
-                    "username" => dto.Descending 
-                        ? query.OrderByDescending(x => x.UserName) 
-                        : query.OrderBy(x => x.UserName),
-                    "email" => dto.Descending
-                        ? query.OrderByDescending(x => x.Email)
-                        : query.OrderBy(x => x.Email),
-
-                    _ => dto.Descending
-                        ? query.OrderByDescending(x => x.UserName)
-                        : query.OrderBy(x => x.UserName)
-                };
-
-                //-------------------------
-                // Count
-                //-------------------------
-
-                var totalRecords = await query.CountAsync();
-
-                //-------------------------
-                // Paging
-                //-------------------------
-
-                dto.PageSize = Math.Min(dto.PageSize, 100);
-
-                var users = await query
-                    .Skip((dto.PageNumber - 1) * dto.PageSize)
-                    .Take(dto.PageSize)
-                    .ToListAsync();
+                var (users, totalRecords) = await UserSearchData.GetExportUserData(query, dto, "page");              
 
                 //-------------------------
                 // Response
