@@ -1,11 +1,27 @@
 import { Link } from "react-router-dom";
-
+import { FaRegEye, FaMinusCircle, FaEdit, FaUndo, FaRegTimesCircle } from "react-icons/fa";
 function EmployeeTable({
     employees,
     onDelete,
-    onSort
-}) {
+    onDeletePermanent,
+    onRestore,
+    loadData,
+    pageNumber,
+    sortBy,
+    setSortBy,
+    descending,
+    setDescending
 
+}) {
+    const onSortData = (column) => {
+        var des = descending;
+        if (column === sortBy) {
+            setDescending(!descending);
+            des = !descending;
+        }
+        setSortBy(column);
+        loadData(pageNumber, column, des)
+    }
     return (
 
         <table className="table table-striped table-hover">
@@ -16,40 +32,18 @@ function EmployeeTable({
 
                     <th
                         style={{ cursor: "pointer" }}
-                        onClick={() => onSort("employeeCode")}
+                        onClick={() => onSortData("code")}
                     >
                         Code
                     </th>
 
                     <th
                         style={{ cursor: "pointer" }}
-                        onClick={() => onSort("firstName")}
+                        onClick={() => onSortData("name")}
                     >
                         Name
                     </th>
-
-                    <th
-                        style={{ cursor: "pointer" }}
-                        onClick={() => onSort("email")}
-                    >
-                        Email
-                    </th>
-
-                    <th
-                        style={{ cursor: "pointer" }}
-                        onClick={() => onSort("department")}
-                    >
-                        Department
-                    </th>
-
-                    <th
-                        style={{ cursor: "pointer" }}
-                        onClick={() => onSort("salary")}
-                    >
-                        Salary
-                    </th>
-
-                    <th width="220">
+                    <th >
 
                         Action
 
@@ -67,61 +61,73 @@ function EmployeeTable({
                         <tr key={employee.id}>
 
                             <td>
+                                {employee.code}
+                            </td>
 
-                                {employee.employeeCode}
+                            <td>
+                                {employee.name}
 
                             </td>
 
                             <td>
+                                <div>
+                                    <Link to={`/employees/${employee.id}`}
+                                        className="icon-btn-info icon-btn no-underline">
+                                        <span className="icon-section icon-section-sm">
+                                            <FaRegEye></FaRegEye>
+                                        </span>
+                                        <span className="text-section text-section-sm">
+                                            View
+                                        </span>
+                                    </Link>
 
-                                {employee.firstName} {employee.lastName}
+                                    <Link to={`/employees/edit/${employee.id}`}
+                                        className="icon-btn-warning icon-btn no-underline">
+                                        <span className="icon-section icon-section-sm">
+                                            <FaEdit></FaEdit>
+                                        </span>
+                                        <span className="text-section text-section-sm">
+                                            Edit
+                                        </span>
+                                    </Link>
+                                    {
 
-                            </td>
+                                        employee.isDeleted
+                                            ?
+                                            <button className="icon-btn-success icon-btn"
+                                                onClick={() => onRestore(employee.id)}>
+                                                <span className="icon-section icon-section-sm">
+                                                    <FaUndo ></FaUndo>
+                                                </span>
+                                                <span className="text-section text-section-sm">
+                                                    Restore
+                                                </span>
+                                            </button>
+                                            :
 
-                            <td>
+                                            <button className="icon-btn-danger icon-btn"
+                                                onClick={() => onDelete(employee.id)}>
+                                                <span className="icon-section icon-section-sm">
+                                                    <FaMinusCircle ></FaMinusCircle>
+                                                </span>
+                                                <span className="text-section text-section-sm">
+                                                    Delete
+                                                </span>
+                                            </button>
 
-                                {employee.email}
+                                    }
 
-                            </td>
+                                    <button className="icon-btn-danger icon-btn"
+                                        onClick={() => onDeletePermanent(employee.id)}>
+                                        <span className="icon-section icon-section-sm">
+                                            <FaRegTimesCircle ></FaRegTimesCircle>
+                                        </span>
+                                        <span className="text-section text-section-sm">
+                                            Delete Permanent
+                                        </span>
+                                    </button>
 
-                            <td>
-
-                                {employee.department}
-
-                            </td>
-
-                            <td>
-
-                                ${employee.salary}
-
-                            </td>
-
-                            <td>
-
-                                <Link
-                                    to={`/employees/${employee.id}`}
-                                    className="btn btn-info btn-sm me-2">
-
-                                    View
-
-                                </Link>
-
-                                <Link
-                                    to={`/employees/edit/${employee.id}`}
-                                    className="btn btn-warning btn-sm me-2">
-
-                                    Edit
-
-                                </Link>
-
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() => onDelete(employee.id)}>
-
-                                    Delete
-
-                                </button>
-
+                                </div>
                             </td>
 
                         </tr>

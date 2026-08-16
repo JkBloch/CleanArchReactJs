@@ -14,5 +14,7 @@ namespace EmployeeManagement.Domain.Entities.Master
 
         public string Name { get; set; } = string.Empty;
         public ICollection<City> Cities { get; set; } = new List<City>();
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+
     }
 }

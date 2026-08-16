@@ -25,11 +25,8 @@ namespace EmployeeManagement.Infrastructure.Repositories
         public IStateRepository States { get; }
         public ICityRepository Cities { get; }
         public IDepartmentRepository Departments { get; }
+        public IEmployeeRepository Employees { get; }
 
-        //public IEmployeeRepository Employees { get; }
-
-
-        //public IReportRepository Reports { get; }
 
         public UnitOfWork(AppDbContext context)
         {
@@ -44,12 +41,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
             States=new StateRepository(context);
             Cities = new CityRepository(context);
             Departments = new DepartmentRepository(context);
-            //Employees = new EmployeeRepository(context);
-
-
-            //Reports = new ReportRepository(context);
-
-
+            Employees = new EmployeeRepository(context);
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

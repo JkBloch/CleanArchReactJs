@@ -1,97 +1,237 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getEmployees, deleteEmployee } from "../../api/employeeApi";
-import Loader from "../../components/Loader";
-import EmployeeTable from "../../components/employee/EmployeeTable"; 
+import { NavLink } from "react-router-dom";
+import { deleteEmployee, restoreEmployee, searchEmployees, deletePermanentEmployees } from "../../../api/master/employeeApi";
+import Loader from "../../../components/common/Loader";
+import EmployeeTable from "../../../components/master/employee/EmployeeTable";
+import { FaPlus } from "react-icons/fa";
 import EmployeeSearch from "../employee/EmployeeSearch";
 import Pagination from "../../../components/common/Pagination";
-import { searchEmployees } from "../../../api/employeeApi";
+import ConfirmDialog from "../../../components/common/ConfirmDialog";
+import { notify } from "../../../services/notificationService";
+import { useLoading } from "../../../context/LoadingContext";
+//import { getErrorMessage } from "../../../utils/errorHandling";
 function EmployeeList() {
-
+    const [selectedId, setSelectedId] = useState(null);
+    const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+    const [showConfirmDeletePermanent, setShowConfirmDeletePermanent] = useState(false);
+    const [showConfirmRestore, setShowConfirmRestore] = useState(false);
     const [employees, setEmployees] = useState([]);
-
     const [totalPages, setTotalPages] = useState(0);
 
+
+    const [keyword, setKeyword] = useState("");
+    const [searchcode, setSearchcode] = useState("");
+    const [searchname, setSearchname] = useState("");
+    const [pageNumber, setPageNumber] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [sortBy, setSortBy] = useState("code");
+    const [descending, setDescending] = useState(false);
+    const { showLoading, hideLoading } = useLoading();
     const [filters, setFilters] = useState({
 
         keyword: "",
-        department: "",
-        minSalary: "",
-        maxSalary: "",
-
+        code: "",
+        name: "",
         pageNumber: 1,
         pageSize: 10,
-
-        sortBy: "firstName",
+        sortBy: sortBy,
         descending: false
     });
+    const [loading, setLoading] = useState(true);
+    function handleChange(e) {
+
+        const { name, value } = e.target;
+        switch (name) {
+            case "keyword":
+                setKeyword(value);
+                break;
+            case "code":
+                setSearchcode(value);
+                break;
+            case "name":
+                setSearchname(value);
+                break;
+            default:
+        }
+        setFilters(prev => ({
+            ...prev,
+            [name]: value,
+            pageNumber: 1
+        }));
+
+    }
+    async function loadEmployees(selectedPageNumber = 1, sortBy = "code", descending = false) {
+
+        try {
+            showLoading();
+            const revfilters = {
+                keyword: keyword,
+                code: searchcode,
+                name: searchname,
+                pageNumber: selectedPageNumber,
+                pageSize: pageSize,
+                sortBy: sortBy,
+                descending: descending
+            }
+            const response = await searchEmployees(revfilters);
+
+            const result = response.data.data;
+
+            setEmployees(result.items);
+
+            setTotalPages(result.totalPages);
+
+        } catch (error) {
+            hideLoading();
+            setLoading(false);
+
+        }
+
+        finally {
+            hideLoading();
+            setLoading(false);
+
+        }
+    }
 
     useEffect(() => {
 
         loadEmployees();
 
-    }, [filters]);
+    }, []);
 
-    async function loadEmployees() {
+    const handleDelete = (id) => {
+        setSelectedId(id);
+        setShowConfirmDelete(true);
+    };
+    const handleDeletePermanent = (id) => {
+        setSelectedId(id);
+        setShowConfirmDeletePermanent(true);
+    };
+    const handleRestore = (id) => {
+        setSelectedId(id);
+        setShowConfirmRestore(true);
+    };
 
-        const response = await searchEmployees(filters);
+    const handleConfirmDelete = async () => {
+        await deleteEmployee(selectedId);
+        notify.success("Employee deleted successfully.");
+        setShowConfirmDelete(false);
+    };
+    const handleConfirmDeletePermanent = async () => {
+        try {
+            await deletePermanentEmployees(selectedId);
+            notify.success("Employee Permanent deleted successfully.");
+            setShowConfirmDeletePermanent(false);
+        }
+        catch (error) {
+            //notify.error(getErrorMessage(error));
+            setShowConfirmDeletePermanent(false);
+        }
+        finally {
+            setShowConfirmDeletePermanent(false);
+        }
 
-        const result = response.data.data;
+    };
 
-        setEmployees(result.items);
+    const handleConfirmRestore = async () => {
+        await restoreEmployee(selectedId);
+        notify.success("Employee resore successfully.");
+        setShowConfirmRestore(false);
+    };
 
-        setTotalPages(result.totalPages);
-    }
-
-    function handleSearch(newFilters) {
-
-        setFilters(newFilters);
-    }
-
-    function changePage(page) {
-
-        setFilters(prev => ({
-            ...prev,
-            pageNumber: page
-        }));
-    }
-
-    function sort(column) {
-
-        setFilters(prev => ({
-
-            ...prev,
-
-            sortBy: column,
-
-            descending:
-                prev.sortBy === column
-                    ? !prev.descending
-                    : false
-        }));
-    }
+    if (loading)
+        return <Loader />;
 
     return (
 
-        <>
+        <div className="container-fluid">
 
+            <div className="d-flex justify-content-between mb-3">
+
+                <h2>
+                    Employees
+                </h2>
+                <div>
+                    <NavLink to="/employees/create"
+                        className="icon-btn icon-btn-success no-underline m-1">
+                        <span className="icon-section">
+                            <FaPlus ></FaPlus>
+                        </span>
+                        <span className="text-section">
+                            Add
+                        </span>
+                    </NavLink>
+
+                </div>
+            </div>
             <EmployeeSearch
+                handleChange={handleChange}
                 filters={filters}
-                onSearch={handleSearch}
+                loadEmployees={loadEmployees}
+                loading={loading}
+                setLoading={setLoading}
+                keyword={keyword}
+                searchcode={searchcode}
+                searchname={searchname}
+                selectedPageNumber={pageNumber}
+                pageSize={pageSize}
+                sortBy={sortBy}
+                descending={descending}
             />
-
             <EmployeeTable
                 employees={employees}
-                onSort={sort}
-            />
+                onDelete={handleDelete}
+                onDeletePermanent={handleDeletePermanent}
+                onRestore={handleRestore}
+                loadData={loadEmployees}
+                pageNumber={pageNumber}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                descending={descending}
+                setDescending={setDescending}
 
+            />
             <Pagination
-                pageNumber={filters.pageNumber}
+                pageNumber={pageNumber}
                 totalPages={totalPages}
-                onPageChange={changePage}
+                setPageNumber={setPageNumber}
+                loadData={loadEmployees}
             />
-
-        </>
+            <ConfirmDialog
+                show={showConfirmDelete}
+                title="Delete Employee"
+                message="Are you sure you want to delete this employee?"
+                confirmText="Delete"
+                confirmVariant="danger"
+                onConfirm={handleConfirmDelete}
+                loadData={loadEmployees}
+                pageNumber={pageNumber}
+                onCancel={() => setShowConfirmDelete(false)}
+            />
+            <ConfirmDialog
+                show={showConfirmDeletePermanent}
+                title="Delete Employee Permanent"
+                message="Are you sure you want to delete Permanent this employee?"
+                confirmText="Delete Permanent"
+                confirmVariant="danger"
+                onConfirm={handleConfirmDeletePermanent}
+                loadData={loadEmployees}
+                pageNumber={pageNumber}
+                onCancel={() => setShowConfirmDeletePermanent(false)}
+            />
+            <ConfirmDialog
+                show={showConfirmRestore}
+                title="Restore Employee"
+                message="Are you sure you want to restore this employee?"
+                confirmText="Resote"
+                confirmVariant="success"
+                onConfirm={handleConfirmRestore}
+                loadData={loadEmployees}
+                pageNumber={pageNumber}
+                onCancel={() => setShowConfirmRestore(false)}
+            />
+        </div>
 
     );
 }

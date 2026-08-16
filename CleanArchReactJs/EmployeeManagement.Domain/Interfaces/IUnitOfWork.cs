@@ -20,8 +20,7 @@ namespace EmployeeManagement.Domain.Interfaces
         IStateRepository States { get; }
         ICityRepository Cities { get; }
         IDepartmentRepository Departments { get; }
-        //IEmployeeRepository Employees { get; }
-
+        IEmployeeRepository Employees { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

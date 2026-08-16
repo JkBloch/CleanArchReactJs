@@ -6,6 +6,7 @@ using EmployeeManagement.Application.DTOs.Admin.UserRoles;
 using EmployeeManagement.Application.DTOs.Admin.Users;
 using EmployeeManagement.Application.DTOs.Master.City;
 using EmployeeManagement.Application.DTOs.Master.Department;
+using EmployeeManagement.Application.DTOs.Master.Employee;
 using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -219,6 +220,29 @@ namespace EmployeeManagement.API.Controllers
                 $"DepartmentReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
         #endregion
+        #region Employee
+        [HttpPost("employees/excel")]
+        public async Task<IActionResult> ExportEmployeesExcel(SearchEmployeeDto request)
+        {
+            var bytes =
+                await _excelExportService
+                    .ExportEmployeesAsync(request);
 
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Employees_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        }
+        [HttpPost("employees/pdf")]
+        public async Task<IActionResult> ExportEmployeesPdf(SearchEmployeeDto request)
+        {
+            var pdf = await _pdfExportService.ExportEmployeesAsync(request);
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"EmployeeReport_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+        #endregion
     }
 }

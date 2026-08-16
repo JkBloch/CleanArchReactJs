@@ -10,9 +10,10 @@ namespace EmployeeManagement.Domain.Entities.Master
     public class City : AuditableEntity
     {
         public string Code { get; set; } = string.Empty;
-
         public string Name { get; set; } = string.Empty;
         public Guid StateId { get; set; }
         public State State { get; set; }
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+
     }
 }

@@ -1,23 +1,27 @@
-//employeeApi
-import apiClient from "./apiClient";
+//employeeApi.js
+import apiClient from "../common/apiClient";
 
-export const getEmployees = () =>
-    apiClient.get("/employee");
+export const getEmployees = async () =>
+    apiClient.get("/Employee");
 
 export const getEmployee = id =>
-    apiClient.get(`/employee/${id}`);
+    apiClient.get(`/Employee/${id}`);
 
 export const createEmployee = data =>
-    apiClient.post("/employee", data);
+    apiClient.post("/Employee", data);
 
 export const updateEmployee = (id, data) =>
-    apiClient.put(`/employee/${id}`, data);
+    apiClient.put(`/Employee/${id}`, data);
 
 export const deleteEmployee = id =>
-    apiClient.delete(`/employee/${id}`);
+    apiClient.delete(`/Employee/${id}`);
 
 export const restoreEmployee = id =>
-    apiClient.post(`/employee/${id}/restore`);
+    apiClient.post(`/Employee/${id}/restore`);
 
-export const searchEmployee = data =>
-    apiClient.post("/employee/search", data);
+export const searchEmployees = data =>
+    apiClient.post("/Employee/search", data);
+
+export const deletePermanentEmployees = id =>
+    apiClient.delete(`/Employee/${id}/deletepermanent`,);
+

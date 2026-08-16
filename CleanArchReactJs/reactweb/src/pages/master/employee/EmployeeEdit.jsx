@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import EmployeeForm from "./EmployeeForm";
-
-import {
-    getEmployee,
-    updateEmployee
-} from "../../api/employeeApi";
-import { notify } from "../../services/notificationService";
+import EmployeeForm from "../employee/EmployeeForm";
+import { getEmployee, updateEmployee } from "../.././../api/master/employeeApi";
+import { notify } from "../../../services/notificationService";
 
 function EmployeeEdit() {
 

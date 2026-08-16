@@ -11,6 +11,7 @@ using EmployeeManagement.Application.DTOs.Admin.UserRoles;
 using EmployeeManagement.Application.DTOs.Admin.Users;
 using EmployeeManagement.Application.DTOs.Master.City;
 using EmployeeManagement.Application.DTOs.Master.Department;
+using EmployeeManagement.Application.DTOs.Master.Employee;
 using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Entities.Admin;
@@ -899,6 +900,116 @@ namespace EmployeeManagement.Application.Services
                     department.Name;
                 ws.Cell(row, 3).Value =
                     department.CreatedDate;
+
+                row++;
+            }
+
+            ws.Columns()
+                .AdjustToContents();
+
+            ws.SheetView
+                .FreezeRows(1);
+
+            ws.RangeUsed()
+                .SetAutoFilter();
+        }
+
+        #endregion
+     
+        #region Employee
+        public async Task<byte[]> ExportEmployeesAsync(SearchEmployeeDto request)
+        {
+            var query = _unitOfWork.Employees.Query();
+
+            var (employees, iTotalRecord) = await EmployeeSearchData.GetExportEmployeeData(query, request, "excel");
+
+
+            using var workbook =
+                new XLWorkbook();
+
+            CreateSummarySheet(
+                workbook,
+                employees);
+
+            CreateEmployeeSheet(
+                workbook,
+                employees);
+
+            using var stream =
+                new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
+        }
+        private static void CreateSummarySheet(XLWorkbook workbook, List<Employee> employees)
+        {
+            var ws =
+                workbook.Worksheets.Add("Summary");
+
+            ws.Cell("A1").Value =
+                "Employee Report";
+
+            ws.Cell("A1").Style
+                .Font.Bold = true;
+
+            ws.Cell("A1").Style
+                .Font.FontSize = 20;
+
+            ws.Cell("A3").Value =
+                "Generated";
+
+            ws.Cell("B3").Value =
+                DateTime.Now;
+
+            ws.Cell("A5").Value =
+                "Total Employees";
+
+            ws.Cell("B5").Value =
+                employees.Count;
+
+            ws.Cell("A6").Value =
+                "Names";
+
+            ws.Cell("B6").Value =
+                employees
+                .Select(x => x.Name)
+                .Distinct()
+                .Count();
+
+            ws.Columns().AdjustToContents();
+        }
+        private static void CreateEmployeeSheet(XLWorkbook workbook, List<Employee> employees)
+        {
+            var ws =
+                workbook.Worksheets.Add("Employees");
+
+            ws.Cell(1, 1).Value = "Code";
+            ws.Cell(1, 2).Value = "Name";
+            ws.Cell(1, 3).Value = "Created";
+
+            var header =
+                ws.Range("A1:C1");
+
+            header.Style.Font.Bold = true;
+
+            header.Style.Fill.BackgroundColor =
+                XLColor.SteelBlue;
+
+            header.Style.Font.FontColor =
+                XLColor.White;
+
+            int row = 2;
+
+            foreach (var employee in employees)
+            {
+                ws.Cell(row, 1).Value =
+                    employee.Code;
+
+                ws.Cell(row, 2).Value =
+                    employee.Name;
+                ws.Cell(row, 3).Value =
+                    employee.CreatedDate;
 
                 row++;
             }

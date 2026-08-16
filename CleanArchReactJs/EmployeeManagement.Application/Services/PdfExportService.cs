@@ -10,6 +10,7 @@ using EmployeeManagement.Application.DTOs.Admin.UserRoles;
 using EmployeeManagement.Application.DTOs.Admin.Users;
 using EmployeeManagement.Application.DTOs.Master.City;
 using EmployeeManagement.Application.DTOs.Master.Department;
+using EmployeeManagement.Application.DTOs.Master.Employee;
 using EmployeeManagement.Application.DTOs.Master.State;
 using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Domain.Interfaces;
@@ -651,6 +652,82 @@ namespace EmployeeManagement.Application.Services
                 });
             }).GeneratePdf();
         }
+
+        public async Task<byte[]> ExportEmployeesAsync(SearchEmployeeDto request)
+        {
+            var query = _unitOfWork.Employees.Query();
+            var (employees, iTotalRecord) = await EmployeeSearchData.GetExportEmployeeData(query, request, "pdf");
+
+
+            return Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Margin(20);
+
+                    page.Size(PageSizes.A4.Landscape());
+
+                    page.DefaultTextStyle(x => x.FontSize(10));
+
+                    page.Header()
+                        .Text("Employee List Report")
+                        .FontSize(22)
+                        .Bold();
+
+                    page.Content()
+                        .Column(column =>
+                        {
+                            column.Spacing(15);
+
+                            column.Item()
+                                .Text($"Generated : {DateTime.Now:dd-MMM-yyyy HH:mm}");
+
+                            column.Item()
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.ConstantColumn(120);
+                                        columns.ConstantColumn(200);
+                                        columns.ConstantColumn(150);
+                                    });
+
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Text("Code").Bold();
+
+                                        header.Cell().Text("Name").Bold();
+
+                                        header.Cell().Text("CreatedDate").Bold();
+                                    });
+
+                                    foreach (var employee in employees)
+                                    {
+                                        table.Cell().Text(employee.Code);
+
+                                        table.Cell().Text(employee.Name);
+
+                                        table.Cell().Text(employee.CreatedDate.ToShortDateString());
+                                    }
+                                });
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(x =>
+                        {
+                            x.Span("Page ");
+
+                            x.CurrentPageNumber();
+
+                            x.Span(" of ");
+
+                            x.TotalPages();
+                        });
+                });
+            }).GeneratePdf();
+        }
+
 
     }
 }

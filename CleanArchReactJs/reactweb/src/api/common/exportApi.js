@@ -31,6 +31,9 @@ export async function downloadExcel(filters,reportName) {
         case "DepartmentReport":
             response = await exportDepartmentsExcel(filters);
             break;
+        case "EmployeeReport":
+            response = await exportEmployeesExcel(filters);
+            break;
         default:
     }
 
@@ -81,6 +84,9 @@ export async function downloadPdf(filters, reportName) {
             break;
         case "DepartmentReport":
             response = await exportDepartmentsPdf(filters);
+            break;
+        case "EmployeeReport":
+            response = await exportEmployeesPdf(filters);
             break;
         default:
     }
@@ -229,6 +235,23 @@ export const exportDepartmentsExcel = request =>
 export const exportDepartmentsPdf = filters =>
     apiClient.post(
         "/export/departments/pdf",
+        filters,
+        {
+            responseType: "blob"
+        });
+
+
+export const exportEmployeesExcel = request =>
+    apiClient.post(
+        "/export/employees/excel",
+        request,
+        {
+            responseType: "blob"
+        })
+
+export const exportEmployeesPdf = filters =>
+    apiClient.post(
+        "/export/employees/pdf",
         filters,
         {
             responseType: "blob"

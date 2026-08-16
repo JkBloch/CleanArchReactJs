@@ -26,6 +26,7 @@ namespace EmployeeManagement.Infrastructure.Data
         public DbSet<State> States => Set<State>();
         public DbSet<City> Cities => Set<City>();
         public DbSet<Department> Departments => Set<Department>();
+        public DbSet<Employee> Employees => Set<Employee>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

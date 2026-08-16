@@ -8,6 +8,7 @@ namespace EmployeeManagement.Domain.Enums
 {
     public enum Gender
     {
+        Select = 0,
         Male = 1,
         Female = 2,
         Other = 3

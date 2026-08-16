@@ -35,8 +35,7 @@ namespace EmployeeManagement.Infrastructure
             services.AddScoped<IStateRepository, StateRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-
-            //services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();

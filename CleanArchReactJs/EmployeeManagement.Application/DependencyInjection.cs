@@ -38,10 +38,8 @@ namespace EmployeeManagement.Application
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICityService, CityService>();
-            services.AddScoped<IDepartmentService, DepartmentService>();
-
-            //services.AddScoped<IEmployeeService, EmployeeService>();
-
+            services.AddScoped<IDepartmentService, DepartmentService>(); 
+            services.AddScoped<IEmployeeService, EmployeeService>();
 
 
             return services;
