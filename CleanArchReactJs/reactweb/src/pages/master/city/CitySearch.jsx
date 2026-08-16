@@ -22,7 +22,7 @@ function CitySearch({ handleChange, filters, loadCities,
             setStates(stateResponse.data.data);
         }
         catch (error) {
-            notify.error("Failed to load States");
+            //notify.error("Failed to load States");
         }
     };
     
