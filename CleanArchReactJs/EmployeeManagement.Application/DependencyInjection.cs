@@ -40,6 +40,7 @@ namespace EmployeeManagement.Application
             services.AddScoped<ICityService, CityService>();
             services.AddScoped<IDepartmentService, DepartmentService>(); 
             services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IApplicationLogService, ApplicationLogService>();
 
 
             return services;

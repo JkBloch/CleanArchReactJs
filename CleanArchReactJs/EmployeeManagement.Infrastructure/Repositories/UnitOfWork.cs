@@ -26,6 +26,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
         public ICityRepository Cities { get; }
         public IDepartmentRepository Departments { get; }
         public IEmployeeRepository Employees { get; }
+        public IApplicationLogRepository ApplicationLogs { get; }
 
 
         public UnitOfWork(AppDbContext context)
@@ -42,6 +43,7 @@ namespace EmployeeManagement.Infrastructure.Repositories
             Cities = new CityRepository(context);
             Departments = new DepartmentRepository(context);
             Employees = new EmployeeRepository(context);
+            ApplicationLogs = new ApplicationLogRepository(context);
         }
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

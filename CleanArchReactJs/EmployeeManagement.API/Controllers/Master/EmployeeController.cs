@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.Application.DTOs.Master.Employee;
+﻿using Asp.Versioning;
+using EmployeeManagement.Application.DTOs.Master.Employee;
 using EmployeeManagement.Application.Interfaces.Master;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace EmployeeManagement.API.Controllers.Master
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "Admin,HR,Employee")]
+    [ApiVersion(1.0)]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;

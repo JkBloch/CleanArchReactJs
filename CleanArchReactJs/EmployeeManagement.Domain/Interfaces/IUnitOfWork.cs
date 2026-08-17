@@ -21,7 +21,7 @@ namespace EmployeeManagement.Domain.Interfaces
         ICityRepository Cities { get; }
         IDepartmentRepository Departments { get; }
         IEmployeeRepository Employees { get; }
-
+        IApplicationLogRepository ApplicationLogs { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

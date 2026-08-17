@@ -98,6 +98,8 @@ namespace EmployeeManagement.Application.Services.Admin
 
             if (user == null)
             {
+                _logger.LogWarning( "Invalid login attempt for {UserNameOrEmail}", 
+                    dto.UserNameOrEmail);
                 return new LoginResponseDto
                 {
                     Success = false,
@@ -111,6 +113,8 @@ namespace EmployeeManagement.Application.Services.Admin
 
             if (!passwordValid)
             {
+                _logger.LogWarning("Invalid login attempt for {UserNameOrEmail}",
+                    dto.UserNameOrEmail);
                 return new LoginResponseDto
                 {
                     Success = false,
@@ -147,7 +151,8 @@ namespace EmployeeManagement.Application.Services.Admin
             _unitOfWork.Users.Update(user);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
+            _logger.LogInformation( "User {UserName} logged in successfully", 
+                user.UserName);
             return new LoginResponseDto
             {
                 Success = true,

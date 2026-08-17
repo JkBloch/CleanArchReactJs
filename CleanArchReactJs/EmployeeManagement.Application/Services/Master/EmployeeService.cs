@@ -204,7 +204,7 @@ namespace EmployeeManagement.Application.Services.Master
         {
             try
             {
-                _logger.LogInformation(
+                _logger.LogWarning(
                     "Deleting employee {EmployeeId}",
                     id);
 
@@ -224,7 +224,7 @@ namespace EmployeeManagement.Application.Services.Master
 
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.LogInformation(
+                _logger.LogWarning(
                     "Employee {EmployeeId} deleted successfully.",
                     id);
 
@@ -247,7 +247,7 @@ namespace EmployeeManagement.Application.Services.Master
         {
             try
             {
-                _logger.LogInformation(
+                _logger.LogWarning(
                     "Deleting employee {EmployeeId}",
                     id);
 
@@ -263,7 +263,7 @@ namespace EmployeeManagement.Application.Services.Master
 
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.LogInformation(
+                _logger.LogWarning(
                     "Employee {EmployeeId} deleted successfully.",
                     id);
 
@@ -335,6 +335,10 @@ namespace EmployeeManagement.Application.Services.Master
         {
             try
             {
+                _logger.LogInformation( "Searching employees. Keyword: {Keyword}, Page: {PageNumber}, PageSize: {PageSize}", 
+                    dto.Keyword, 
+                    dto.PageNumber, 
+                    dto.PageSize);
                 IQueryable<Employee> query = _unitOfWork.Employees.Query();
 
                 var (employees, totalRecords) = await EmployeeSearchData.GetExportEmployeeData(query, dto, "page", cancellationToken);

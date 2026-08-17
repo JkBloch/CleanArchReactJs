@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.Domain.Entities.Admin;
+﻿using EmployeeManagement.Domain.Entities;
+using EmployeeManagement.Domain.Entities.Admin;
 using EmployeeManagement.Domain.Entities.Master;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,6 +28,8 @@ namespace EmployeeManagement.Infrastructure.Data
         public DbSet<City> Cities => Set<City>();
         public DbSet<Department> Departments => Set<Department>();
         public DbSet<Employee> Employees => Set<Employee>();
+        public DbSet<ApplicationLog> ApplicationLogs => Set<ApplicationLog>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

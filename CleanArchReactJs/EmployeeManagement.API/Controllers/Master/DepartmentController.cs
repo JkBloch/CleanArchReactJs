@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.Application.DTOs.Master.Department;
+﻿using Asp.Versioning;
+using EmployeeManagement.Application.DTOs.Master.Department;
 using EmployeeManagement.Application.Interfaces.Master;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +9,10 @@ namespace EmployeeManagement.API.Controllers.Master
 {
     [ApiExplorerSettings(IgnoreApi = false)]
     [ApiController]
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
     [Authorize(Roles = "Admin,HR,Employee")]
+    [ApiVersion(1.0)]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class DepartmentController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;
