@@ -10,6 +10,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using QuestPDF.Infrastructure;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
@@ -93,15 +94,64 @@ try
     builder.Services.AddControllers();
 
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
     builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection(JwtSettings.SectionName));
     builder.Services.AddJwtAuthentication(builder.Configuration);
 
     builder.Services.AddPermissionPolicies();
     //builder.Services.AddAuthorization();
+    builder.Services.AddEndpointsApiExplorer();
+    //builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc(
+            "v1",
+            new OpenApiInfo
+            {
+                Title = "Employee Management API",
+                Version = "v1",
+                Description =
+                    "Employee Management System API"
+            });
 
+        options.AddSecurityDefinition(
+            "Bearer",
+            new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+
+                Type = SecuritySchemeType.Http,
+
+                Scheme = "bearer",
+
+                BearerFormat = "JWT",
+
+                In = ParameterLocation.Header,
+
+                Description =
+                    "Enter JWT token"
+            });
+
+        options.AddSecurityRequirement(
+            new OpenApiSecurityRequirement
+            {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference =
+                        new OpenApiReference
+                        {
+                            Type =
+                                ReferenceType.SecurityScheme,
+
+                            Id = "Bearer"
+                        }
+                },
+
+                Array.Empty<string>()
+            }
+            });
+    });
     Log.Information("Starting EmployeeManagement API");
     var app = builder.Build();
 
@@ -133,7 +183,15 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        //app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint(
+                "/swagger/v1/swagger.json",
+                "Employee Management API v1");
+
+            options.RoutePrefix = "swagger";
+        });
     }
 
     app.UseHttpsRedirection();
