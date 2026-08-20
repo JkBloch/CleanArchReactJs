@@ -6,7 +6,7 @@ using static EmployeeManagement.API.Authorization.PermissionData;
 
 namespace EmployeeManagement.API.Controllers.Master
 {
-    [ApiExplorerSettings(IgnoreApi = false)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles ="Admin,HR,Employee")]

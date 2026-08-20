@@ -10,7 +10,7 @@ namespace EmployeeManagement.API.Controllers.Master
     [ApiExplorerSettings(IgnoreApi = false)]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin,HR,Employee")]
+  //  [Authorize(Roles = "Admin,HR,Employee")]
     [ApiVersion(1.0)]
     public class EmployeeController : ControllerBase
     {
@@ -19,14 +19,14 @@ namespace EmployeeManagement.API.Controllers.Master
         {
             _employeeService = employeeService;
         }
-        [Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
+       // [Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var result = await _employeeService.GetAllAsync(cancellationToken);
             return Ok(result);
         }
-        [Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
+        //[Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -114,6 +114,14 @@ namespace EmployeeManagement.API.Controllers.Master
         {
             var result = await _employeeService.SearchAsync(dto, cancellationToken);
             return Ok(result);
+        }
+        [HttpGet("dummyData")]
+        public async Task<IActionResult> DummyData()
+        {
+            await _employeeService.CreateDummyData();
+
+            return Ok();
+
         }
     }
 

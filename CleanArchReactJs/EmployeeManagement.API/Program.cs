@@ -14,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using QuestPDF.Infrastructure;
 using Serilog;
 using Serilog.Sinks.MSSqlServer;
+using StackExchange.Redis;
 using System.Text;
  
 
@@ -42,7 +43,17 @@ try
 
         options.SubstituteApiVersionInUrl = true;
     });
-     
+    
+    //fOR redis caching
+    var redisConnection =
+   builder.Configuration.GetConnectionString("Redis");
+
+    builder.Services.AddSingleton<
+        IConnectionMultiplexer>(
+            ConnectionMultiplexer.Connect(
+                redisConnection!));
+
+
     //added for logs
     var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection");

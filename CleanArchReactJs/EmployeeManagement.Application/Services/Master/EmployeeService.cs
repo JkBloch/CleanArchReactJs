@@ -2,13 +2,17 @@
 using EmployeeManagement.Application.Common;
 using EmployeeManagement.Application.Common.SearchExport.Master;
 using EmployeeManagement.Application.DTOs.Master.Employee;
+using EmployeeManagement.Application.Interfaces;
 using EmployeeManagement.Application.Interfaces.Master;
 using EmployeeManagement.Domain.Entities.Master;
+using EmployeeManagement.Domain.Enums;
 using EmployeeManagement.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,11 +23,14 @@ namespace EmployeeManagement.Application.Services.Master
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<EmployeeService> _logger;
-        public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<EmployeeService> logger)
-        {
+        private readonly IRedisCacheService _redisCacheService;
+        public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<EmployeeService> logger
+            , IRedisCacheService redisCacheService)
+        {   
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _redisCacheService = redisCacheService;
         }
         public async Task<ApiResponse<IEnumerable<EmployeeDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
@@ -33,6 +40,10 @@ namespace EmployeeManagement.Application.Services.Master
 
                 var employees =
                     await _unitOfWork.Employees.GetAllAsync();
+
+                var depatments = await _unitOfWork.Departments.GetAllAsync();
+                var states = await _unitOfWork.States.GetAllAsync();
+                var cities = await _unitOfWork.Cities.GetAllAsync();
 
                 var result =
                     _mapper.Map<IEnumerable<EmployeeDto>>(employees);
@@ -55,6 +66,19 @@ namespace EmployeeManagement.Application.Services.Master
                 _logger.LogInformation(
                     "Loading employee {EmployeeId}", id);
 
+                var cacheKey =
+       CacheKeys.Employee(id);
+
+                var cached =
+                    await _redisCacheService.GetAsync<EmployeeDto>(
+                        cacheKey);
+
+                if (cached != null)
+                {
+                    return ApiResponse<EmployeeDto>
+                   .Ok(cached);
+                }
+
                 var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(id);
 
                 if (employee == null)
@@ -64,6 +88,10 @@ namespace EmployeeManagement.Application.Services.Master
                 }
 
                 var dto = _mapper.Map<EmployeeDto>(employee);
+
+                await _redisCacheService.SetAsync( 
+                    cacheKey, dto, 
+                    TimeSpan.FromMinutes(10));
 
                 return ApiResponse<EmployeeDto>
                     .Ok(dto);
@@ -339,6 +367,35 @@ namespace EmployeeManagement.Application.Services.Master
                     dto.Keyword, 
                     dto.PageNumber, 
                     dto.PageSize);
+                var searchCachKey = dto.Keyword + dto.Name + dto.Code + dto.Email + dto.DepartmentId + dto.StateId
+                     + dto.CityId + dto.Salary + dto.DateOfBirth + dto.JoiningDate + dto.PageNumber + dto.PageSize
+                     + dto.SortBy + dto.Descending; 
+                
+                var cacheKey = CacheKeys.EmployeeSearch(searchCachKey);
+                //var cachedEmployees =
+                //    await _redisCacheService.GetAsync<List<EmployeeDto>>(
+                //        cacheKey);
+                var cachedEmployees =
+                    await _redisCacheService.GetAsync<PagedEmployeeResponseDto>(
+                        cacheKey);
+
+
+                if (cachedEmployees is not null)
+                {
+                    //var responseCach = new PagedEmployeeResponseDto
+                    //{
+                    //    Items = _mapper.Map<List<EmployeeDto>>(cachedEmployees),
+                    //    TotalRecords = totalRecords,
+                    //    PageNumber = dto.PageNumber,
+                    //    PageSize = dto.PageSize
+                    //    //TotalPages = (int)Math.Ceiling(
+                    //    //    totalRecords / (double)dto.PageSize)
+                    //};
+
+                    return ApiResponse<PagedEmployeeResponseDto>.Ok(cachedEmployees);
+                    
+                }
+
                 IQueryable<Employee> query = _unitOfWork.Employees.Query();
 
                 var (employees, totalRecords) = await EmployeeSearchData.GetExportEmployeeData(query, dto, "page", cancellationToken);
@@ -356,7 +413,9 @@ namespace EmployeeManagement.Application.Services.Master
                     //TotalPages = (int)Math.Ceiling(
                     //    totalRecords / (double)dto.PageSize)
                 };
-
+                await _redisCacheService.SetAsync(
+                   cacheKey, response,
+                   TimeSpan.FromMinutes(10));
                 return ApiResponse<PagedEmployeeResponseDto>.Ok(response);
             }
             catch (Exception ex)
@@ -367,7 +426,176 @@ namespace EmployeeManagement.Application.Services.Master
                     "Unable to search employees.");
             }
         }
+        public async Task<ApiResponse<string>> CreateDummyData(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                //var employee = _mapper.Map<Employee>(dto);
+                var employees = await _unitOfWork.Employees.GetAllAsync();
+                var departments = await _unitOfWork.Departments.GetAllAsync();
+                //var states = await _unitOfWork.States.GetAllAsync();
+                //var cities = await _unitOfWork.States.GetAllAsync();
 
+                //var deparmentQuery = _unitOfWork.Departments.Query();
+                //var departments = await deparmentQuery.AsNoTracking().ToListAsync();
+                var stateQuery = _unitOfWork.States.Query();
+                var states = await stateQuery.Include(x=>x.Cities).AsNoTracking().ToListAsync();
+                for (int i = 0; i < 2; i++)
+                {
+                    foreach (var department in departments)
+                    {
+                        foreach (var state in states)
+                        {
+                            foreach (var city in state.Cities)
+                            {
+                                Employee employee = new Employee();
+                                employee.Code = GenerateRandomCode();
+                                employee.Name = GenerateRandomString();
+                                employee.Email = GenerateRandomEmail();
+                                employee.PhoneNumber = GenerateRandomPhoneNumber();
+                                employee.DepartmentId = department.Id;
+                                employee.StateId = state.Id;
+                                employee.CityId = city.Id;
+                                employee.Salary = GenerateRandomSalary();
+                                employee.DateOfBirth = GenerateRandomDateOfBirth();
+                                employee.JoiningDate = GenerateRandomJoiningDate();
+                                employee.Gender = GetRandomGender();
+                                employee.IsActive = Random.Shared.Next(2) == 0;
+                                await _unitOfWork.Employees.AddAsync(employee, cancellationToken);
+                               
+                            }
+                        }
+
+                    }
+                }
+                await _unitOfWork.SaveChangesAsync();
+                return ApiResponse<string>.Ok(  "Employee created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<string>.Fail(
+                    "Unable to create employee.");
+            }
+        }
+        public static string GenerateRandomString()
+        {
+            const string chars =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "abcdefghijklmnopqrstuvwxyz" +
+                "0123456789";
+
+            int length = RandomNumberGenerator.GetInt32(8, 15);
+
+            return string.Create(length, chars, (buffer, chars) =>
+            {
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    buffer[i] = chars[RandomNumberGenerator.GetInt32(chars.Length)];
+                }
+            });
+        }
+        public static string GenerateRandomCode()
+        {
+            const string chars =
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                "0123456789";
+
+            int length = RandomNumberGenerator.GetInt32(4, 6);
+
+            var result= string.Create(length, chars, (buffer, chars) =>
+            {
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    buffer[i] = chars[RandomNumberGenerator.GetInt32(chars.Length)];
+                }
+            });
+
+            return "E" + result;
+        }
+        public static string GenerateRandomEmail()
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+            int length = RandomNumberGenerator.GetInt32(8, 15);
+
+            string username = string.Create(length, chars, (buffer, chars) =>
+            {
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    buffer[i] = chars[RandomNumberGenerator.GetInt32(chars.Length)];
+                }
+            });
+            if (length>10)
+            {
+                return $"{username}@gmail.com";
+            }
+            else
+            {
+                return $"{username}@yahoo.com";
+            }
+                
+        }
+        public static string GenerateRandomPhoneNumber()
+        {
+            int firstDigit = RandomNumberGenerator.GetInt32(6, 10);
+
+            int remaining = RandomNumberGenerator.GetInt32(0, 1_000_000_000);
+
+            return $"{firstDigit}{remaining:D9}";
+        }
+  
+        public static decimal GenerateRandomSalary() 
+        { 
+            int salary = RandomNumberGenerator.GetInt32(20_000, 100_001); 
+            return salary; 
+        }
+        public static DateTime GenerateRandomDateOfBirth()
+        {
+            DateTime today = DateTime.Today;
+
+            DateTime minDate = today.AddYears(-60);
+            DateTime maxDate = today.AddYears(-18);
+
+            int days = (maxDate - minDate).Days;
+
+            return minDate.AddDays(
+                RandomNumberGenerator.GetInt32(days + 1));
+        }
+
+        public static DateTime GenerateRandomJoiningDate()
+        {
+            DateTime startDate = new DateTime(2015, 1, 1);
+            DateTime endDate = DateTime.Today;
+
+            int days = (endDate - startDate).Days;
+
+            return startDate.AddDays(
+                RandomNumberGenerator.GetInt32(days + 1));
+        }
+        private static Gender GetRandomGender()
+        {
+            string[] genders =
+            { 
+                "Male", 
+                "Female" 
+            };
+
+            var genderString= genders[Random.Shared.Next(genders.Length)];
+
+            if (genderString == " Male")
+            {
+                return Gender.Male;
+            }
+            else if (genderString == " Female")
+            {
+                return Gender.Female;
+            }            
+            else
+            {
+                return Gender.Male;
+            }
+
+        }
     }
 
 }

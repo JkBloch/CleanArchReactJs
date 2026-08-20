@@ -18,5 +18,6 @@ namespace EmployeeManagement.Application.Interfaces.Master
         Task<ApiResponse<string>> DeletePermanentAsync(Guid id, CancellationToken cancellationToken = default);
         Task<ApiResponse<string>> RestoreAsync(Guid id, CancellationToken cancellationToken = default);
         Task<ApiResponse<PagedEmployeeResponseDto>> SearchAsync(SearchEmployeeDto dto, CancellationToken cancellationToken = default);
+        Task<ApiResponse<string>> CreateDummyData(CancellationToken cancellationToken = default);
     }
 }

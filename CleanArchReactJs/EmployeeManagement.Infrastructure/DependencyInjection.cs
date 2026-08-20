@@ -37,8 +37,7 @@ namespace EmployeeManagement.Infrastructure
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IApplicationLogRepository, ApplicationLogRepository>();
-
-
+           
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
         }

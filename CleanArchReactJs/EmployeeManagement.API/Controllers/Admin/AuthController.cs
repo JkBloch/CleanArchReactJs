@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace EmployeeManagement.API.Controllers.Admin
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : Controller
@@ -25,7 +26,7 @@ namespace EmployeeManagement.API.Controllers.Admin
         // ------------------------------------------------------------------
         // Register
         // ------------------------------------------------------------------
-
+       
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(

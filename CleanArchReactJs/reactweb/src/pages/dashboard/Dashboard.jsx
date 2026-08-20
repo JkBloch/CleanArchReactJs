@@ -1,46 +1,56 @@
-import IconButton from "../../components/common/IconButton";
+import { useEffect, useState } from "react";
+
+import { getDashboard } from "../../api/common/dashboardApi";
+import DashboardCard from "../../components/dashboard/DashboardCard";
 
 function Dashboard() {
+
+    const [dashboard, setDashboard] = useState(null);
+
+    useEffect(() => {
+
+        loadDashboard();
+
+    }, []);
+
+    async function loadDashboard() {
+
+        const response = await getDashboard();
+
+        setDashboard(response.data.data);
+    }
+
+    if (!dashboard)
+        return <div>Loading...</div>;
+
     return (
-      <>
-       <div className="d-flex flex-wrap gap-3">
 
-            <IconButton
-                color="success"
-                icon="bi-plus-lg"
-                text="Add"
+        <>
+
+            <DashboardCard
+                title="Employees"
+                value={dashboard.totalEmployees}
             />
 
-            <IconButton
-                color="primary"
-                icon="bi-floppy"
-                text="Save"
+            <DashboardCard
+                title="Active"
+                value={dashboard.activeEmployees}
             />
 
-            <IconButton
-                color="warning"
-                icon="bi-pencil-square"
-                text="Edit"
+            <DashboardCard
+                title="Departments"
+                value={dashboard.departments}
             />
 
-            <IconButton
-                color="danger"
-                icon="bi-trash"
-                text="Delete"
+            <DashboardCard
+                title="New This Month"
+                value={dashboard.newEmployeesThisMonth}
             />
 
-            <IconButton
-                color="info"
-                icon="bi-search"
-                text="Search"
-            />
+        </>
 
-            </div>
-            <h1>This is dash board design is pending!</h1>
-          
-      </>
-    
-  );
+    );
+
 }
 
 export default Dashboard;

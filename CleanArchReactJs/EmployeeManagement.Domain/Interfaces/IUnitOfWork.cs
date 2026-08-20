@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Domain.Interfaces
 {
+ //   public interface IUnitOfWork : IDisposable
+
     public interface IUnitOfWork : IDisposable
     {
         IPermissionRepository Permissions { get; }
