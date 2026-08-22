@@ -26,6 +26,7 @@ namespace EmployeeManagement.Application.DTOs.Master.Employee
         public string DepartmentName { get; set; } = string.Empty;
         public string StateName { get; set; } = string.Empty;
         public string CityName { get; set; } = string.Empty;
+        public string? PhotoUrl { get; set; }
 
     }
 }

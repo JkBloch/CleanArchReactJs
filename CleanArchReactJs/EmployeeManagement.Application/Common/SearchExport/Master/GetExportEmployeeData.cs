@@ -60,6 +60,30 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
             {
                 query = query.Where(x => x.CityId == dto.CityId);
             }
+            if (dto.SalaryFrom!= null && dto.SalaryFrom > 0)
+            {
+                query = query.Where(x => x.Salary >= dto.SalaryFrom);
+            }
+            if (dto.SalaryTo != null && dto.SalaryTo > 0)
+            {
+                query = query.Where(x => x.Salary <= dto.SalaryTo);
+            }
+            if (dto.DateOfBirthFrom != null && dto.DateOfBirthFrom > DateTime.MinValue)
+            {
+                query = query.Where(x => x.DateOfBirth >= dto.DateOfBirthFrom);
+            }
+            if (dto.DateOfBirthTo != null && dto.DateOfBirthTo > DateTime.MinValue)
+            {
+                query = query.Where(x => x.DateOfBirth <= dto.DateOfBirthTo);
+            }
+            if (dto.JoiningDateFrom != null && dto.JoiningDateFrom > DateTime.MinValue)
+            {
+                query = query.Where(x => x.JoiningDate >= dto.JoiningDateFrom);
+            }
+            if (dto.JoiningDateTo != null && dto.JoiningDateTo > DateTime.MinValue)
+            {
+                query = query.Where(x => x.JoiningDate <= dto.JoiningDateTo);
+            }
 
             //-------------------------
             // Sorting
@@ -97,7 +121,7 @@ namespace EmployeeManagement.Application.Common.SearchExport.Master
 
             if (searchFor == "page")
             {
-                employees = await query
+                employees = await query.Include(x=>x.Department).Include(x=>x.State).Include(x=>x.City)
                     .IgnoreQueryFilters()
                    .Skip((dto.PageNumber - 1) * dto.PageSize)
                    .Take(dto.PageSize)

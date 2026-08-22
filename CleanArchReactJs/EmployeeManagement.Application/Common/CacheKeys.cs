@@ -8,23 +8,18 @@ namespace EmployeeManagement.Application.Common
 {
     public static class CacheKeys
     {
-        public const string EmployeePrefix =
-            "employees:";
+        public const string EmployeePrefix = "employees:"; 
 
-        public const string DashboardPrefix =
-            "dashboard:";
+        public const string DashboardPrefix = "dashboard:";
 
-        public const string ReportPrefix =
-            "reports:";
+        public const string ReportPrefix = "reports:";
 
-        public static string Employee(Guid id)
-            => $"{EmployeePrefix}{id}";
+        public static string Employee(Guid id) => $"{EmployeePrefix}{id}";
 
-        public static string EmployeeSearch(
-            string key)
-            => $"{EmployeePrefix}search:{key}";
+        public static string EmployeeSearch(string key) => $"{EmployeePrefix}search:{key}";
 
-        public static string DashboardStatistics()
-            => $"{DashboardPrefix}statistics";
+        public static string DashboardStatistics() => $"{DashboardPrefix}statistics";
+        
+
     }
 }

@@ -22,5 +22,6 @@ namespace EmployeeManagement.Application.DTOs.Master.Employee
         public DateTime? JoiningDate { get; set; } = null;
         public Gender? Gender { get; set; } = null;
         public bool IsActive { get; set; } = true;
+        public string? PhotoUrl { get; set; } 
     }
 }

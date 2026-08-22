@@ -16,9 +16,12 @@ namespace EmployeeManagement.Application.DTOs.Master.Employee
         public Guid? DepartmentId { get; set; } 
         public Guid? StateId { get; set; } 
         public Guid? CityId { get; set; } 
-        public decimal? Salary { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public DateTime? JoiningDate { get; set; }
+        public decimal? SalaryFrom { get; set; }
+        public decimal? SalaryTo { get; set; }
+        public DateTime? DateOfBirthFrom { get; set; }
+        public DateTime? DateOfBirthTo { get; set; }
+        public DateTime? JoiningDateFrom { get; set; }
+        public DateTime? JoiningDateTo { get; set; }
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 10;
         public string SortBy { get; set; } = "Name";

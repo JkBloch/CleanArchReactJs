@@ -43,6 +43,7 @@ namespace EmployeeManagement.Application
             services.AddScoped<IApplicationLogService, ApplicationLogService>();
             services.AddScoped<IDashboardService, DashboardService>();
             services.AddScoped<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
 
 
             return services;

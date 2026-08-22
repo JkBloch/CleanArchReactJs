@@ -74,5 +74,21 @@ namespace EmployeeManagement.Application.Services
                 }
             }
         }
+
+        public async Task RemoveByPatternAsync(string pattern)
+        {
+            foreach (var endpoint in _database.Multiplexer.GetEndPoints())
+            {
+                var server = _database.Multiplexer.GetServer(endpoint);
+
+                foreach (var key in server.Keys(
+                    _database.Database,
+                    pattern: pattern))
+                {
+                    await _database.KeyDeleteAsync(key);
+                }
+            }
+        }
+
     }
 }

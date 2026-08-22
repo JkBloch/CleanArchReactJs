@@ -1,0 +1,4 @@
+.row-span-4 {
+    grid-row: span 4;
+    background-color: #add8e6; /* Highlighted */
+}

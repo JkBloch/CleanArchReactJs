@@ -24,13 +24,15 @@ namespace EmployeeManagement.Application.Services.Master
         private readonly IMapper _mapper;
         private readonly ILogger<EmployeeService> _logger;
         private readonly IRedisCacheService _redisCacheService;
+        private readonly IFileStorageService _fileStorageService;
         public EmployeeService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<EmployeeService> logger
-            , IRedisCacheService redisCacheService)
+            , IRedisCacheService redisCacheService, IFileStorageService fileStorageService)
         {   
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
             _redisCacheService = redisCacheService;
+            _fileStorageService = fileStorageService;
         }
         public async Task<ApiResponse<IEnumerable<EmployeeDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
@@ -39,11 +41,7 @@ namespace EmployeeManagement.Application.Services.Master
                 _logger.LogInformation("Loading all employees.");
 
                 var employees =
-                    await _unitOfWork.Employees.GetAllAsync();
-
-                var depatments = await _unitOfWork.Departments.GetAllAsync();
-                var states = await _unitOfWork.States.GetAllAsync();
-                var cities = await _unitOfWork.Cities.GetAllAsync();
+                    await _unitOfWork.Employees.GetAllAsync();              
 
                 var result =
                     _mapper.Map<IEnumerable<EmployeeDto>>(employees);
@@ -66,12 +64,9 @@ namespace EmployeeManagement.Application.Services.Master
                 _logger.LogInformation(
                     "Loading employee {EmployeeId}", id);
 
-                var cacheKey =
-       CacheKeys.Employee(id);
+                var cacheKey = CacheKeys.Employee(id);
 
-                var cached =
-                    await _redisCacheService.GetAsync<EmployeeDto>(
-                        cacheKey);
+                var cached = await _redisCacheService.GetAsync<EmployeeDto>(cacheKey);
 
                 if (cached != null)
                 {
@@ -89,9 +84,7 @@ namespace EmployeeManagement.Application.Services.Master
 
                 var dto = _mapper.Map<EmployeeDto>(employee);
 
-                await _redisCacheService.SetAsync( 
-                    cacheKey, dto, 
-                    TimeSpan.FromMinutes(10));
+                await _redisCacheService.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(10));
 
                 return ApiResponse<EmployeeDto>
                     .Ok(dto);
@@ -147,6 +140,10 @@ namespace EmployeeManagement.Application.Services.Master
                 await _unitOfWork.Employees.AddAsync(employee, cancellationToken);
 
                 await _unitOfWork.SaveChangesAsync();
+
+                await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+                await _redisCacheService.RemoveByPatternAsync(CacheKeys.EmployeeSearch("") + "*");
+                await _redisCacheService.RemoveAsync(CacheKeys.DashboardStatistics());
 
                 _logger.LogInformation(
                     "Employee {EmployeeCode} created successfully.",
@@ -208,7 +205,9 @@ namespace EmployeeManagement.Application.Services.Master
                 _unitOfWork.Employees.Update(employee);
 
                 await _unitOfWork.SaveChangesAsync();
-
+                await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+                await _redisCacheService.RemoveByPatternAsync(CacheKeys.EmployeeSearch("") + "*");
+                await _redisCacheService.RemoveAsync(CacheKeys.DashboardStatistics());
                 _logger.LogInformation(
                     "Employee {EmployeeId} updated successfully.",
                     employee.Id);
@@ -251,6 +250,9 @@ namespace EmployeeManagement.Application.Services.Master
                 _unitOfWork.Employees.Update(employee);
 
                 await _unitOfWork.SaveChangesAsync();
+                await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+                await _redisCacheService.RemoveByPatternAsync(CacheKeys.EmployeeSearch("")+"*");
+                await _redisCacheService.RemoveAsync(CacheKeys.DashboardStatistics());
 
                 _logger.LogWarning(
                     "Employee {EmployeeId} deleted successfully.",
@@ -290,7 +292,8 @@ namespace EmployeeManagement.Application.Services.Master
                 _unitOfWork.Employees.Delete(employee);
 
                 await _unitOfWork.SaveChangesAsync();
-
+                await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+                await _redisCacheService.RemoveAsync(CacheKeys.EmployeeSearch(""));
                 _logger.LogWarning(
                     "Employee {EmployeeId} deleted successfully.",
                     id);
@@ -315,8 +318,7 @@ namespace EmployeeManagement.Application.Services.Master
         {
             try
             {
-                _logger.LogInformation(
-                    "Restoring employee {EmployeeId}",
+                _logger.LogInformation("Restoring employee {EmployeeId}",
                     id);
 
                 var employee = await _unitOfWork.Employees.GetDeletedEmployeeAsync(id, cancellationToken);
@@ -340,7 +342,8 @@ namespace EmployeeManagement.Application.Services.Master
                 _unitOfWork.Employees.Update(employee);
 
                 await _unitOfWork.SaveChangesAsync();
-
+                await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+                await _redisCacheService.RemoveAsync(CacheKeys.EmployeeSearch(""));
                 _logger.LogInformation(
                     "Employee restored successfully.");
 
@@ -368,13 +371,12 @@ namespace EmployeeManagement.Application.Services.Master
                     dto.PageNumber, 
                     dto.PageSize);
                 var searchCachKey = dto.Keyword + dto.Name + dto.Code + dto.Email + dto.DepartmentId + dto.StateId
-                     + dto.CityId + dto.Salary + dto.DateOfBirth + dto.JoiningDate + dto.PageNumber + dto.PageSize
-                     + dto.SortBy + dto.Descending; 
-                
+                     + dto.CityId + dto.SalaryFrom + dto.SalaryTo + dto.DateOfBirthFrom + dto.DateOfBirthTo 
+                     + dto.JoiningDateFrom + dto.JoiningDateTo + dto.PageNumber + dto.PageSize
+                     + dto.SortBy + dto.Descending;
+
                 var cacheKey = CacheKeys.EmployeeSearch(searchCachKey);
-                //var cachedEmployees =
-                //    await _redisCacheService.GetAsync<List<EmployeeDto>>(
-                //        cacheKey);
+
                 var cachedEmployees =
                     await _redisCacheService.GetAsync<PagedEmployeeResponseDto>(
                         cacheKey);
@@ -382,18 +384,9 @@ namespace EmployeeManagement.Application.Services.Master
 
                 if (cachedEmployees is not null)
                 {
-                    //var responseCach = new PagedEmployeeResponseDto
-                    //{
-                    //    Items = _mapper.Map<List<EmployeeDto>>(cachedEmployees),
-                    //    TotalRecords = totalRecords,
-                    //    PageNumber = dto.PageNumber,
-                    //    PageSize = dto.PageSize
-                    //    //TotalPages = (int)Math.Ceiling(
-                    //    //    totalRecords / (double)dto.PageSize)
-                    //};
 
                     return ApiResponse<PagedEmployeeResponseDto>.Ok(cachedEmployees);
-                    
+
                 }
 
                 IQueryable<Employee> query = _unitOfWork.Employees.Query();
@@ -426,6 +419,125 @@ namespace EmployeeManagement.Application.Services.Master
                     "Unable to search employees.");
             }
         }
+
+        public async Task<ApiResponse<string>> UploadPhotoAsync(Guid employeeId, Stream stream, string fileName,
+            string contentType, CancellationToken cancellationToken = default)
+        {
+            var employee =
+                await _unitOfWork.Employees.GetByIdAsync(
+                    employeeId,
+                    cancellationToken);
+
+            if (employee == null)
+                return ApiResponse<string>.Fail( "Employee not found.");
+
+            var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
+
+            if (!allowedTypes.Contains(contentType.ToLowerInvariant()))
+            {
+                return ApiResponse<string>.Fail("Only JPG, PNG and WEBP images are allowed.");
+            }
+
+            var extension = Path.GetExtension(fileName).ToLowerInvariant();
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                return ApiResponse<string>.Fail(
+                    "Invalid image extension.");
+            }
+
+            if (stream.Length > 5 * 1024 * 1024)
+            {
+                return ApiResponse<string>.Fail(
+                    "Maximum photo size is 5 MB.");
+            }
+
+            // Delete old photo
+            if (!string.IsNullOrWhiteSpace(employee.PhotoUrl))
+            {
+                await _fileStorageService.DeleteAsync(
+                    employee.PhotoUrl,
+                    cancellationToken);
+            }
+
+            var upload =
+                await _fileStorageService.UploadAsync(
+                    stream,
+                    fileName,
+                    contentType,
+                    "employees",
+                    cancellationToken);
+
+            employee.PhotoUrl = upload.Url;
+
+            employee.PhotoFileName = upload.FileName;
+
+            employee.ModifiedDate = DateTime.UtcNow;
+
+            employee.ModifiedBy = "System";
+
+            _unitOfWork.Employees.Update(employee);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+            await _redisCacheService.RemoveAsync(CacheKeys.EmployeeSearch("*"));
+            _logger.LogInformation(
+                "Employee {EmployeeId} photo uploaded",
+                employeeId);
+
+            return ApiResponse<string>.Ok(
+                upload.Url,
+                "Photo uploaded successfully.");
+        }
+        public async Task<ApiResponse<string>> DeletePhotoAsync(Guid employeeId, CancellationToken cancellationToken = default)
+        {
+            var employee = await _unitOfWork.Employees.GetByIdAsync(
+                    employeeId,
+                    cancellationToken);
+
+            if (employee == null)
+                return ApiResponse<string>.Fail(
+                    "Employee not found.");
+
+            if (string.IsNullOrWhiteSpace(
+                employee.PhotoUrl))
+            {
+                return ApiResponse<string>.Fail(
+                    "Employee does not have a photo.");
+            }
+
+            await _fileStorageService.DeleteAsync(
+                employee.PhotoUrl,
+                cancellationToken);
+
+            employee.PhotoUrl = null;
+            employee.PhotoFileName = null;
+
+            employee.ModifiedDate =
+                DateTime.UtcNow;
+
+            employee.ModifiedBy = "System";
+
+            _unitOfWork.Employees.Update(employee);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _redisCacheService.RemoveAsync(CacheKeys.Employee(employee.Id));
+            await _redisCacheService.RemoveAsync(CacheKeys.EmployeeSearch(""));
+            _logger.LogInformation(
+                "Employee {EmployeeId} photo deleted",
+                employeeId);
+
+            return ApiResponse<string>.Ok(
+                string.Empty,
+                "Photo deleted successfully.");
+        }
+
+
+
+        #region DummyData
+
         public async Task<ApiResponse<string>> CreateDummyData(CancellationToken cancellationToken = default)
         {
             try
@@ -596,6 +708,7 @@ namespace EmployeeManagement.Application.Services.Master
             }
 
         }
+        #endregion
     }
 
 }

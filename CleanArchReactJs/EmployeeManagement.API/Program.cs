@@ -71,7 +71,7 @@ try
         //    sinkOptions: new MSSqlServerSinkOptions
         //    {
         //        TableName = "ApplicationLogs",
-        //        AutoCreateSqlTable = true
+        //        AutoCreateSqlTable = false
         //    },
         //    columnOptions: columnOptions)
         .CreateLogger();
@@ -208,6 +208,7 @@ try
     app.UseHttpsRedirection();
     //added for allow access react CORS Pollcy
     app.UseCors("ReactPolicy");
+    app.UseStaticFiles();
     app.UseAuthentication();
 
     app.UseAuthorization();

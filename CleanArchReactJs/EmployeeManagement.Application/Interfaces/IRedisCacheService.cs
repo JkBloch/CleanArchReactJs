@@ -18,5 +18,6 @@ namespace EmployeeManagement.Application.Interfaces
         Task RemoveAsync(string key);
 
         Task RemoveByPrefixAsync(string prefix);
+        Task RemoveByPatternAsync(string pattern);
     }
 }

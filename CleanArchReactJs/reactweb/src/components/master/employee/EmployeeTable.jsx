@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaRegEye, FaMinusCircle, FaEdit, FaUndo, FaRegTimesCircle } from "react-icons/fa";
+import EmployeePhoto from "../../../components/master/employee/EmployeePhoto";
+import  fromdate  from "../../../utils/dateUtils";
 function EmployeeTable({
     employees,
     onDelete,
@@ -29,21 +31,48 @@ function EmployeeTable({
             <thead className="table-dark">
 
                 <tr>
+                    <th style={{ cursor: "pointer" }} >
+                        Photo
+                    </th>
 
-                    <th
-                        style={{ cursor: "pointer" }}
-                        onClick={() => onSortData("code")}
-                    >
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("code")} >
                         Code
                     </th>
-
-                    <th
-                        style={{ cursor: "pointer" }}
-                        onClick={() => onSortData("name")}
-                    >
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("name")} >
                         Name
                     </th>
-                    <th >
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("email")} >
+                        Email
+                    </th>
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("department")} >
+                        Department
+                    </th>
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("state")} >
+                        State
+                    </th>
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("city")} >
+                        City
+                    </th>
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("salary")} >
+                        Salary
+                    </th>
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("dateOfBirth")} >
+                        DateOfBirth
+                    </th>
+                    <th style={{ cursor: "pointer" }}
+                        onClick={() => onSortData("joiningDate")} >
+                        JoiningDate
+                    </th>                  
+
+                    <th>
 
                         Action
 
@@ -59,6 +88,15 @@ function EmployeeTable({
                     employees.map(employee => (
 
                         <tr key={employee.id}>
+                            <td>
+                                <EmployeePhoto
+                                    photoUrl={employee.photoUrl}
+                                    firstName={employee.name}
+                                    lastName={employee.name}
+                                    size={50}
+                                />
+                            </td>
+
 
                             <td>
                                 {employee.code}
@@ -66,8 +104,28 @@ function EmployeeTable({
 
                             <td>
                                 {employee.name}
-
                             </td>
+                            <td>
+                                {employee.email}
+                            </td>
+                            <td>
+                                {employee.departmentName}
+                            </td>
+                            <td>
+                                {employee.stateName}
+                            </td>
+                            <td>
+                                {employee.cityName}
+                            </td>
+                            <td>
+                                {employee.salary}
+                            </td>
+                            <td>
+                                {fromdate(employee.dateOfBirth)}
+                            </td>
+                            <td>
+                                {fromdate(employee.joiningDate)}
+                            </td> 
 
                             <td>
                                 <div>
@@ -115,18 +173,7 @@ function EmployeeTable({
                                                 </span>
                                             </button>
 
-                                    }
-
-                                    <button className="icon-btn-danger icon-btn"
-                                        onClick={() => onDeletePermanent(employee.id)}>
-                                        <span className="icon-section icon-section-sm">
-                                            <FaRegTimesCircle ></FaRegTimesCircle>
-                                        </span>
-                                        <span className="text-section text-section-sm">
-                                            Delete Permanent
-                                        </span>
-                                    </button>
-
+                                    }  
                                 </div>
                             </td>
 

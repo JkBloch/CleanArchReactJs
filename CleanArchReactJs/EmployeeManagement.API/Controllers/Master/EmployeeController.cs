@@ -10,7 +10,7 @@ namespace EmployeeManagement.API.Controllers.Master
     [ApiExplorerSettings(IgnoreApi = false)]
     [ApiController]
     [Route("api/[controller]")]
-  //  [Authorize(Roles = "Admin,HR,Employee")]
+    [Authorize(Roles = "Admin,HR,Employee")]
     [ApiVersion(1.0)]
     public class EmployeeController : ControllerBase
     {
@@ -19,14 +19,15 @@ namespace EmployeeManagement.API.Controllers.Master
         {
             _employeeService = employeeService;
         }
-       // [Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
+        [Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             var result = await _employeeService.GetAllAsync(cancellationToken);
             return Ok(result);
         }
-        //[Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
+
+        [Authorize(Policy = PageList.Employee + "." + PageOpration.View)]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
@@ -38,8 +39,7 @@ namespace EmployeeManagement.API.Controllers.Master
             return Ok(result);
         }
 
-        //[Authorize(Employees = "Admin,HR")]
-        //[Authorize(Policy = Employees.EmployeeCreate)]
+        
         [Authorize(Policy = PageList.Employee + "." + PageOpration.Create)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEmployeeDto dto, CancellationToken cancellationToken)
@@ -55,7 +55,7 @@ namespace EmployeeManagement.API.Controllers.Master
             return Ok(result);
         }
 
-        //[Authorize(Employees = "Admin,HR")]
+   
         [Authorize(Policy = PageList.Employee + "." + PageOpration.Update)]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateEmployeeDto dto, CancellationToken cancellationToken)
@@ -95,7 +95,7 @@ namespace EmployeeManagement.API.Controllers.Master
             return Ok(result);
         }
 
-        // [Authorize(Employees = "Admin")]
+      
         [Authorize(Policy = PageList.Employee + "." + PageOpration.Restore)]
         [HttpPost("{id:guid}/restore")]
         public async Task<IActionResult> Restore(Guid id, CancellationToken cancellationToken)
@@ -115,10 +115,48 @@ namespace EmployeeManagement.API.Controllers.Master
             var result = await _employeeService.SearchAsync(dto, cancellationToken);
             return Ok(result);
         }
+
+        [Authorize(Roles = "Admin,HR")]
+        [HttpPost("{id:guid}/photo")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadPhoto(Guid id, IFormFile photo, CancellationToken cancellationToken)
+        {
+            if (photo == null || photo.Length == 0)
+                return BadRequest("Please select a photo.");
+
+            var result =
+                await _employeeService.UploadPhotoAsync(
+                    id,
+                    photo.OpenReadStream(),
+                    photo.FileName,
+                    photo.ContentType,
+                    cancellationToken);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+       
+        [Authorize(Roles = "Admin,HR")]
+        [HttpDelete("{id:guid}/photo")]
+        public async Task<IActionResult> DeletePhoto( Guid id, CancellationToken cancellationToken)
+        {
+            var result =
+                await _employeeService.DeletePhotoAsync(
+                    id,
+                    cancellationToken);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
         [HttpGet("dummyData")]
         public async Task<IActionResult> DummyData()
         {
-            await _employeeService.CreateDummyData();
+           // await _employeeService.CreateDummyData();
 
             return Ok();
 

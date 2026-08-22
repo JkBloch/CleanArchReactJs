@@ -6,7 +6,7 @@ import { notify } from "../../../services/notificationService";
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 //import { getErrorMessage } from "../../../utils/errorHandling";
-
+import EmployeePhoto from "../../../components/master/employee/EmployeePhoto";
 function EmployeeDetails() {
 
     const { id } = useParams();
@@ -100,9 +100,19 @@ function EmployeeDetails() {
                 </div>
 
                 <div className="card-body">
+                    <div className="col-md-6">
+                        <p>
+                            <br />
+                            <EmployeePhoto
+                                photoUrl={employee.photoUrl}
+                                firstName={employee.name}
+                                lastName={employee.name}
+                                size={200}
+                            />
 
+                        </p>
+                    </div>  
                     <div className="row">
-
                         <div className="col-md-6">
 
                             <p>
@@ -114,7 +124,9 @@ function EmployeeDetails() {
                                 {employee.code}
 
                             </p>
-                            </div>
+                        </div>
+
+                        
                         <div className="col-md-6">
 
                             <p>
@@ -290,7 +302,7 @@ function EmployeeDetails() {
                         </div>
 
                     </div>
-
+                  
                     <hr />
                     <div>
                         <button

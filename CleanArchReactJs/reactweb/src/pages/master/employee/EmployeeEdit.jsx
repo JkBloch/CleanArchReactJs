@@ -67,6 +67,7 @@ function EmployeeEdit() {
                 initialValues={employee}
                 onSubmit={save}
                 loading={loading}
+                loadEmployee={loadEmployee}
             />
 
         </div>

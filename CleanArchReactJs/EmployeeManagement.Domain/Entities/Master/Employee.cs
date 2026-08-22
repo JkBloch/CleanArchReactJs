@@ -25,5 +25,7 @@ namespace EmployeeManagement.Domain.Entities.Master
         public DateTime? JoiningDate { get; set; }
         public Gender? Gender { get; set; }
         public bool IsActive { get; set; } = true;
+        public string? PhotoUrl { get; set; }
+        public string? PhotoFileName { get; set; }
     }
 }

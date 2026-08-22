@@ -6,10 +6,13 @@ import { getStates } from "../../../api/master/stateApi"
 import { getCities, searchCities } from "../../../api/master/cityApi"
 import { EMPTY_GUID } from "../../../constants/common"
 import { notify } from "../../../services/notificationService";
+import EmployeePhotoUpload from "../../../components/master/employee/EmployeePhotoUpload";
+
 function EmployeeForm({
     initialValues,
     onSubmit,
-    loading
+    loading,
+    loadEmployee 
 }) {
     const [departments, setDepartments] = useState([]);
     const [states, setStates] = useState([]);
@@ -68,6 +71,7 @@ function EmployeeForm({
             notify.error("Failed to load city data");
         }
     };
+     
     function handleChange(e) {
 
         let { name, value } = e.target;
@@ -98,7 +102,7 @@ function EmployeeForm({
         <form onSubmit={submit}>
 
             <div className="row">
-
+             
                 <div className="col-md-6 mb-3">
 
                     <label>Code</label>
@@ -250,26 +254,43 @@ function EmployeeForm({
                         <option value={1} >Male</option>
                         <option value={2} >Female</option>
                         <option value={3} >Other</option>
-                </select>
-            </div>
+                    </select>
+                    <br></br>
+                    <input
+                        type="checkbox"
+                        className="form-check-input"
+                        name="isActive"
+                        checked={employee.isActive}
+                        value={employee.isActive}
+                        onChange={handleChange} />
+                    <label className="form-check-label" htmlFor="isActive" >
+                        IsActive
+                    </label>
+                </div>
+                {
+                     (employee.id != null) && (                
+                    <div className="col-md-4 m-2">
+
+                        <EmployeePhotoUpload
+                            employee={employee}
+                            onPhotoChanged={
+                                loadEmployee
+                            }
+                        />
+
+                    </div> )
+                }
             <div className="col-md-6 mb-3">
                 <div className="row ms-2 mt-4">
                     <div className="col-md-3 form-check">
-                        <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="isActive"
-                            checked={employee.isActive}
-                            value={employee.isActive}
-                            onChange={handleChange} />
-                        <label className="form-check-label" htmlFor="isActive" >
-                            IsActive
-                        </label>
+                        
                     </div>
                 </div>
             </div>
 
             </div>
+           
+
             <div>
                 <button
                     className="icon-btn-success icon-btn"

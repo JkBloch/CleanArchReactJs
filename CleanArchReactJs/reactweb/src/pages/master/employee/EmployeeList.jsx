@@ -9,6 +9,7 @@ import Pagination from "../../../components/common/Pagination";
 import ConfirmDialog from "../../../components/common/ConfirmDialog";
 import { notify } from "../../../services/notificationService";
 import { useLoading } from "../../../context/LoadingContext";
+import { EMPTY_GUID } from "../../../constants/common"
 //import { getErrorMessage } from "../../../utils/errorHandling";
 function EmployeeList() {
     const [selectedId, setSelectedId] = useState(null);
@@ -22,6 +23,17 @@ function EmployeeList() {
     const [keyword, setKeyword] = useState("");
     const [searchcode, setSearchcode] = useState("");
     const [searchname, setSearchname] = useState("");
+    const [searchemail, setSearchemail] = useState("");
+    const [searchDepartmentId, setSearchDepartmentId] = useState(EMPTY_GUID);
+    const [searchStateId, setSearchStateId] = useState(EMPTY_GUID);
+    const [searchCityId, setSearchCityId] = useState(EMPTY_GUID);
+    const [searchSalaryFrom, setSearchSalaryFrom] = useState(0);
+    const [searchSalaryTo, setSearchSalaryTo] = useState(0);
+    const [searchDateOfBirthFrom, setSearchDateOfBirthFrom] = useState(null);
+    const [searchDateOfBirthTo, setSearchDateOfBirthTo] = useState(null);
+    const [searchJoiningDateFrom, setSearchJoiningDateFrom] = useState(null);
+    const [searchJoiningDateTo, setSearchJoiningDateTo] = useState(null);
+
     const [pageNumber, setPageNumber] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [sortBy, setSortBy] = useState("code");
@@ -41,6 +53,7 @@ function EmployeeList() {
     function handleChange(e) {
 
         const { name, value } = e.target;
+
         switch (name) {
             case "keyword":
                 setKeyword(value);
@@ -50,6 +63,36 @@ function EmployeeList() {
                 break;
             case "name":
                 setSearchname(value);
+                break;
+            case "email":
+                setSearchemail(value);
+                break;
+            case "departmentId":
+                setSearchDepartmentId(value);
+                break;
+            case "stateId":
+                setSearchStateId(value);
+                break;
+            case "cityId":
+                setSearchCityId(value);
+                break;
+            case "salaryFrom":
+                setSearchSalaryFrom(value);
+                break;
+            case "salaryTo":
+                setSearchSalaryTo(value);
+                break;
+            case "dateOfBirthFrom":
+                setSearchDateOfBirthFrom(value);
+                break;
+            case "dateOfBirthTo":
+                setSearchDateOfBirthTo(value);
+                break;
+            case "joiningDateFrom":
+                setSearchJoiningDateFrom(value);
+                break;
+            case "joiningDateTo":
+                setSearchJoiningDateTo(value);
                 break;
             default:
         }
@@ -68,6 +111,16 @@ function EmployeeList() {
                 keyword: keyword,
                 code: searchcode,
                 name: searchname,
+                email: searchemail,
+                departmentId: searchDepartmentId,
+                stateId: searchStateId,
+                cityId: searchCityId,
+                salaryFrom: searchSalaryFrom,
+                salaryTo: searchSalaryTo,
+                dateOfBirthFrom: searchDateOfBirthFrom,
+                dateOfBirthTo: searchDateOfBirthTo,
+                joiningDateFrom: searchJoiningDateFrom,
+                joiningDateTo: searchJoiningDateTo,
                 pageNumber: selectedPageNumber,
                 pageSize: pageSize,
                 sortBy: sortBy,
@@ -174,6 +227,16 @@ function EmployeeList() {
                 keyword={keyword}
                 searchcode={searchcode}
                 searchname={searchname}
+                searchemail={searchemail}
+                searchDepartmentId={searchDepartmentId}
+                searchStateId={searchStateId}
+                searchCityId={searchCityId}
+                searchSalaryFrom={searchSalaryFrom}
+                searchSalaryTo={searchSalaryTo}
+                searchDateOfBirthFrom={searchDateOfBirthFrom}
+                searchDateOfBirthTo={searchDateOfBirthTo}
+                searchJoiningDateFrom={searchJoiningDateFrom}
+                searchJoiningDateTo={searchJoiningDateTo}
                 selectedPageNumber={pageNumber}
                 pageSize={pageSize}
                 sortBy={sortBy}
